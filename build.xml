@@ -1,0 +1,83 @@
+<project name="minimax" default="dist" basedir=".">
+
+  <property name="version" value="1.0" />
+  <property name="thrift.compiler" value="thrift" />
+
+  <property name="src" location="src" />
+  <property name="src.generated" location="${src}/org/garethaye/minimax/generated" />
+
+  <property name="thrift" location="thrift" />
+
+  <property name="lib" location="lib" />
+
+  <property name="build" location="build" />
+  <property name="build.classes" location="${build}/classes" />
+  <property name="build.jar" location="${build}/jar" />
+
+  <path id="compile.classpath">
+    <fileset id="jars" dir="${lib}" includes="**/*.jar" />
+  </path>
+
+  <target name="clean" description="Delete build and src.generated dirs">
+    <delete dir="${build}" />
+    <delete dir="${src.generated}" />
+  </target>
+
+  <target name="init" depends="clean" description="Make build and src.generated dirs">
+    <mkdir dir="${build}" />
+    <mkdir dir="${build.classes}" />
+    <mkdir dir="${build.jar}" />
+    <mkdir dir="${src.generated}" />
+  </target>
+
+  <target name="run-thrift" depends="init" description="Generate code from Thrift defs in thrift/">
+    <exec executable="${thrift.compiler}" failonerror="true">
+      <arg line="-r -o ${build} --gen java:private-members,hashcode,java5,builder ${thrift}/minimax.thrift" />
+    </exec>
+    <move todir="${src.generated}">
+      <fileset dir="${build}/gen-java/org/garethaye/minimax/generated" />
+    </move>
+  </target>
+
+  <target name="compile" depends="run-thrift">
+    <javac srcdir="${src}" destdir="${build.classes}" debug="true" classpathref="compile.classpath" />
+  </target>
+
+  <target name="jar" depends="compile">
+    <manifestclasspath property="minimax.path" jarfile="${build.jar}/minimax_server.jar}">
+      <classpath refid="compile.classpath" />
+    </manifestclasspath>
+    <manifestclasspath property="tic_tac_toe.path" jarfile="${build.jar}/tic_tac_toe_server.jar}">
+      <classpath refid="compile.classpath" />
+    </manifestclasspath>
+
+    <jar jarfile="${build.jar}/minimax_server.jar"
+        basedir="${build.classes}"
+        includes="**/*.class">
+      <manifest>
+        <attribute name="Main-Class" value="org.garethaye.minimax.framework.MinimaxServer" />
+        <attribute name="Class-Path" value="${minimax.path}" />
+      </manifest>
+    </jar>
+    <jar jarfile="${build.jar}/tic_tac_toe_server.jar"
+        basedir="${build.classes}"
+        includes="**/*.class">
+      <manifest>
+        <attribute name="Main-Class" value="org.garethaye.minimax.tic_tac_toe.TicTacToeBotServer" />
+        <attribute name="Class-Path" value="${tic_tac_toe.path}" />
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="start-minimax-server" depends="jar">
+    <java jar="${build.jar}/minimax_server.jar" fork="true">
+      <jvmarg value="-Xmx4096m" />
+    </java>
+  </target>
+
+  <target name="start-tic-tac-toe-server" depends="jar">
+    <java jar="${build.jar}/tic_tac_toe_server.jar" fork="true">
+      <jvmarg value="-Xmx2048m" />
+    </java>
+  </target>
+</project>
