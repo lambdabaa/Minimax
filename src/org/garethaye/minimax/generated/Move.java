@@ -31,10 +31,12 @@ import org.slf4j.LoggerFactory;
 public class Move extends org.apache.thrift.TUnion<Move, Move._Fields> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Move");
   private static final org.apache.thrift.protocol.TField TIC_TAC_TOE_MOVE_FIELD_DESC = new org.apache.thrift.protocol.TField("ticTacToeMove", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+  private static final org.apache.thrift.protocol.TField CONNECT_FOUR_MOVE_FIELD_DESC = new org.apache.thrift.protocol.TField("connectFourMove", org.apache.thrift.protocol.TType.STRUCT, (short)2);
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    TIC_TAC_TOE_MOVE((short)1, "ticTacToeMove");
+    TIC_TAC_TOE_MOVE((short)1, "ticTacToeMove"),
+    CONNECT_FOUR_MOVE((short)2, "connectFourMove");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -51,6 +53,8 @@ public class Move extends org.apache.thrift.TUnion<Move, Move._Fields> {
       switch(fieldId) {
         case 1: // TIC_TAC_TOE_MOVE
           return TIC_TAC_TOE_MOVE;
+        case 2: // CONNECT_FOUR_MOVE
+          return CONNECT_FOUR_MOVE;
         default:
           return null;
       }
@@ -95,6 +99,8 @@ public class Move extends org.apache.thrift.TUnion<Move, Move._Fields> {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.TIC_TAC_TOE_MOVE, new org.apache.thrift.meta_data.FieldMetaData("ticTacToeMove", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, org.garethaye.minimax.generated.TicTacToeMove.class)));
+    tmpMap.put(_Fields.CONNECT_FOUR_MOVE, new org.apache.thrift.meta_data.FieldMetaData("connectFourMove", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, org.garethaye.minimax.generated.ConnectFourMove.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Move.class, metaDataMap);
   }
@@ -120,6 +126,12 @@ public class Move extends org.apache.thrift.TUnion<Move, Move._Fields> {
     return x;
   }
 
+  public static Move connectFourMove(org.garethaye.minimax.generated.ConnectFourMove value) {
+    Move x = new Move();
+    x.setConnectFourMove(value);
+    return x;
+  }
+
 
   @Override
   protected void checkType(_Fields setField, Object value) throws ClassCastException {
@@ -129,6 +141,11 @@ public class Move extends org.apache.thrift.TUnion<Move, Move._Fields> {
           break;
         }
         throw new ClassCastException("Was expecting value of type org.garethaye.minimax.generated.TicTacToeMove for field 'ticTacToeMove', but got " + value.getClass().getSimpleName());
+      case CONNECT_FOUR_MOVE:
+        if (value instanceof org.garethaye.minimax.generated.ConnectFourMove) {
+          break;
+        }
+        throw new ClassCastException("Was expecting value of type org.garethaye.minimax.generated.ConnectFourMove for field 'connectFourMove', but got " + value.getClass().getSimpleName());
       default:
         throw new IllegalArgumentException("Unknown field id " + setField);
     }
@@ -149,6 +166,16 @@ public class Move extends org.apache.thrift.TUnion<Move, Move._Fields> {
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, field.type);
             return null;
           }
+        case CONNECT_FOUR_MOVE:
+          if (field.type == CONNECT_FOUR_MOVE_FIELD_DESC.type) {
+            org.garethaye.minimax.generated.ConnectFourMove connectFourMove;
+            connectFourMove = new org.garethaye.minimax.generated.ConnectFourMove();
+            connectFourMove.read(iprot);
+            return connectFourMove;
+          } else {
+            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, field.type);
+            return null;
+          }
         default:
           throw new IllegalStateException("setField wasn't null, but didn't match any of the case statements!");
       }
@@ -163,6 +190,10 @@ public class Move extends org.apache.thrift.TUnion<Move, Move._Fields> {
       case TIC_TAC_TOE_MOVE:
         org.garethaye.minimax.generated.TicTacToeMove ticTacToeMove = (org.garethaye.minimax.generated.TicTacToeMove)value_;
         ticTacToeMove.write(oprot);
+        return;
+      case CONNECT_FOUR_MOVE:
+        org.garethaye.minimax.generated.ConnectFourMove connectFourMove = (org.garethaye.minimax.generated.ConnectFourMove)value_;
+        connectFourMove.write(oprot);
         return;
       default:
         throw new IllegalStateException("Cannot write union with unknown field " + setField_);
@@ -179,6 +210,11 @@ public class Move extends org.apache.thrift.TUnion<Move, Move._Fields> {
           ticTacToeMove = new org.garethaye.minimax.generated.TicTacToeMove();
           ticTacToeMove.read(iprot);
           return ticTacToeMove;
+        case CONNECT_FOUR_MOVE:
+          org.garethaye.minimax.generated.ConnectFourMove connectFourMove;
+          connectFourMove = new org.garethaye.minimax.generated.ConnectFourMove();
+          connectFourMove.read(iprot);
+          return connectFourMove;
         default:
           throw new IllegalStateException("setField wasn't null, but didn't match any of the case statements!");
       }
@@ -194,6 +230,10 @@ public class Move extends org.apache.thrift.TUnion<Move, Move._Fields> {
         org.garethaye.minimax.generated.TicTacToeMove ticTacToeMove = (org.garethaye.minimax.generated.TicTacToeMove)value_;
         ticTacToeMove.write(oprot);
         return;
+      case CONNECT_FOUR_MOVE:
+        org.garethaye.minimax.generated.ConnectFourMove connectFourMove = (org.garethaye.minimax.generated.ConnectFourMove)value_;
+        connectFourMove.write(oprot);
+        return;
       default:
         throw new IllegalStateException("Cannot write union with unknown field " + setField_);
     }
@@ -204,6 +244,8 @@ public class Move extends org.apache.thrift.TUnion<Move, Move._Fields> {
     switch (setField) {
       case TIC_TAC_TOE_MOVE:
         return TIC_TAC_TOE_MOVE_FIELD_DESC;
+      case CONNECT_FOUR_MOVE:
+        return CONNECT_FOUR_MOVE_FIELD_DESC;
       default:
         throw new IllegalArgumentException("Unknown field id " + setField);
     }
@@ -238,8 +280,27 @@ public class Move extends org.apache.thrift.TUnion<Move, Move._Fields> {
     value_ = value;
   }
 
+  public org.garethaye.minimax.generated.ConnectFourMove getConnectFourMove() {
+    if (getSetField() == _Fields.CONNECT_FOUR_MOVE) {
+      return (org.garethaye.minimax.generated.ConnectFourMove)getFieldValue();
+    } else {
+      throw new RuntimeException("Cannot get field 'connectFourMove' because union is currently set to " + getFieldDesc(getSetField()).name);
+    }
+  }
+
+  public void setConnectFourMove(org.garethaye.minimax.generated.ConnectFourMove value) {
+    if (value == null) throw new NullPointerException();
+    setField_ = _Fields.CONNECT_FOUR_MOVE;
+    value_ = value;
+  }
+
   public boolean isSetTicTacToeMove() {
     return setField_ == _Fields.TIC_TAC_TOE_MOVE;
+  }
+
+
+  public boolean isSetConnectFourMove() {
+    return setField_ == _Fields.CONNECT_FOUR_MOVE;
   }
 
 

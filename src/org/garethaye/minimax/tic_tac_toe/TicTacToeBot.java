@@ -4,18 +4,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.thrift.TException;
+import org.garethaye.minimax.framework.BotUtils;
 import org.garethaye.minimax.generated.Bot;
 import org.garethaye.minimax.generated.GameState;
 import org.garethaye.minimax.generated.GameStateAndMove;
 import org.garethaye.minimax.generated.Move;
 import org.garethaye.minimax.generated.TicTacToeGameState;
 import org.garethaye.minimax.generated.TicTacToeMove;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class TicTacToeBot implements Bot.Iface {
-  private static final Logger LOGGER = LoggerFactory.getLogger(TicTacToeBot.class.getName());
-  
+public class TicTacToeBot implements Bot.Iface {  
   private List<List<Integer>> board;
   private int activePlayer;
   private int inactivePlayer;
@@ -39,7 +36,7 @@ public class TicTacToeBot implements Bot.Iface {
       List<Integer> row = board.get(i);
       for (int j = 0; j < row.size(); j++) {
         if (board.get(i).get(j) == 0) {
-          List<List<Integer>> clone = TicTacToeUtils.clone(board);
+          List<List<Integer>> clone = BotUtils.clone(board);
           clone.get(i).set(j, activePlayer);
           list.add(new GameStateAndMove(
               new GameState(GameState._Fields.TIC_TAC_TOE_GAME_STATE, 
@@ -55,14 +52,10 @@ public class TicTacToeBot implements Bot.Iface {
   @Override
   public int eval(GameState state, int playerId, int opponentId) throws TException {
     init(state);
-    
-    LOGGER.info("eval called");
 
     if (TicTacToeUtils.hasThreeInARow(board, playerId)) {
-      LOGGER.info("Us three in a row");
       return Integer.MAX_VALUE;
     } else if (TicTacToeUtils.hasThreeInARow(board, opponentId)) {
-      LOGGER.info("Them three in a row");
       return Integer.MIN_VALUE;
     } else {
       return TicTacToeUtils.getNumWins(board, playerId, opponentId)
@@ -74,7 +67,7 @@ public class TicTacToeBot implements Bot.Iface {
   public boolean explore(GameState state, int depth) throws TException {
     init(state);
     
-    return !TicTacToeUtils.isFull(state.getTicTacToeGameState().getBoard())
+    return !BotUtils.isFull(state.getTicTacToeGameState().getBoard())
         && !TicTacToeUtils.hasThreeInARow(board, activePlayer)
         && !TicTacToeUtils.hasThreeInARow(board, inactivePlayer);
   }

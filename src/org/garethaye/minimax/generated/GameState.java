@@ -31,10 +31,12 @@ import org.slf4j.LoggerFactory;
 public class GameState extends org.apache.thrift.TUnion<GameState, GameState._Fields> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GameState");
   private static final org.apache.thrift.protocol.TField TIC_TAC_TOE_GAME_STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("ticTacToeGameState", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+  private static final org.apache.thrift.protocol.TField CONNECT_FOUR_GAME_STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("connectFourGameState", org.apache.thrift.protocol.TType.STRUCT, (short)2);
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    TIC_TAC_TOE_GAME_STATE((short)1, "ticTacToeGameState");
+    TIC_TAC_TOE_GAME_STATE((short)1, "ticTacToeGameState"),
+    CONNECT_FOUR_GAME_STATE((short)2, "connectFourGameState");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -51,6 +53,8 @@ public class GameState extends org.apache.thrift.TUnion<GameState, GameState._Fi
       switch(fieldId) {
         case 1: // TIC_TAC_TOE_GAME_STATE
           return TIC_TAC_TOE_GAME_STATE;
+        case 2: // CONNECT_FOUR_GAME_STATE
+          return CONNECT_FOUR_GAME_STATE;
         default:
           return null;
       }
@@ -95,6 +99,8 @@ public class GameState extends org.apache.thrift.TUnion<GameState, GameState._Fi
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.TIC_TAC_TOE_GAME_STATE, new org.apache.thrift.meta_data.FieldMetaData("ticTacToeGameState", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, org.garethaye.minimax.generated.TicTacToeGameState.class)));
+    tmpMap.put(_Fields.CONNECT_FOUR_GAME_STATE, new org.apache.thrift.meta_data.FieldMetaData("connectFourGameState", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, org.garethaye.minimax.generated.ConnectFourGameState.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(GameState.class, metaDataMap);
   }
@@ -120,6 +126,12 @@ public class GameState extends org.apache.thrift.TUnion<GameState, GameState._Fi
     return x;
   }
 
+  public static GameState connectFourGameState(org.garethaye.minimax.generated.ConnectFourGameState value) {
+    GameState x = new GameState();
+    x.setConnectFourGameState(value);
+    return x;
+  }
+
 
   @Override
   protected void checkType(_Fields setField, Object value) throws ClassCastException {
@@ -129,6 +141,11 @@ public class GameState extends org.apache.thrift.TUnion<GameState, GameState._Fi
           break;
         }
         throw new ClassCastException("Was expecting value of type org.garethaye.minimax.generated.TicTacToeGameState for field 'ticTacToeGameState', but got " + value.getClass().getSimpleName());
+      case CONNECT_FOUR_GAME_STATE:
+        if (value instanceof org.garethaye.minimax.generated.ConnectFourGameState) {
+          break;
+        }
+        throw new ClassCastException("Was expecting value of type org.garethaye.minimax.generated.ConnectFourGameState for field 'connectFourGameState', but got " + value.getClass().getSimpleName());
       default:
         throw new IllegalArgumentException("Unknown field id " + setField);
     }
@@ -149,6 +166,16 @@ public class GameState extends org.apache.thrift.TUnion<GameState, GameState._Fi
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, field.type);
             return null;
           }
+        case CONNECT_FOUR_GAME_STATE:
+          if (field.type == CONNECT_FOUR_GAME_STATE_FIELD_DESC.type) {
+            org.garethaye.minimax.generated.ConnectFourGameState connectFourGameState;
+            connectFourGameState = new org.garethaye.minimax.generated.ConnectFourGameState();
+            connectFourGameState.read(iprot);
+            return connectFourGameState;
+          } else {
+            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, field.type);
+            return null;
+          }
         default:
           throw new IllegalStateException("setField wasn't null, but didn't match any of the case statements!");
       }
@@ -163,6 +190,10 @@ public class GameState extends org.apache.thrift.TUnion<GameState, GameState._Fi
       case TIC_TAC_TOE_GAME_STATE:
         org.garethaye.minimax.generated.TicTacToeGameState ticTacToeGameState = (org.garethaye.minimax.generated.TicTacToeGameState)value_;
         ticTacToeGameState.write(oprot);
+        return;
+      case CONNECT_FOUR_GAME_STATE:
+        org.garethaye.minimax.generated.ConnectFourGameState connectFourGameState = (org.garethaye.minimax.generated.ConnectFourGameState)value_;
+        connectFourGameState.write(oprot);
         return;
       default:
         throw new IllegalStateException("Cannot write union with unknown field " + setField_);
@@ -179,6 +210,11 @@ public class GameState extends org.apache.thrift.TUnion<GameState, GameState._Fi
           ticTacToeGameState = new org.garethaye.minimax.generated.TicTacToeGameState();
           ticTacToeGameState.read(iprot);
           return ticTacToeGameState;
+        case CONNECT_FOUR_GAME_STATE:
+          org.garethaye.minimax.generated.ConnectFourGameState connectFourGameState;
+          connectFourGameState = new org.garethaye.minimax.generated.ConnectFourGameState();
+          connectFourGameState.read(iprot);
+          return connectFourGameState;
         default:
           throw new IllegalStateException("setField wasn't null, but didn't match any of the case statements!");
       }
@@ -194,6 +230,10 @@ public class GameState extends org.apache.thrift.TUnion<GameState, GameState._Fi
         org.garethaye.minimax.generated.TicTacToeGameState ticTacToeGameState = (org.garethaye.minimax.generated.TicTacToeGameState)value_;
         ticTacToeGameState.write(oprot);
         return;
+      case CONNECT_FOUR_GAME_STATE:
+        org.garethaye.minimax.generated.ConnectFourGameState connectFourGameState = (org.garethaye.minimax.generated.ConnectFourGameState)value_;
+        connectFourGameState.write(oprot);
+        return;
       default:
         throw new IllegalStateException("Cannot write union with unknown field " + setField_);
     }
@@ -204,6 +244,8 @@ public class GameState extends org.apache.thrift.TUnion<GameState, GameState._Fi
     switch (setField) {
       case TIC_TAC_TOE_GAME_STATE:
         return TIC_TAC_TOE_GAME_STATE_FIELD_DESC;
+      case CONNECT_FOUR_GAME_STATE:
+        return CONNECT_FOUR_GAME_STATE_FIELD_DESC;
       default:
         throw new IllegalArgumentException("Unknown field id " + setField);
     }
@@ -238,8 +280,27 @@ public class GameState extends org.apache.thrift.TUnion<GameState, GameState._Fi
     value_ = value;
   }
 
+  public org.garethaye.minimax.generated.ConnectFourGameState getConnectFourGameState() {
+    if (getSetField() == _Fields.CONNECT_FOUR_GAME_STATE) {
+      return (org.garethaye.minimax.generated.ConnectFourGameState)getFieldValue();
+    } else {
+      throw new RuntimeException("Cannot get field 'connectFourGameState' because union is currently set to " + getFieldDesc(getSetField()).name);
+    }
+  }
+
+  public void setConnectFourGameState(org.garethaye.minimax.generated.ConnectFourGameState value) {
+    if (value == null) throw new NullPointerException();
+    setField_ = _Fields.CONNECT_FOUR_GAME_STATE;
+    value_ = value;
+  }
+
   public boolean isSetTicTacToeGameState() {
     return setField_ == _Fields.TIC_TAC_TOE_GAME_STATE;
+  }
+
+
+  public boolean isSetConnectFourGameState() {
+    return setField_ == _Fields.CONNECT_FOUR_GAME_STATE;
   }
 
 

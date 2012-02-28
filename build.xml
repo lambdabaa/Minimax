@@ -50,6 +50,10 @@
     <manifestclasspath property="tic_tac_toe.path" jarfile="${build.jar}/tic_tac_toe_server.jar}">
       <classpath refid="compile.classpath" />
     </manifestclasspath>
+    <manifestclasspath property="connect_four.path" jarfile="${build.jar}/connect_four_server.jar}">
+      <classpath refid="compile.classpath" />
+    </manifestclasspath>
+    
 
     <jar jarfile="${build.jar}/minimax_server.jar"
         basedir="${build.classes}"
@@ -67,6 +71,14 @@
         <attribute name="Class-Path" value="${tic_tac_toe.path}" />
       </manifest>
     </jar>
+    <jar jarfile="${build.jar}/connect_four_server.jar"
+        basedir="${build.classes}"
+        includes="**/*.class">
+      <manifest>
+        <attribute name="Main-Class" value="org.garethaye.minimax.connect_four.ConnectFourBotServer" />
+        <attribute name="Class-Path" value="${connect_four.path}" />
+      </manifest>
+    </jar>
   </target>
 
   <target name="start-minimax-server" depends="jar">
@@ -80,4 +92,11 @@
       <jvmarg value="-Xmx2048m" />
     </java>
   </target>
+
+  <target name="start-connect-four-server" depends="jar">
+    <java jar="${build.jar}/connect_four_server.jar" fork="true">
+      <jvmarg value="-Xmx2048m" />
+    </java>
+  </target>
 </project>
+

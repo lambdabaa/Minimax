@@ -4,13 +4,16 @@
 namespace java org.garethaye.minimax.generated
 
 include "tic_tac_toe.thrift"
+include "connect_four.thrift"
 
 union GameState {
   1: tic_tac_toe.TicTacToeGameState ticTacToeGameState;
+  2: connect_four.ConnectFourGameState connectFourGameState;
 }
 
 union Move {
   1: tic_tac_toe.TicTacToeMove ticTacToeMove;
+  2: connect_four.ConnectFourMove connectFourMove;
 }
 
 /**

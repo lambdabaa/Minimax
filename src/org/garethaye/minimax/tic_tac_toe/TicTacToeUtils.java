@@ -1,7 +1,8 @@
 package org.garethaye.minimax.tic_tac_toe;
 
-import java.util.LinkedList;
 import java.util.List;
+
+import org.garethaye.minimax.framework.BotUtils;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
@@ -24,38 +25,9 @@ public class TicTacToeUtils {
     return Iterables.any(getAllTriples(board), new Predicate<List<Integer>>() {
       @Override
       public boolean apply(List<Integer> three) {
-        return allEqual(three, id);
+        return BotUtils.allEqual(three, id);
       }
     });
-  }
-  
-  public static boolean isFull(List<List<Integer>> board) {
-    return !Iterables.any(board, new Predicate<List<Integer>>() {
-      @Override
-      public boolean apply(List<Integer> row) {
-        return row.contains(0);
-      }
-    });
-  }
-  
-  public static boolean allEqual(List<Integer> list, final int value) {
-    return Iterables.all(list, new Predicate<Integer>() {
-      @Override
-      public boolean apply(Integer elt) {
-        return value == elt;
-      }
-    });
-  }
-  
-  public static List<List<Integer>> clone(List<List<Integer>> board) {
-    List<List<Integer>> list = new LinkedList<List<Integer>>();
-    for (List<Integer> row : board) {
-      LinkedList<Integer> rowClone = new LinkedList<Integer>();
-      rowClone.addAll(row);
-      list.add(rowClone);
-    }
-    
-    return list;
   }
   
   public static List<List<Integer>> getAllTriples(List<List<Integer>> board) {
