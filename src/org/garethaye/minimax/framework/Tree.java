@@ -8,12 +8,8 @@ import org.garethaye.minimax.generated.Bot;
 import org.garethaye.minimax.generated.GameState;
 import org.garethaye.minimax.generated.GameStateAndMove;
 import org.garethaye.minimax.generated.Move;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Tree {
-  private static final Logger LOGGER = LoggerFactory.getLogger(Tree.class.getName());
-  
   private Bot.Iface bot;
   private Move move;        // Most recent move
   private Node root;
@@ -35,34 +31,40 @@ public class Tree {
       int playerId, int opponentId) throws TException {
     setBot(bot);
     setMove(move);
+    setPlayerId(playerId);
+    setOpponentId(opponentId);
     setRoot(new Node(state, level));
-    
     if (level != maxLevel && bot.explore(state, level)) {
       root.setChildren(new LinkedList<Tree>());
       for (GameStateAndMove option : bot.getChildren(state)) {
-        Tree child = new Tree(bot, option.getState(), option.getMove(), level + 1, maxLevel, playerId, opponentId);
-        root.getChildren().add(child);
+        root.getChildren().add(new Tree(
+            bot, 
+            option.getState(), 
+            option.getMove(), 
+            level + 1, 
+            maxLevel, 
+            playerId, 
+            opponentId));
       }
     }
-    
-    setPlayerId(playerId);
-    setOpponentId(opponentId);
   }
   
   public Bot.Iface getBot() {
     return bot;
   }
 
-  public void setBot(Bot.Iface bot) {
+  public Tree setBot(Bot.Iface bot) {
     this.bot = bot;
+    return this;
   }
   
   public Move getMove() {
     return move;
   }
 
-  public void setMove(Move move) {
+  public Tree setMove(Move move) {
     this.move = move;
+    return this;
   }
 
   public Node getRoot() {
@@ -87,16 +89,18 @@ public class Tree {
     return playerId;
   }
 
-  public void setPlayerId(int playerId) {
+  public Tree setPlayerId(int playerId) {
     this.playerId = playerId;
+    return this;
   }
 
   public int getOpponentId() {
     return opponentId;
   }
 
-  public void setOpponentId(int opponentId) {
+  public Tree setOpponentId(int opponentId) {
     this.opponentId = opponentId;
+    return this;
   }
   
   public int alphabeta(int alpha, int beta, boolean maximize) throws TException {
@@ -106,10 +110,7 @@ public class Tree {
     
     int value;
     if (children == null || !bot.explore(state, level)) {
-      LOGGER.info("Level : " + Integer.toString(level));
-      LOGGER.info("State : " + state.toString());
-      value = bot.eval(state, playerId, opponentId);
-      LOGGER.info("Value : " + value);
+      value = bot.eval(state);
     } else if (maximize) {
       for (Tree child : children) {
         alpha = Math.max(alpha, child.alphabeta(alpha, beta, false));
@@ -132,5 +133,19 @@ public class Tree {
     
     setValue(value);
     return value;
+  }
+  
+  public Move getBestMove() {
+    Move best = null;
+    int bestValue = Integer.MIN_VALUE;
+    for (Tree child : root.getChildren()) {
+      int value = child.getValue();
+      if (best == null || value > bestValue) {
+        best = child.getMove();
+        bestValue = value;
+      }
+    }
+    
+    return best;
   }
 }

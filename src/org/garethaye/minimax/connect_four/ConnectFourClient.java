@@ -11,6 +11,7 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.garethaye.minimax.generated.ConnectFourGameState;
 import org.garethaye.minimax.generated.GameState;
+import org.garethaye.minimax.generated.GameStateUnion;
 import org.garethaye.minimax.generated.Minimax;
 import org.garethaye.minimax.generated.Move;
 import org.garethaye.minimax.tic_tac_toe.TicTacToeClient;
@@ -25,12 +26,12 @@ public class ConnectFourClient {
   
   public static List<List<Integer>> getBoard() {
     List<List<Integer>> board = new LinkedList<List<Integer>>();
-    board.add(ImmutableList.of(1, 1, 1, 2, 1, 2, 1));
-    board.add(ImmutableList.of(2, 0, 2, 1, 2, 0, 2));
-    board.add(ImmutableList.of(1, 0, 0, 2, 0, 0, 0));
-    board.add(ImmutableList.of(2, 0, 0, 1, 0, 0, 0));
-    board.add(ImmutableList.of(1, 0, 0, 2, 0, 0, 0));
-    board.add(ImmutableList.of(2, 0, 0, 1, 0, 0, 0));
+    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
+    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
+    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
+    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
+    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
+    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
     return board;
   }
   
@@ -42,9 +43,13 @@ public class ConnectFourClient {
     Move move = client.getMove(
         "localhost", 
         4201, 
-        new GameState(GameState._Fields.CONNECT_FOUR_GAME_STATE, 
-            new ConnectFourGameState(1, 2, getBoard())), 
-        5);
+        new GameState(
+            new GameStateUnion(
+                GameStateUnion._Fields.CONNECT_FOUR_GAME_STATE, 
+                new ConnectFourGameState(1, 2, getBoard())),
+            1,
+            2),
+        6);
     LOGGER.info(move.toString());
     transport.close();
   }

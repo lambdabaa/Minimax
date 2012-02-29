@@ -43,14 +43,10 @@ public class Bot {
     /**
      * @return            An integer score for how good the state is for player
      * @param state       The game state to evaluate
-     * @param playerId    Player performing the adversarial search
-     * @param opponentId  Player not performing the adversarial search
      * 
      * @param state
-     * @param playerId
-     * @param opponentId
      */
-    public int eval(GameState state, int playerId, int opponentId) throws org.apache.thrift.TException;
+    public int eval(GameState state) throws org.apache.thrift.TException;
 
     /**
      * @return        Whether or not to search the tree whose root has state
@@ -68,7 +64,7 @@ public class Bot {
 
     public void getChildren(GameState state, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.getChildren_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void eval(GameState state, int playerId, int opponentId, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.eval_call> resultHandler) throws org.apache.thrift.TException;
+    public void eval(GameState state, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.eval_call> resultHandler) throws org.apache.thrift.TException;
 
     public void explore(GameState state, int depth, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.explore_call> resultHandler) throws org.apache.thrift.TException;
 
@@ -117,18 +113,16 @@ public class Bot {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getChildren failed: unknown result");
     }
 
-    public int eval(GameState state, int playerId, int opponentId) throws org.apache.thrift.TException
+    public int eval(GameState state) throws org.apache.thrift.TException
     {
-      send_eval(state, playerId, opponentId);
+      send_eval(state);
       return recv_eval();
     }
 
-    public void send_eval(GameState state, int playerId, int opponentId) throws org.apache.thrift.TException
+    public void send_eval(GameState state) throws org.apache.thrift.TException
     {
       eval_args args = new eval_args();
       args.setState(state);
-      args.setPlayerId(playerId);
-      args.setOpponentId(opponentId);
       sendBase("eval", args);
     }
 
@@ -216,30 +210,24 @@ public class Bot {
       }
     }
 
-    public void eval(GameState state, int playerId, int opponentId, org.apache.thrift.async.AsyncMethodCallback<eval_call> resultHandler) throws org.apache.thrift.TException {
+    public void eval(GameState state, org.apache.thrift.async.AsyncMethodCallback<eval_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      eval_call method_call = new eval_call(state, playerId, opponentId, resultHandler, this, ___protocolFactory, ___transport);
+      eval_call method_call = new eval_call(state, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class eval_call extends org.apache.thrift.async.TAsyncMethodCall {
       private GameState state;
-      private int playerId;
-      private int opponentId;
-      public eval_call(GameState state, int playerId, int opponentId, org.apache.thrift.async.AsyncMethodCallback<eval_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public eval_call(GameState state, org.apache.thrift.async.AsyncMethodCallback<eval_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.state = state;
-        this.playerId = playerId;
-        this.opponentId = opponentId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("eval", org.apache.thrift.protocol.TMessageType.CALL, 0));
         eval_args args = new eval_args();
         args.setState(state);
-        args.setPlayerId(playerId);
-        args.setOpponentId(opponentId);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -335,7 +323,7 @@ public class Bot {
 
       protected eval_result getResult(I iface, eval_args args) throws org.apache.thrift.TException {
         eval_result result = new eval_result();
-        result.success = iface.eval(args.state, args.playerId, args.opponentId);
+        result.success = iface.eval(args.state);
         result.setSuccessIsSet(true);
         return result;
       }
@@ -1138,8 +1126,6 @@ public class Bot {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("eval_args");
 
     private static final org.apache.thrift.protocol.TField STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("state", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-    private static final org.apache.thrift.protocol.TField PLAYER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("playerId", org.apache.thrift.protocol.TType.I32, (short)2);
-    private static final org.apache.thrift.protocol.TField OPPONENT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("opponentId", org.apache.thrift.protocol.TType.I32, (short)3);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -1148,14 +1134,10 @@ public class Bot {
     }
 
     private GameState state; // required
-    private int playerId; // required
-    private int opponentId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      STATE((short)1, "state"),
-      PLAYER_ID((short)2, "playerId"),
-      OPPONENT_ID((short)3, "opponentId");
+      STATE((short)1, "state");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -1172,10 +1154,6 @@ public class Bot {
         switch(fieldId) {
           case 1: // STATE
             return STATE;
-          case 2: // PLAYER_ID
-            return PLAYER_ID;
-          case 3: // OPPONENT_ID
-            return OPPONENT_ID;
           default:
             return null;
         }
@@ -1216,18 +1194,11 @@ public class Bot {
     }
 
     // isset id assignments
-    private static final int __PLAYERID_ISSET_ID = 0;
-    private static final int __OPPONENTID_ISSET_ID = 1;
-    private BitSet __isset_bit_vector = new BitSet(2);
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.STATE, new org.apache.thrift.meta_data.FieldMetaData("state", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, GameState.class)));
-      tmpMap.put(_Fields.PLAYER_ID, new org.apache.thrift.meta_data.FieldMetaData("playerId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.OPPONENT_ID, new org.apache.thrift.meta_data.FieldMetaData("opponentId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(eval_args.class, metaDataMap);
     }
@@ -1236,29 +1207,19 @@ public class Bot {
     }
 
     public eval_args(
-      GameState state,
-      int playerId,
-      int opponentId)
+      GameState state)
     {
       this();
       this.state = state;
-      this.playerId = playerId;
-      setPlayerIdIsSet(true);
-      this.opponentId = opponentId;
-      setOpponentIdIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public eval_args(eval_args other) {
-      __isset_bit_vector.clear();
-      __isset_bit_vector.or(other.__isset_bit_vector);
       if (other.isSetState()) {
         this.state = new GameState(other.state);
       }
-      this.playerId = other.playerId;
-      this.opponentId = other.opponentId;
     }
 
     public eval_args deepCopy() {
@@ -1267,10 +1228,6 @@ public class Bot {
 
     public void clear() {
       this.state = null;
-      setPlayerIdIsSet(false);
-      this.playerId = 0;
-      setOpponentIdIsSet(false);
-      this.opponentId = 0;
     }
 
     public GameState getState() {
@@ -1297,52 +1254,6 @@ public class Bot {
       }
     }
 
-    public int getPlayerId() {
-      return this.playerId;
-    }
-
-    public eval_args setPlayerId(int playerId) {
-      this.playerId = playerId;
-      setPlayerIdIsSet(true);
-      return this;
-    }
-
-    public void unsetPlayerId() {
-      __isset_bit_vector.clear(__PLAYERID_ISSET_ID);
-    }
-
-    /** Returns true if field playerId is set (has been assigned a value) and false otherwise */
-    public boolean isSetPlayerId() {
-      return __isset_bit_vector.get(__PLAYERID_ISSET_ID);
-    }
-
-    public void setPlayerIdIsSet(boolean value) {
-      __isset_bit_vector.set(__PLAYERID_ISSET_ID, value);
-    }
-
-    public int getOpponentId() {
-      return this.opponentId;
-    }
-
-    public eval_args setOpponentId(int opponentId) {
-      this.opponentId = opponentId;
-      setOpponentIdIsSet(true);
-      return this;
-    }
-
-    public void unsetOpponentId() {
-      __isset_bit_vector.clear(__OPPONENTID_ISSET_ID);
-    }
-
-    /** Returns true if field opponentId is set (has been assigned a value) and false otherwise */
-    public boolean isSetOpponentId() {
-      return __isset_bit_vector.get(__OPPONENTID_ISSET_ID);
-    }
-
-    public void setOpponentIdIsSet(boolean value) {
-      __isset_bit_vector.set(__OPPONENTID_ISSET_ID, value);
-    }
-
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case STATE:
@@ -1353,22 +1264,6 @@ public class Bot {
         }
         break;
 
-      case PLAYER_ID:
-        if (value == null) {
-          unsetPlayerId();
-        } else {
-          setPlayerId((Integer)value);
-        }
-        break;
-
-      case OPPONENT_ID:
-        if (value == null) {
-          unsetOpponentId();
-        } else {
-          setOpponentId((Integer)value);
-        }
-        break;
-
       }
     }
 
@@ -1376,12 +1271,6 @@ public class Bot {
       switch (field) {
       case STATE:
         return getState();
-
-      case PLAYER_ID:
-        return Integer.valueOf(getPlayerId());
-
-      case OPPONENT_ID:
-        return Integer.valueOf(getOpponentId());
 
       }
       throw new IllegalStateException();
@@ -1396,10 +1285,6 @@ public class Bot {
       switch (field) {
       case STATE:
         return isSetState();
-      case PLAYER_ID:
-        return isSetPlayerId();
-      case OPPONENT_ID:
-        return isSetOpponentId();
       }
       throw new IllegalStateException();
     }
@@ -1426,24 +1311,6 @@ public class Bot {
           return false;
       }
 
-      boolean this_present_playerId = true;
-      boolean that_present_playerId = true;
-      if (this_present_playerId || that_present_playerId) {
-        if (!(this_present_playerId && that_present_playerId))
-          return false;
-        if (this.playerId != that.playerId)
-          return false;
-      }
-
-      boolean this_present_opponentId = true;
-      boolean that_present_opponentId = true;
-      if (this_present_opponentId || that_present_opponentId) {
-        if (!(this_present_opponentId && that_present_opponentId))
-          return false;
-        if (this.opponentId != that.opponentId)
-          return false;
-      }
-
       return true;
     }
 
@@ -1455,16 +1322,6 @@ public class Bot {
       builder.append(present_state);
       if (present_state)
         builder.append(state);
-
-      boolean present_playerId = true;
-      builder.append(present_playerId);
-      if (present_playerId)
-        builder.append(playerId);
-
-      boolean present_opponentId = true;
-      builder.append(present_opponentId);
-      if (present_opponentId)
-        builder.append(opponentId);
 
       return builder.toHashCode();
     }
@@ -1483,26 +1340,6 @@ public class Bot {
       }
       if (isSetState()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.state, typedOther.state);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetPlayerId()).compareTo(typedOther.isSetPlayerId());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetPlayerId()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.playerId, typedOther.playerId);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetOpponentId()).compareTo(typedOther.isSetOpponentId());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetOpponentId()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.opponentId, typedOther.opponentId);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -1533,14 +1370,6 @@ public class Bot {
       } else {
         sb.append(this.state);
       }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("playerId:");
-      sb.append(this.playerId);
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("opponentId:");
-      sb.append(this.opponentId);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -1593,22 +1422,6 @@ public class Bot {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 2: // PLAYER_ID
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.playerId = iprot.readI32();
-                struct.setPlayerIdIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 3: // OPPONENT_ID
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.opponentId = iprot.readI32();
-                struct.setOpponentIdIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -1629,12 +1442,6 @@ public class Bot {
           struct.state.write(oprot);
           oprot.writeFieldEnd();
         }
-        oprot.writeFieldBegin(PLAYER_ID_FIELD_DESC);
-        oprot.writeI32(struct.playerId);
-        oprot.writeFieldEnd();
-        oprot.writeFieldBegin(OPPONENT_ID_FIELD_DESC);
-        oprot.writeI32(struct.opponentId);
-        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -1656,40 +1463,20 @@ public class Bot {
         if (struct.isSetState()) {
           optionals.set(0);
         }
-        if (struct.isSetPlayerId()) {
-          optionals.set(1);
-        }
-        if (struct.isSetOpponentId()) {
-          optionals.set(2);
-        }
-        oprot.writeBitSet(optionals, 3);
+        oprot.writeBitSet(optionals, 1);
         if (struct.isSetState()) {
           struct.state.write(oprot);
-        }
-        if (struct.isSetPlayerId()) {
-          oprot.writeI32(struct.playerId);
-        }
-        if (struct.isSetOpponentId()) {
-          oprot.writeI32(struct.opponentId);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, eval_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(3);
+        BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           struct.state = new GameState();
           struct.state.read(iprot);
           struct.setStateIsSet(true);
-        }
-        if (incoming.get(1)) {
-          struct.playerId = iprot.readI32();
-          struct.setPlayerIdIsSet(true);
-        }
-        if (incoming.get(2)) {
-          struct.opponentId = iprot.readI32();
-          struct.setOpponentIdIsSet(true);
         }
       }
     }

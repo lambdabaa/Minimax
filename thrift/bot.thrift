@@ -6,9 +6,15 @@ namespace java org.garethaye.minimax.generated
 include "tic_tac_toe.thrift"
 include "connect_four.thrift"
 
-union GameState {
+union GameStateUnion {
   1: tic_tac_toe.TicTacToeGameState ticTacToeGameState;
   2: connect_four.ConnectFourGameState connectFourGameState;
+}
+
+struct GameState {
+  1: required GameStateUnion state;
+  2: required i32 playerId;
+  3: required i32 opponentId;
 }
 
 union Move {
@@ -34,10 +40,8 @@ service Bot {
   /**
    * @return            An integer score for how good the state is for player
    * @param state       The game state to evaluate
-   * @param playerId    Player performing the adversarial search
-   * @param opponentId  Player not performing the adversarial search
    */
-  i32 eval(1: GameState state, 2: i32 playerId, 3: i32 opponentId);
+  i32 eval(1: GameState state);
 
   /**
    * @return        Whether or not to search the tree whose root has state

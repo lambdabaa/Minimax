@@ -10,6 +10,7 @@ import org.garethaye.minimax.generated.ConnectFourGameState;
 import org.garethaye.minimax.generated.ConnectFourMove;
 import org.garethaye.minimax.generated.GameState;
 import org.garethaye.minimax.generated.GameStateAndMove;
+import org.garethaye.minimax.generated.GameStateUnion;
 import org.garethaye.minimax.generated.Move;
 
 public class ConnectFourBot implements Bot.Iface {
@@ -21,13 +22,13 @@ public class ConnectFourBot implements Bot.Iface {
   private int inactivePlayer;
   
   public void init(GameState state) throws TException {
-    if (!state.isSetConnectFourGameState()) {
+    if (!state.getState().isSetConnectFourGameState()) {
       throw new TException("ConnectFourBot received non-ConnectFour game state");
     }
     
-    board = state.getConnectFourGameState().getBoard();
-    activePlayer = state.getConnectFourGameState().getActivePlayer();
-    inactivePlayer = state.getConnectFourGameState().getInactivePlayer();
+    board = state.getState().getConnectFourGameState().getBoard();
+    activePlayer = state.getState().getConnectFourGameState().getActivePlayer();
+    inactivePlayer = state.getState().getConnectFourGameState().getInactivePlayer();
   }
 
   @Override
@@ -38,8 +39,12 @@ public class ConnectFourBot implements Bot.Iface {
         List<List<Integer>> clone = BotUtils.clone(board);
         ConnectFourUtils.drop(clone, col, activePlayer);
         list.add(new GameStateAndMove(
-            new GameState(GameState._Fields.CONNECT_FOUR_GAME_STATE, 
-                new ConnectFourGameState(inactivePlayer, activePlayer, clone)), 
+            new GameState(
+                new GameStateUnion(
+                    GameStateUnion._Fields.CONNECT_FOUR_GAME_STATE,
+                    new ConnectFourGameState(inactivePlayer, activePlayer, clone)), 
+                state.getPlayerId(),
+                state.getOpponentId()),
             new Move(Move._Fields.CONNECT_FOUR_MOVE, new ConnectFourMove(col))));
       }
     }
@@ -48,17 +53,16 @@ public class ConnectFourBot implements Bot.Iface {
   }
 
   @Override
-  public int eval(GameState state, int playerId, int opponentId)
-      throws TException {
+  public int eval(GameState state) throws TException {
     init(state);
     
-    if (ConnectFourUtils.hasFourInARow(board, playerId)) {
+    if (ConnectFourUtils.hasFourInARow(board, state.getPlayerId())) {
       return Integer.MIN_VALUE;
-    } else if (ConnectFourUtils.hasFourInARow(board, opponentId)) {
+    } else if (ConnectFourUtils.hasFourInARow(board, state.getOpponentId())) {
       return Integer.MIN_VALUE;
     } else {
-      return ConnectFourUtils.getNumWins(board, playerId, opponentId)
-          - ConnectFourUtils.getNumWins(board, opponentId, playerId);
+      return ConnectFourUtils.getNumWins(board, state.getPlayerId(), state.getOpponentId())
+          - ConnectFourUtils.getNumWins(board, state.getOpponentId(), state.getPlayerId());
     }
   }
 

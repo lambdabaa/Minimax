@@ -8,23 +8,24 @@ import org.garethaye.minimax.framework.BotUtils;
 import org.garethaye.minimax.generated.Bot;
 import org.garethaye.minimax.generated.GameState;
 import org.garethaye.minimax.generated.GameStateAndMove;
+import org.garethaye.minimax.generated.GameStateUnion;
 import org.garethaye.minimax.generated.Move;
 import org.garethaye.minimax.generated.TicTacToeGameState;
 import org.garethaye.minimax.generated.TicTacToeMove;
 
-public class TicTacToeBot implements Bot.Iface {  
+public class TicTacToeBot implements Bot.Iface {
   private List<List<Integer>> board;
-  private int activePlayer;
-  private int inactivePlayer;
+  private int activePlayerId;
+  private int inactivePlayerId;
   
   public void init(GameState state) throws TException {
-    if (!state.isSetTicTacToeGameState()) {
+    if (!state.getState().isSetTicTacToeGameState()) {
       throw new TException("TicTacToeBot received non-TicTacToe game state");
     }
     
-    board = state.getTicTacToeGameState().getBoard();
-    activePlayer = state.getTicTacToeGameState().getActivePlayer();
-    inactivePlayer = state.getTicTacToeGameState().getInactivePlayer();
+    board = state.getState().getTicTacToeGameState().getBoard();
+    activePlayerId = state.getState().getTicTacToeGameState().getActivePlayer();
+    inactivePlayerId = state.getState().getTicTacToeGameState().getInactivePlayer();
   }
 
   @Override
@@ -37,10 +38,14 @@ public class TicTacToeBot implements Bot.Iface {
       for (int j = 0; j < row.size(); j++) {
         if (board.get(i).get(j) == 0) {
           List<List<Integer>> clone = BotUtils.clone(board);
-          clone.get(i).set(j, activePlayer);
+          clone.get(i).set(j, activePlayerId);
           list.add(new GameStateAndMove(
-              new GameState(GameState._Fields.TIC_TAC_TOE_GAME_STATE, 
-                  new TicTacToeGameState(inactivePlayer, activePlayer, clone)),
+              new GameState(
+                  new GameStateUnion(
+                      GameStateUnion._Fields.TIC_TAC_TOE_GAME_STATE,
+                      new TicTacToeGameState(inactivePlayerId, activePlayerId, clone)),
+                   state.getPlayerId(),
+                   state.getOpponentId()),
               new Move(Move._Fields.TIC_TAC_TOE_MOVE, new TicTacToeMove(i, j))));
         }
       }
@@ -50,16 +55,16 @@ public class TicTacToeBot implements Bot.Iface {
   }
 
   @Override
-  public int eval(GameState state, int playerId, int opponentId) throws TException {
+  public int eval(GameState state) throws TException {
     init(state);
 
-    if (TicTacToeUtils.hasThreeInARow(board, playerId)) {
+    if (TicTacToeUtils.hasThreeInARow(board, state.getPlayerId())) {
       return Integer.MAX_VALUE;
-    } else if (TicTacToeUtils.hasThreeInARow(board, opponentId)) {
+    } else if (TicTacToeUtils.hasThreeInARow(board, state.getOpponentId())) {
       return Integer.MIN_VALUE;
     } else {
-      return TicTacToeUtils.getNumWins(board, playerId, opponentId)
-          - TicTacToeUtils.getNumWins(board, opponentId, playerId);
+      return TicTacToeUtils.getNumWins(board, state.getPlayerId(), state.getOpponentId())
+          - TicTacToeUtils.getNumWins(board, state.getOpponentId(), state.getPlayerId());
     }
   }
 
@@ -67,8 +72,8 @@ public class TicTacToeBot implements Bot.Iface {
   public boolean explore(GameState state, int depth) throws TException {
     init(state);
     
-    return !BotUtils.isFull(state.getTicTacToeGameState().getBoard())
-        && !TicTacToeUtils.hasThreeInARow(board, activePlayer)
-        && !TicTacToeUtils.hasThreeInARow(board, inactivePlayer);
+    return (!BotUtils.isFull(board))
+        && (!TicTacToeUtils.hasThreeInARow(board, activePlayerId))
+        && (!TicTacToeUtils.hasThreeInARow(board, inactivePlayerId));
   }
 }

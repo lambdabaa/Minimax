@@ -18,37 +18,11 @@ public class MinimaxImpl implements Minimax.Iface {
     Bot.Client client = new Bot.Client(new TBinaryProtocol(transport));
     transport.open();
     
-    // TODO(garethaye): This is a hack. Fix the thrift defs.
-    int playerId = 0, opponentId = 0;
-    switch (state.getSetField()) {
-    case TIC_TAC_TOE_GAME_STATE:
-      playerId = state.getTicTacToeGameState().getActivePlayer();
-      opponentId = state.getTicTacToeGameState().getInactivePlayer();
-      break;
-    case CONNECT_FOUR_GAME_STATE:
-      playerId = state.getConnectFourGameState().getActivePlayer();
-      opponentId = state.getConnectFourGameState().getInactivePlayer();
-      break;
-    }
-    
-    Tree tree = new Tree(
-        client,
-        state,
-        depth,
-        playerId,
-        opponentId);
+    // Build the game tree, compute minimax search, and find the root's child with the best score
+    Tree tree = new Tree(client, state, depth, state.getPlayerId(), state.getOpponentId());
     tree.alphabeta(Integer.MIN_VALUE, Integer.MAX_VALUE, true);
     
-    Move best = null;
-    int bestValue = Integer.MIN_VALUE;
-    for (Tree child : tree.getRoot().getChildren()) {
-      int value = child.getValue();
-      if (best == null || value > bestValue) {
-        best = child.getMove();
-        bestValue = value;
-      }
-    }
-    
+    Move best = tree.getBestMove();
     transport.close();
     return best;
   }
