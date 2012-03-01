@@ -1,5 +1,20 @@
 package org.garethaye.minimax.tic_tac_toe;
 
-public class TicTacToeBotTest {
+import org.junit.Test;
 
+public class TicTacToeBotTest {
+  @Test
+  public void testGetChildren() {
+    // TODO(garethaye)
+  }
+  
+  @Test
+  public void testEval() {
+    // TODO(garethaye)
+  }
+  
+  @Test
+  public void testExplore() {
+    // TODO(garethaye)
+  }
 }
