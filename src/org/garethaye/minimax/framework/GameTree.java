@@ -9,35 +9,35 @@ import org.garethaye.minimax.generated.GameState;
 import org.garethaye.minimax.generated.GameStateAndMove;
 import org.garethaye.minimax.generated.Move;
 
-public class Tree {
+public class GameTree {
   private Bot.Iface bot;
   private Move move;        // Most recent move
-  private Node root;
+  private GameNode root;
   private int value;        // Assigned during minimax
   private int playerId;
   private int opponentId;
   
-  public Tree(Bot.Iface bot, GameState state, int maxLevel, int playerId, int opponentId)
+  public GameTree(Bot.Iface bot, GameState state, int maxLevel, int playerId, int opponentId)
       throws TException {
     this(bot, state, null, maxLevel, playerId, opponentId);
   }
   
-  public Tree(Bot.Iface bot, GameState state, Move move, int maxLevel, int playerId,
+  public GameTree(Bot.Iface bot, GameState state, Move move, int maxLevel, int playerId,
       int opponentId) throws TException {
     this(bot, state, move, 0, maxLevel, playerId, opponentId);
   }
   
-  public Tree(Bot.Iface bot, GameState state, Move move, int level, int maxLevel, 
+  public GameTree(Bot.Iface bot, GameState state, Move move, int level, int maxLevel, 
       int playerId, int opponentId) throws TException {
     setBot(bot);
     setMove(move);
     setPlayerId(playerId);
     setOpponentId(opponentId);
-    setRoot(new Node(state, level));
+    setRoot(new GameNode(state, level));
     if (level != maxLevel && bot.explore(state)) {
-      root.setChildren(new LinkedList<Tree>());
+      root.setChildren(new LinkedList<GameTree>());
       for (GameStateAndMove option : bot.getChildren(state)) {
-        root.getChildren().add(new Tree(
+        root.getChildren().add(new GameTree(
             bot, 
             option.getState(), 
             option.getMove(), 
@@ -53,7 +53,7 @@ public class Tree {
     return bot;
   }
 
-  public Tree setBot(Bot.Iface bot) {
+  public GameTree setBot(Bot.Iface bot) {
     this.bot = bot;
     return this;
   }
@@ -62,16 +62,16 @@ public class Tree {
     return move;
   }
 
-  public Tree setMove(Move move) {
+  public GameTree setMove(Move move) {
     this.move = move;
     return this;
   }
 
-  public Node getRoot() {
+  public GameNode getRoot() {
     return root;
   }
 
-  public Tree setRoot(Node root) {
+  public GameTree setRoot(GameNode root) {
     this.root = root;
     return this;
   }
@@ -80,7 +80,7 @@ public class Tree {
     return value;
   }
 
-  public Tree setValue(int value) {
+  public GameTree setValue(int value) {
     this.value = value;
     return this;
   }
@@ -89,7 +89,7 @@ public class Tree {
     return playerId;
   }
 
-  public Tree setPlayerId(int playerId) {
+  public GameTree setPlayerId(int playerId) {
     this.playerId = playerId;
     return this;
   }
@@ -98,20 +98,20 @@ public class Tree {
     return opponentId;
   }
 
-  public Tree setOpponentId(int opponentId) {
+  public GameTree setOpponentId(int opponentId) {
     this.opponentId = opponentId;
     return this;
   }
   
   public int alphabeta(int alpha, int beta, boolean maximize) throws TException {
     GameState state = root.getState();
-    Collection<Tree> children = root.getChildren();
+    Collection<GameTree> children = root.getChildren();
     
     int value;
     if (children == null || !bot.explore(state)) {
       value = bot.eval(state);
     } else if (maximize) {
-      for (Tree child : children) {
+      for (GameTree child : children) {
         alpha = Math.max(alpha, child.alphabeta(alpha, beta, false));
         if (beta <= alpha) {
           break;
@@ -120,7 +120,7 @@ public class Tree {
       
       value = alpha;
     } else {
-      for (Tree child : children) {
+      for (GameTree child : children) {
         beta = Math.min(beta, child.alphabeta(alpha, beta, true));
         if (beta <= alpha) {
           break;
@@ -137,7 +137,7 @@ public class Tree {
   public Move getBestMove() {
     Move best = null;
     int bestValue = Integer.MIN_VALUE;
-    for (Tree child : root.getChildren()) {
+    for (GameTree child : root.getChildren()) {
       int value = child.getValue();
       if (best == null || value > bestValue) {
         best = child.getMove();

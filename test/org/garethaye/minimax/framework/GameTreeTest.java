@@ -2,7 +2,7 @@ package org.garethaye.minimax.framework;
 
 import org.junit.Test;
 
-public class TreeTest {
+public class GameTreeTest {
   @Test
   public void testConstructor() {
     // TODO(garethaye)

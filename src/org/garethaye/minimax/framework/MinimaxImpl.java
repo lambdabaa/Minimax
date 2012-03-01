@@ -19,7 +19,7 @@ public class MinimaxImpl implements Minimax.Iface {
     transport.open();
     
     // Build the game tree, compute minimax search, and find the root's child with the best score
-    Tree tree = new Tree(client, state, depth, state.getPlayerId(), state.getOpponentId());
+    GameTree tree = new GameTree(client, state, depth, state.getPlayerId(), state.getOpponentId());
     tree.alphabeta(Integer.MIN_VALUE, Integer.MAX_VALUE, true);
     
     Move best = tree.getBestMove();

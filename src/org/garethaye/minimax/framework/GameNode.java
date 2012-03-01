@@ -4,12 +4,12 @@ import java.util.Collection;
 
 import org.garethaye.minimax.generated.GameState;
 
-public class Node {
+public class GameNode {
   private GameState state;
-  private Collection<Tree> children;
+  private Collection<GameTree> children;
   private int level;
   
-  public Node(GameState state, int level) {
+  public GameNode(GameState state, int level) {
     setState(state);
     setLevel(level);
   }
@@ -18,16 +18,16 @@ public class Node {
     return state;
   }
   
-  public Node setState(GameState state) {
+  public GameNode setState(GameState state) {
     this.state = state;
     return this;
   }
 
-  public Collection<Tree> getChildren() {
+  public Collection<GameTree> getChildren() {
     return children;
   }
 
-  public Node setChildren(Collection<Tree> children) {
+  public GameNode setChildren(Collection<GameTree> children) {
     this.children = children;
     return this;
   }
@@ -36,7 +36,7 @@ public class Node {
     return level;
   }
 
-  public Node setLevel(int level) {
+  public GameNode setLevel(int level) {
     this.level = level;
     return this;
   }
