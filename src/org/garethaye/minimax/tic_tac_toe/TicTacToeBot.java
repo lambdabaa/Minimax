@@ -69,7 +69,7 @@ public class TicTacToeBot implements Bot.Iface {
   }
 
   @Override
-  public boolean explore(GameState state, int depth) throws TException {
+  public boolean explore(GameState state) throws TException {
     init(state);
     
     return (!BotUtils.isFull(board))

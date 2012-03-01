@@ -57,7 +57,7 @@ public class ConnectFourBot implements Bot.Iface {
     init(state);
     
     if (ConnectFourUtils.hasFourInARow(board, state.getPlayerId())) {
-      return Integer.MIN_VALUE;
+      return Integer.MAX_VALUE;
     } else if (ConnectFourUtils.hasFourInARow(board, state.getOpponentId())) {
       return Integer.MIN_VALUE;
     } else {
@@ -67,7 +67,7 @@ public class ConnectFourBot implements Bot.Iface {
   }
 
   @Override
-  public boolean explore(GameState state, int depth) throws TException {
+  public boolean explore(GameState state) throws TException {
     init(state);
     
     return !BotUtils.isFull(board)

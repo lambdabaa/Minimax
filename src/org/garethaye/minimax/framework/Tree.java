@@ -34,7 +34,7 @@ public class Tree {
     setPlayerId(playerId);
     setOpponentId(opponentId);
     setRoot(new Node(state, level));
-    if (level != maxLevel && bot.explore(state, level)) {
+    if (level != maxLevel && bot.explore(state)) {
       root.setChildren(new LinkedList<Tree>());
       for (GameStateAndMove option : bot.getChildren(state)) {
         root.getChildren().add(new Tree(
@@ -105,11 +105,10 @@ public class Tree {
   
   public int alphabeta(int alpha, int beta, boolean maximize) throws TException {
     GameState state = root.getState();
-    int level = root.getLevel();
     Collection<Tree> children = root.getChildren();
     
     int value;
-    if (children == null || !bot.explore(state, level)) {
+    if (children == null || !bot.explore(state)) {
       value = bot.eval(state);
     } else if (maximize) {
       for (Tree child : children) {

@@ -46,8 +46,7 @@ service Bot {
   /**
    * @return        Whether or not to search the tree whose root has state
    * @param state   The game state at the root of the tree
-   * @param depth   The depth of the root of the tree
    */
-  bool explore(1: GameState state, 2: i32 depth);
+  bool explore(1: GameState state);
 }
 

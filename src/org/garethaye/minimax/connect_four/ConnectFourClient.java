@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 ;
 
 public class ConnectFourClient {
@@ -28,11 +29,11 @@ public class ConnectFourClient {
     List<List<Integer>> board = new LinkedList<List<Integer>>();
     board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
     board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
-    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
-    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
-    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
-    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
-    return board;
+    board.add(ImmutableList.of(0, 0, 0, 1, 0, 0, 0));
+    board.add(ImmutableList.of(0, 0, 0, 1, 0, 0, 0));
+    board.add(ImmutableList.of(0, 0, 0, 1, 0, 0, 0));
+    board.add(ImmutableList.of(1, 0, 0, 2, 2, 2, 0));
+    return Lists.reverse(board);
   }
   
   public static void main(String[] args) throws TException {

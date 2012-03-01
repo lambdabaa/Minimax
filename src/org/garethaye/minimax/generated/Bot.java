@@ -51,12 +51,10 @@ public class Bot {
     /**
      * @return        Whether or not to search the tree whose root has state
      * @param state   The game state at the root of the tree
-     * @param depth   The depth of the root of the tree
      * 
      * @param state
-     * @param depth
      */
-    public boolean explore(GameState state, int depth) throws org.apache.thrift.TException;
+    public boolean explore(GameState state) throws org.apache.thrift.TException;
 
   }
 
@@ -66,7 +64,7 @@ public class Bot {
 
     public void eval(GameState state, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.eval_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void explore(GameState state, int depth, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.explore_call> resultHandler) throws org.apache.thrift.TException;
+    public void explore(GameState state, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.explore_call> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -136,17 +134,16 @@ public class Bot {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "eval failed: unknown result");
     }
 
-    public boolean explore(GameState state, int depth) throws org.apache.thrift.TException
+    public boolean explore(GameState state) throws org.apache.thrift.TException
     {
-      send_explore(state, depth);
+      send_explore(state);
       return recv_explore();
     }
 
-    public void send_explore(GameState state, int depth) throws org.apache.thrift.TException
+    public void send_explore(GameState state) throws org.apache.thrift.TException
     {
       explore_args args = new explore_args();
       args.setState(state);
-      args.setDepth(depth);
       sendBase("explore", args);
     }
 
@@ -242,27 +239,24 @@ public class Bot {
       }
     }
 
-    public void explore(GameState state, int depth, org.apache.thrift.async.AsyncMethodCallback<explore_call> resultHandler) throws org.apache.thrift.TException {
+    public void explore(GameState state, org.apache.thrift.async.AsyncMethodCallback<explore_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      explore_call method_call = new explore_call(state, depth, resultHandler, this, ___protocolFactory, ___transport);
+      explore_call method_call = new explore_call(state, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class explore_call extends org.apache.thrift.async.TAsyncMethodCall {
       private GameState state;
-      private int depth;
-      public explore_call(GameState state, int depth, org.apache.thrift.async.AsyncMethodCallback<explore_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public explore_call(GameState state, org.apache.thrift.async.AsyncMethodCallback<explore_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.state = state;
-        this.depth = depth;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("explore", org.apache.thrift.protocol.TMessageType.CALL, 0));
         explore_args args = new explore_args();
         args.setState(state);
-        args.setDepth(depth);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -340,7 +334,7 @@ public class Bot {
 
       protected explore_result getResult(I iface, explore_args args) throws org.apache.thrift.TException {
         explore_result result = new explore_result();
-        result.success = iface.explore(args.state, args.depth);
+        result.success = iface.explore(args.state);
         result.setSuccessIsSet(true);
         return result;
       }
@@ -1845,7 +1839,6 @@ public class Bot {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("explore_args");
 
     private static final org.apache.thrift.protocol.TField STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("state", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-    private static final org.apache.thrift.protocol.TField DEPTH_FIELD_DESC = new org.apache.thrift.protocol.TField("depth", org.apache.thrift.protocol.TType.I32, (short)2);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -1854,12 +1847,10 @@ public class Bot {
     }
 
     private GameState state; // required
-    private int depth; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      STATE((short)1, "state"),
-      DEPTH((short)2, "depth");
+      STATE((short)1, "state");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -1876,8 +1867,6 @@ public class Bot {
         switch(fieldId) {
           case 1: // STATE
             return STATE;
-          case 2: // DEPTH
-            return DEPTH;
           default:
             return null;
         }
@@ -1918,15 +1907,11 @@ public class Bot {
     }
 
     // isset id assignments
-    private static final int __DEPTH_ISSET_ID = 0;
-    private BitSet __isset_bit_vector = new BitSet(1);
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.STATE, new org.apache.thrift.meta_data.FieldMetaData("state", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, GameState.class)));
-      tmpMap.put(_Fields.DEPTH, new org.apache.thrift.meta_data.FieldMetaData("depth", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(explore_args.class, metaDataMap);
     }
@@ -1935,25 +1920,19 @@ public class Bot {
     }
 
     public explore_args(
-      GameState state,
-      int depth)
+      GameState state)
     {
       this();
       this.state = state;
-      this.depth = depth;
-      setDepthIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public explore_args(explore_args other) {
-      __isset_bit_vector.clear();
-      __isset_bit_vector.or(other.__isset_bit_vector);
       if (other.isSetState()) {
         this.state = new GameState(other.state);
       }
-      this.depth = other.depth;
     }
 
     public explore_args deepCopy() {
@@ -1962,8 +1941,6 @@ public class Bot {
 
     public void clear() {
       this.state = null;
-      setDepthIsSet(false);
-      this.depth = 0;
     }
 
     public GameState getState() {
@@ -1990,29 +1967,6 @@ public class Bot {
       }
     }
 
-    public int getDepth() {
-      return this.depth;
-    }
-
-    public explore_args setDepth(int depth) {
-      this.depth = depth;
-      setDepthIsSet(true);
-      return this;
-    }
-
-    public void unsetDepth() {
-      __isset_bit_vector.clear(__DEPTH_ISSET_ID);
-    }
-
-    /** Returns true if field depth is set (has been assigned a value) and false otherwise */
-    public boolean isSetDepth() {
-      return __isset_bit_vector.get(__DEPTH_ISSET_ID);
-    }
-
-    public void setDepthIsSet(boolean value) {
-      __isset_bit_vector.set(__DEPTH_ISSET_ID, value);
-    }
-
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case STATE:
@@ -2023,14 +1977,6 @@ public class Bot {
         }
         break;
 
-      case DEPTH:
-        if (value == null) {
-          unsetDepth();
-        } else {
-          setDepth((Integer)value);
-        }
-        break;
-
       }
     }
 
@@ -2038,9 +1984,6 @@ public class Bot {
       switch (field) {
       case STATE:
         return getState();
-
-      case DEPTH:
-        return Integer.valueOf(getDepth());
 
       }
       throw new IllegalStateException();
@@ -2055,8 +1998,6 @@ public class Bot {
       switch (field) {
       case STATE:
         return isSetState();
-      case DEPTH:
-        return isSetDepth();
       }
       throw new IllegalStateException();
     }
@@ -2083,15 +2024,6 @@ public class Bot {
           return false;
       }
 
-      boolean this_present_depth = true;
-      boolean that_present_depth = true;
-      if (this_present_depth || that_present_depth) {
-        if (!(this_present_depth && that_present_depth))
-          return false;
-        if (this.depth != that.depth)
-          return false;
-      }
-
       return true;
     }
 
@@ -2103,11 +2035,6 @@ public class Bot {
       builder.append(present_state);
       if (present_state)
         builder.append(state);
-
-      boolean present_depth = true;
-      builder.append(present_depth);
-      if (present_depth)
-        builder.append(depth);
 
       return builder.toHashCode();
     }
@@ -2126,16 +2053,6 @@ public class Bot {
       }
       if (isSetState()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.state, typedOther.state);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetDepth()).compareTo(typedOther.isSetDepth());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetDepth()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.depth, typedOther.depth);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -2166,10 +2083,6 @@ public class Bot {
       } else {
         sb.append(this.state);
       }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("depth:");
-      sb.append(this.depth);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -2222,14 +2135,6 @@ public class Bot {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 2: // DEPTH
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.depth = iprot.readI32();
-                struct.setDepthIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -2250,9 +2155,6 @@ public class Bot {
           struct.state.write(oprot);
           oprot.writeFieldEnd();
         }
-        oprot.writeFieldBegin(DEPTH_FIELD_DESC);
-        oprot.writeI32(struct.depth);
-        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -2274,30 +2176,20 @@ public class Bot {
         if (struct.isSetState()) {
           optionals.set(0);
         }
-        if (struct.isSetDepth()) {
-          optionals.set(1);
-        }
-        oprot.writeBitSet(optionals, 2);
+        oprot.writeBitSet(optionals, 1);
         if (struct.isSetState()) {
           struct.state.write(oprot);
-        }
-        if (struct.isSetDepth()) {
-          oprot.writeI32(struct.depth);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, explore_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(2);
+        BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           struct.state = new GameState();
           struct.state.read(iprot);
           struct.setStateIsSet(true);
-        }
-        if (incoming.get(1)) {
-          struct.depth = iprot.readI32();
-          struct.setDepthIsSet(true);
         }
       }
     }
