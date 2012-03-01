@@ -3,8 +3,8 @@ package org.garethaye.minimax.connect_four;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.thrift.TException;
-import org.garethaye.minimax.framework.BotUtils;
 import org.garethaye.minimax.generated.Bot;
 import org.garethaye.minimax.generated.ConnectFourGameState;
 import org.garethaye.minimax.generated.ConnectFourMove;
@@ -12,11 +12,13 @@ import org.garethaye.minimax.generated.GameState;
 import org.garethaye.minimax.generated.GameStateAndMove;
 import org.garethaye.minimax.generated.GameStateUnion;
 import org.garethaye.minimax.generated.Move;
+import org.garethaye.minimax.framework.BotServer;
+import org.garethaye.minimax.framework.BotUtils;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
-public class ConnectFourBot implements Bot.Iface {
+public class ConnectFourServer implements Bot.Iface {
   private static final int HEIGHT = 6;
   private static final int WIDTH = 7;
   
@@ -24,7 +26,7 @@ public class ConnectFourBot implements Bot.Iface {
   private int activePlayer;
   private int inactivePlayer;
   
-  public void init(GameState state) throws TException {
+  private void init(GameState state) throws TException {
     if (!state.getState().isSetConnectFourGameState()) {
       throw new TException("ConnectFourBot received non-ConnectFour game state");
     }
@@ -160,5 +162,11 @@ public class ConnectFourBot implements Bot.Iface {
     }
     
     return quadruples;
+  }
+  
+  public static void main(String[] args) {
+    BasicConfigurator.configure();
+    BotServer server = new BotServer(new ConnectFourServer(), 4201);
+    server.start();
   }
 }

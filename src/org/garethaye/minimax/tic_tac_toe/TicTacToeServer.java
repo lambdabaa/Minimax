@@ -3,7 +3,9 @@ package org.garethaye.minimax.tic_tac_toe;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.thrift.TException;
+import org.garethaye.minimax.framework.BotServer;
 import org.garethaye.minimax.framework.BotUtils;
 import org.garethaye.minimax.generated.Bot;
 import org.garethaye.minimax.generated.GameState;
@@ -17,12 +19,12 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
-public class TicTacToeBot implements Bot.Iface {
+public class TicTacToeServer implements Bot.Iface {
   private List<List<Integer>> board;
   private int activePlayerId;
   private int inactivePlayerId;
   
-  public void init(GameState state) throws TException {
+  private void init(GameState state) throws TException {
     if (!state.getState().isSetTicTacToeGameState()) {
       throw new TException("TicTacToeBot received non-TicTacToe game state");
     }
@@ -117,5 +119,11 @@ public class TicTacToeBot implements Bot.Iface {
         // Diagonals
         ImmutableList.of(board.get(0).get(0), board.get(1).get(1), board.get(2).get(2)),
         ImmutableList.of(board.get(0).get(2), board.get(1).get(1), board.get(2).get(0)));
+  }
+  
+  public static void main(String[] args) {
+    BasicConfigurator.configure();
+    BotServer server = new BotServer(new TicTacToeServer(), 4201);
+    server.start();
   }
 }
