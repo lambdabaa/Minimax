@@ -67,7 +67,7 @@
         basedir="${build.classes}"
         includes="**/*.class">
       <manifest>
-        <attribute name="Main-Class" value="org.garethaye.minimax.tic_tac_toe.TicTacToeBotServer" />
+        <attribute name="Main-Class" value="org.garethaye.minimax.tic_tac_toe.TicTacToeServer" />
         <attribute name="Class-Path" value="${tic_tac_toe.path}" />
       </manifest>
     </jar>
@@ -75,7 +75,7 @@
         basedir="${build.classes}"
         includes="**/*.class">
       <manifest>
-        <attribute name="Main-Class" value="org.garethaye.minimax.connect_four.ConnectFourBotServer" />
+        <attribute name="Main-Class" value="org.garethaye.minimax.connect_four.ConnectFourServer" />
         <attribute name="Class-Path" value="${connect_four.path}" />
       </manifest>
     </jar>
