@@ -13,6 +13,10 @@ import org.garethaye.minimax.generated.Move;
 import org.garethaye.minimax.generated.TicTacToeGameState;
 import org.garethaye.minimax.generated.TicTacToeMove;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+
 public class TicTacToeBot implements Bot.Iface {
   private List<List<Integer>> board;
   private int activePlayerId;
@@ -58,13 +62,13 @@ public class TicTacToeBot implements Bot.Iface {
   public int eval(GameState state) throws TException {
     init(state);
 
-    if (TicTacToeUtils.hasThreeInARow(board, state.getPlayerId())) {
+    if (hasThreeInARow(board, state.getPlayerId())) {
       return Integer.MAX_VALUE;
-    } else if (TicTacToeUtils.hasThreeInARow(board, state.getOpponentId())) {
+    } else if (hasThreeInARow(board, state.getOpponentId())) {
       return Integer.MIN_VALUE;
     } else {
-      return TicTacToeUtils.getNumWins(board, state.getPlayerId(), state.getOpponentId())
-          - TicTacToeUtils.getNumWins(board, state.getOpponentId(), state.getPlayerId());
+      return getNumWins(board, state.getPlayerId(), state.getOpponentId())
+          - getNumWins(board, state.getOpponentId(), state.getPlayerId());
     }
   }
 
@@ -73,7 +77,45 @@ public class TicTacToeBot implements Bot.Iface {
     init(state);
     
     return (!BotUtils.isFull(board))
-        && (!TicTacToeUtils.hasThreeInARow(board, activePlayerId))
-        && (!TicTacToeUtils.hasThreeInARow(board, inactivePlayerId));
+        && (!hasThreeInARow(board, activePlayerId))
+        && (!hasThreeInARow(board, inactivePlayerId));
+  }
+  
+  private static int getNumWins(List<List<Integer>> board, final int activePlayer,
+      final int inactivePlayer) {
+    int count = 0;
+    for (List<Integer> triple : getAllTriples(board)) {
+      if (triple.contains(activePlayer) && !triple.contains(inactivePlayer)) {
+        count++;
+      }
+    }
+    
+    return count;
+  }
+  
+  private static boolean hasThreeInARow(List<List<Integer>> board, final int id) {
+    return Iterables.any(getAllTriples(board), new Predicate<List<Integer>>() {
+      @Override
+      public boolean apply(List<Integer> three) {
+        return BotUtils.allEqual(three, id);
+      }
+    });
+  }
+  
+  private static List<List<Integer>> getAllTriples(List<List<Integer>> board) {
+    return ImmutableList.of(
+        // Rows
+        board.get(0),
+        board.get(1),
+        board.get(2),
+        
+        // Columns
+        ImmutableList.of(board.get(0).get(0), board.get(1).get(0), board.get(2).get(0)),
+        ImmutableList.of(board.get(0).get(1), board.get(1).get(1), board.get(2).get(1)),
+        ImmutableList.of(board.get(0).get(2), board.get(1).get(2), board.get(2).get(2)),
+        
+        // Diagonals
+        ImmutableList.of(board.get(0).get(0), board.get(1).get(1), board.get(2).get(2)),
+        ImmutableList.of(board.get(0).get(2), board.get(1).get(1), board.get(2).get(0)));
   }
 }

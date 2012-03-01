@@ -13,6 +13,9 @@ import org.garethaye.minimax.generated.GameStateAndMove;
 import org.garethaye.minimax.generated.GameStateUnion;
 import org.garethaye.minimax.generated.Move;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
 public class ConnectFourBot implements Bot.Iface {
   private static final int HEIGHT = 6;
   private static final int WIDTH = 7;
@@ -37,7 +40,7 @@ public class ConnectFourBot implements Bot.Iface {
     for (int col = 0; col < WIDTH; col++) {
       if (board.get(HEIGHT - 1).get(col) == 0) {
         List<List<Integer>> clone = BotUtils.clone(board);
-        ConnectFourUtils.drop(clone, col, activePlayer);
+        drop(clone, col, activePlayer);
         list.add(new GameStateAndMove(
             new GameState(
                 new GameStateUnion(
@@ -56,13 +59,13 @@ public class ConnectFourBot implements Bot.Iface {
   public int eval(GameState state) throws TException {
     init(state);
     
-    if (ConnectFourUtils.hasFourInARow(board, state.getPlayerId())) {
+    if (hasFourInARow(board, state.getPlayerId())) {
       return Integer.MAX_VALUE;
-    } else if (ConnectFourUtils.hasFourInARow(board, state.getOpponentId())) {
+    } else if (hasFourInARow(board, state.getOpponentId())) {
       return Integer.MIN_VALUE;
     } else {
-      return ConnectFourUtils.getNumWins(board, state.getPlayerId(), state.getOpponentId())
-          - ConnectFourUtils.getNumWins(board, state.getOpponentId(), state.getPlayerId());
+      return getNumWins(board, state.getPlayerId(), state.getOpponentId())
+          - getNumWins(board, state.getOpponentId(), state.getPlayerId());
     }
   }
 
@@ -71,8 +74,91 @@ public class ConnectFourBot implements Bot.Iface {
     init(state);
     
     return !BotUtils.isFull(board)
-        && !ConnectFourUtils.hasFourInARow(board, activePlayer)
-        && !ConnectFourUtils.hasFourInARow(board, inactivePlayer);
+        && !hasFourInARow(board, activePlayer)
+        && !hasFourInARow(board, inactivePlayer);
   }
-
+  
+  private static void drop(List<List<Integer>> board, int col, int playerId) {
+    for (int row = 0; row < HEIGHT; row++) {
+      if (board.get(row).get(col) == 0) {
+        board.get(row).set(col, playerId);
+        break;
+      }
+    }
+  }
+  
+  private static int getNumWins(List<List<Integer>> board, final int activePlayer,
+      final int inactivePlayer) {
+    int count = 0;
+    for (List<Integer> quadruple : getAllQuadruples(board)) {
+      if (quadruple.contains(activePlayer) && !quadruple.contains(inactivePlayer)) {
+        count++;
+      }
+    }
+    
+    return count;
+  }
+  
+  private static boolean hasFourInARow(List<List<Integer>> board, final int id) {
+    return Iterables.any(getAllQuadruples(board), new Predicate<List<Integer>>() {
+      @Override
+      public boolean apply(List<Integer> three) {
+        return BotUtils.allEqual(three, id);
+      }
+    });
+  }
+  
+  private static List<List<Integer>> getAllQuadruples(List<List<Integer>> board) {
+    List<List<Integer>> quadruples = new LinkedList<List<Integer>>();
+    
+    // Rows
+    for (int i = 0; i < HEIGHT; i++) {
+      for (int left = 0; left < WIDTH - 4 - 1; left++) {
+        List<Integer> quadruple = new LinkedList<Integer>();
+        for (int disp = 0; disp < 4; disp++) {
+          quadruple.add(board.get(i).get(left + disp));
+        }
+        
+        quadruples.add(quadruple);
+      }
+    }
+    
+    // Cols
+    for (int j = 0; j < WIDTH; j++) {
+      for (int bottom = 0; bottom < HEIGHT - 4 - 1; bottom++) {
+        List<Integer> quadruple = new LinkedList<Integer>();
+        for (int disp = 0; disp < 4; disp++) {
+          quadruple.add(board.get(bottom + disp).get(j));
+        }
+        
+        quadruples.add(quadruple);
+      }
+    }
+    
+    // Up diagonal
+    for (int left = 0; left < WIDTH - 4 - 1; left++) {
+      for (int bottom = 0; bottom < HEIGHT - 4 - 1; bottom++) {
+        List<Integer> quadruple = new LinkedList<Integer>();
+        for (int disp = 0; disp < 4; disp++) {
+          quadruple.add(board.get(bottom + disp).get(left + disp));
+        }
+        
+        quadruples.add(quadruple);
+      }
+    }
+    
+    // Down diagonal
+    for (int right = WIDTH - 1; right >= 4; right--) {
+      for (int bottom = 0; bottom < HEIGHT - 4 - 1; bottom++) {
+        List<Integer> quadruple = new LinkedList<Integer>();
+        for (int disp = 0; disp < 4; disp++) {
+          quadruple.add(board.get(bottom + disp).get(right - disp));
+        }
+        
+        quadruples.add(quadruple);
+      }
+    }
+    
+    return quadruples;
+  }
 }
