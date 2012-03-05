@@ -28,6 +28,9 @@ import org.garethaye.minimax.generated.Move;
 
 public class MinimaxImpl implements Minimax.Iface {
 
+  /**
+   * @return move to make given @param state
+   */
   @Override
   public Move getMove(String host, int port, GameState state, int depth) throws TException {
     TTransport transport = new TFramedTransport(new TSocket(host, port));
@@ -37,8 +40,8 @@ public class MinimaxImpl implements Minimax.Iface {
     // Build the game tree, compute minimax search, and find the root's child with the best score
     GameTree tree = new GameTree(client, state, depth, state.getPlayerId(), state.getOpponentId());
     tree.alphabeta(Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-    
     Move best = tree.getBestMove();
+    
     transport.close();
     return best;
   }

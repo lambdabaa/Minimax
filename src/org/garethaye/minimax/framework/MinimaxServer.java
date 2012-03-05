@@ -38,6 +38,9 @@ public class MinimaxServer {
     this.port = port;
   }
 
+  /**
+   * Starts a new nonblocking minimax server on specified port and serves forever
+   */
   public void start() {
     try {
       server = new TNonblockingServer(

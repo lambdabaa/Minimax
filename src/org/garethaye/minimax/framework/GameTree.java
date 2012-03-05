@@ -51,17 +51,22 @@ public class GameTree {
     setOpponentId(opponentId);
     setRoot(new GameNode(state, level));
     if (level != maxLevel && bot.explore(state)) {
-      root.setChildren(new LinkedList<GameTree>());
-      for (GameStateAndMove option : bot.getChildren(state)) {
-        root.getChildren().add(new GameTree(
-            bot, 
-            option.getState(), 
-            option.getMove(), 
-            level + 1, 
-            maxLevel, 
-            playerId, 
-            opponentId));
+      Collection<GameTree> children = new LinkedList<GameTree>();
+      for (GameStateAndMove child : bot.getChildren(state)) {
+        children.add(
+            new GameTree(
+                bot,
+                child.getState(),
+                child.getMove(),
+                level + 1,
+                maxLevel,
+                playerId,
+                opponentId
+            )
+        );
       }
+      
+      root.setChildren(children);
     }
   }
   
