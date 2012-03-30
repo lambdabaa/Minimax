@@ -29,12 +29,14 @@ import org.garethaye.minimax.generated.ConnectFourGameState;
 import org.garethaye.minimax.generated.GameState;
 import org.garethaye.minimax.generated.GameStateUnion;
 import org.garethaye.minimax.generated.Minimax;
+import org.garethaye.minimax.generated.MinimaxConfig;
 import org.garethaye.minimax.generated.Move;
 import org.garethaye.minimax.tic_tac_toe.TicTacToeClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 public class ConnectFourClient {
   private static final Logger LOGGER = LoggerFactory.getLogger(TicTacToeClient.class.getName());
@@ -44,9 +46,10 @@ public class ConnectFourClient {
     board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
     board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
     board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
-    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
-    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
-    board.add(ImmutableList.of(0, 0, 0, 0, 0, 0, 0));
+    board.add(ImmutableList.of(0, 0, 0, 2, 0, 0, 0));
+    board.add(ImmutableList.of(0, 0, 0, 2, 0, 0, 0));
+    board.add(ImmutableList.of(1, 1, 1, 2, 1, 0, 0));
+    Lists.reverse(board);
     return board;
   }
   
@@ -64,7 +67,7 @@ public class ConnectFourClient {
                 new ConnectFourGameState(1, 2, getBoard())),
             1,
             2),
-        6);
+        new MinimaxConfig().setDepth(6));
     LOGGER.info(move.toString());
     transport.close();
   }

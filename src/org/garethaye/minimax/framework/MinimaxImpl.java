@@ -24,6 +24,7 @@ import org.apache.thrift.transport.TTransport;
 import org.garethaye.minimax.generated.Bot;
 import org.garethaye.minimax.generated.GameState;
 import org.garethaye.minimax.generated.Minimax;
+import org.garethaye.minimax.generated.MinimaxConfig;
 import org.garethaye.minimax.generated.Move;
 
 public class MinimaxImpl implements Minimax.Iface {
@@ -32,13 +33,13 @@ public class MinimaxImpl implements Minimax.Iface {
    * @return move to make given @param state
    */
   @Override
-  public Move getMove(String host, int port, GameState state, int depth) throws TException {
+  public Move getMove(String host, int port, GameState state, MinimaxConfig config) throws TException {
     TTransport transport = new TFramedTransport(new TSocket(host, port));
     Bot.Client client = new Bot.Client(new TBinaryProtocol(transport));
     transport.open();
     
     // Build the game tree, compute minimax search, and find the root's child with the best score
-    GameTree tree = new GameTree(client, state, depth, state.getPlayerId(), state.getOpponentId());
+    GameTree tree = new GameTree(client, state, config.getDepth(), state.getPlayerId(), state.getOpponentId());
     tree.alphabeta(Integer.MIN_VALUE, Integer.MAX_VALUE, true);
     Move best = tree.getBestMove();
     

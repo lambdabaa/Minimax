@@ -61,9 +61,7 @@ public class GameTree {
                 level + 1,
                 maxLevel,
                 playerId,
-                opponentId
-            )
-        );
+                opponentId));
       }
       
       root.setChildren(children);

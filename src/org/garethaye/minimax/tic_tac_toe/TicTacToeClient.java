@@ -27,6 +27,7 @@ import org.apache.thrift.transport.TTransport;
 import org.garethaye.minimax.generated.GameState;
 import org.garethaye.minimax.generated.GameStateUnion;
 import org.garethaye.minimax.generated.Minimax;
+import org.garethaye.minimax.generated.MinimaxConfig;
 import org.garethaye.minimax.generated.Move;
 import org.garethaye.minimax.generated.TicTacToeGameState;
 import org.slf4j.Logger;
@@ -59,7 +60,7 @@ public class TicTacToeClient {
                 new TicTacToeGameState(1, 2, getBoard())),
             1,
             2),
-        7);
+        new MinimaxConfig().setDepth(7));
     LOGGER.info(move.toString());
     transport.close();
   }

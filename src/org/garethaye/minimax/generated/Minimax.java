@@ -42,15 +42,15 @@ public class Minimax {
      * @param host
      * @param port
      * @param state
-     * @param depth
+     * @param config
      */
-    public org.garethaye.minimax.generated.Move getMove(String host, int port, org.garethaye.minimax.generated.GameState state, int depth) throws org.apache.thrift.TException;
+    public org.garethaye.minimax.generated.Move getMove(String host, int port, org.garethaye.minimax.generated.GameState state, MinimaxConfig config) throws org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-    public void getMove(String host, int port, org.garethaye.minimax.generated.GameState state, int depth, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.getMove_call> resultHandler) throws org.apache.thrift.TException;
+    public void getMove(String host, int port, org.garethaye.minimax.generated.GameState state, MinimaxConfig config, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.getMove_call> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -74,19 +74,19 @@ public class Minimax {
       super(iprot, oprot);
     }
 
-    public org.garethaye.minimax.generated.Move getMove(String host, int port, org.garethaye.minimax.generated.GameState state, int depth) throws org.apache.thrift.TException
+    public org.garethaye.minimax.generated.Move getMove(String host, int port, org.garethaye.minimax.generated.GameState state, MinimaxConfig config) throws org.apache.thrift.TException
     {
-      send_getMove(host, port, state, depth);
+      send_getMove(host, port, state, config);
       return recv_getMove();
     }
 
-    public void send_getMove(String host, int port, org.garethaye.minimax.generated.GameState state, int depth) throws org.apache.thrift.TException
+    public void send_getMove(String host, int port, org.garethaye.minimax.generated.GameState state, MinimaxConfig config) throws org.apache.thrift.TException
     {
       getMove_args args = new getMove_args();
       args.setHost(host);
       args.setPort(port);
       args.setState(state);
-      args.setDepth(depth);
+      args.setConfig(config);
       sendBase("getMove", args);
     }
 
@@ -118,9 +118,9 @@ public class Minimax {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void getMove(String host, int port, org.garethaye.minimax.generated.GameState state, int depth, org.apache.thrift.async.AsyncMethodCallback<getMove_call> resultHandler) throws org.apache.thrift.TException {
+    public void getMove(String host, int port, org.garethaye.minimax.generated.GameState state, MinimaxConfig config, org.apache.thrift.async.AsyncMethodCallback<getMove_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getMove_call method_call = new getMove_call(host, port, state, depth, resultHandler, this, ___protocolFactory, ___transport);
+      getMove_call method_call = new getMove_call(host, port, state, config, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
@@ -129,13 +129,13 @@ public class Minimax {
       private String host;
       private int port;
       private org.garethaye.minimax.generated.GameState state;
-      private int depth;
-      public getMove_call(String host, int port, org.garethaye.minimax.generated.GameState state, int depth, org.apache.thrift.async.AsyncMethodCallback<getMove_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private MinimaxConfig config;
+      public getMove_call(String host, int port, org.garethaye.minimax.generated.GameState state, MinimaxConfig config, org.apache.thrift.async.AsyncMethodCallback<getMove_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.host = host;
         this.port = port;
         this.state = state;
-        this.depth = depth;
+        this.config = config;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
@@ -144,7 +144,7 @@ public class Minimax {
         args.setHost(host);
         args.setPort(port);
         args.setState(state);
-        args.setDepth(depth);
+        args.setConfig(config);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -187,7 +187,7 @@ public class Minimax {
 
       protected getMove_result getResult(I iface, getMove_args args) throws org.apache.thrift.TException {
         getMove_result result = new getMove_result();
-        result.success = iface.getMove(args.host, args.port, args.state, args.depth);
+        result.success = iface.getMove(args.host, args.port, args.state, args.config);
         return result;
       }
     }
@@ -200,7 +200,7 @@ public class Minimax {
     private static final org.apache.thrift.protocol.TField HOST_FIELD_DESC = new org.apache.thrift.protocol.TField("host", org.apache.thrift.protocol.TType.STRING, (short)1);
     private static final org.apache.thrift.protocol.TField PORT_FIELD_DESC = new org.apache.thrift.protocol.TField("port", org.apache.thrift.protocol.TType.I32, (short)2);
     private static final org.apache.thrift.protocol.TField STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("state", org.apache.thrift.protocol.TType.STRUCT, (short)3);
-    private static final org.apache.thrift.protocol.TField DEPTH_FIELD_DESC = new org.apache.thrift.protocol.TField("depth", org.apache.thrift.protocol.TType.I32, (short)4);
+    private static final org.apache.thrift.protocol.TField CONFIG_FIELD_DESC = new org.apache.thrift.protocol.TField("config", org.apache.thrift.protocol.TType.STRUCT, (short)4);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -211,14 +211,14 @@ public class Minimax {
     private String host; // required
     private int port; // required
     private org.garethaye.minimax.generated.GameState state; // required
-    private int depth; // required
+    private MinimaxConfig config; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       HOST((short)1, "host"),
       PORT((short)2, "port"),
       STATE((short)3, "state"),
-      DEPTH((short)4, "depth");
+      CONFIG((short)4, "config");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -239,8 +239,8 @@ public class Minimax {
             return PORT;
           case 3: // STATE
             return STATE;
-          case 4: // DEPTH
-            return DEPTH;
+          case 4: // CONFIG
+            return CONFIG;
           default:
             return null;
         }
@@ -282,8 +282,7 @@ public class Minimax {
 
     // isset id assignments
     private static final int __PORT_ISSET_ID = 0;
-    private static final int __DEPTH_ISSET_ID = 1;
-    private BitSet __isset_bit_vector = new BitSet(2);
+    private BitSet __isset_bit_vector = new BitSet(1);
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -293,8 +292,8 @@ public class Minimax {
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.STATE, new org.apache.thrift.meta_data.FieldMetaData("state", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, org.garethaye.minimax.generated.GameState.class)));
-      tmpMap.put(_Fields.DEPTH, new org.apache.thrift.meta_data.FieldMetaData("depth", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.CONFIG, new org.apache.thrift.meta_data.FieldMetaData("config", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, MinimaxConfig.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getMove_args.class, metaDataMap);
     }
@@ -306,15 +305,14 @@ public class Minimax {
       String host,
       int port,
       org.garethaye.minimax.generated.GameState state,
-      int depth)
+      MinimaxConfig config)
     {
       this();
       this.host = host;
       this.port = port;
       setPortIsSet(true);
       this.state = state;
-      this.depth = depth;
-      setDepthIsSet(true);
+      this.config = config;
     }
 
     /**
@@ -330,7 +328,9 @@ public class Minimax {
       if (other.isSetState()) {
         this.state = new org.garethaye.minimax.generated.GameState(other.state);
       }
-      this.depth = other.depth;
+      if (other.isSetConfig()) {
+        this.config = new MinimaxConfig(other.config);
+      }
     }
 
     public getMove_args deepCopy() {
@@ -342,8 +342,7 @@ public class Minimax {
       setPortIsSet(false);
       this.port = 0;
       this.state = null;
-      setDepthIsSet(false);
-      this.depth = 0;
+      this.config = null;
     }
 
     public String getHost() {
@@ -417,27 +416,28 @@ public class Minimax {
       }
     }
 
-    public int getDepth() {
-      return this.depth;
+    public MinimaxConfig getConfig() {
+      return this.config;
     }
 
-    public getMove_args setDepth(int depth) {
-      this.depth = depth;
-      setDepthIsSet(true);
+    public getMove_args setConfig(MinimaxConfig config) {
+      this.config = config;
       return this;
     }
 
-    public void unsetDepth() {
-      __isset_bit_vector.clear(__DEPTH_ISSET_ID);
+    public void unsetConfig() {
+      this.config = null;
     }
 
-    /** Returns true if field depth is set (has been assigned a value) and false otherwise */
-    public boolean isSetDepth() {
-      return __isset_bit_vector.get(__DEPTH_ISSET_ID);
+    /** Returns true if field config is set (has been assigned a value) and false otherwise */
+    public boolean isSetConfig() {
+      return this.config != null;
     }
 
-    public void setDepthIsSet(boolean value) {
-      __isset_bit_vector.set(__DEPTH_ISSET_ID, value);
+    public void setConfigIsSet(boolean value) {
+      if (!value) {
+        this.config = null;
+      }
     }
 
     public void setFieldValue(_Fields field, Object value) {
@@ -466,11 +466,11 @@ public class Minimax {
         }
         break;
 
-      case DEPTH:
+      case CONFIG:
         if (value == null) {
-          unsetDepth();
+          unsetConfig();
         } else {
-          setDepth((Integer)value);
+          setConfig((MinimaxConfig)value);
         }
         break;
 
@@ -488,8 +488,8 @@ public class Minimax {
       case STATE:
         return getState();
 
-      case DEPTH:
-        return Integer.valueOf(getDepth());
+      case CONFIG:
+        return getConfig();
 
       }
       throw new IllegalStateException();
@@ -508,8 +508,8 @@ public class Minimax {
         return isSetPort();
       case STATE:
         return isSetState();
-      case DEPTH:
-        return isSetDepth();
+      case CONFIG:
+        return isSetConfig();
       }
       throw new IllegalStateException();
     }
@@ -554,12 +554,12 @@ public class Minimax {
           return false;
       }
 
-      boolean this_present_depth = true;
-      boolean that_present_depth = true;
-      if (this_present_depth || that_present_depth) {
-        if (!(this_present_depth && that_present_depth))
+      boolean this_present_config = true && this.isSetConfig();
+      boolean that_present_config = true && that.isSetConfig();
+      if (this_present_config || that_present_config) {
+        if (!(this_present_config && that_present_config))
           return false;
-        if (this.depth != that.depth)
+        if (!this.config.equals(that.config))
           return false;
       }
 
@@ -585,10 +585,10 @@ public class Minimax {
       if (present_state)
         builder.append(state);
 
-      boolean present_depth = true;
-      builder.append(present_depth);
-      if (present_depth)
-        builder.append(depth);
+      boolean present_config = true && (isSetConfig());
+      builder.append(present_config);
+      if (present_config)
+        builder.append(config);
 
       return builder.toHashCode();
     }
@@ -631,12 +631,12 @@ public class Minimax {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetDepth()).compareTo(typedOther.isSetDepth());
+      lastComparison = Boolean.valueOf(isSetConfig()).compareTo(typedOther.isSetConfig());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetDepth()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.depth, typedOther.depth);
+      if (isSetConfig()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.config, typedOther.config);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -681,8 +681,12 @@ public class Minimax {
       }
       first = false;
       if (!first) sb.append(", ");
-      sb.append("depth:");
-      sb.append(this.depth);
+      sb.append("config:");
+      if (this.config == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.config);
+      }
       first = false;
       sb.append(")");
       return sb.toString();
@@ -751,10 +755,11 @@ public class Minimax {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 4: // DEPTH
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.depth = iprot.readI32();
-                struct.setDepthIsSet(true);
+            case 4: // CONFIG
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.config = new MinimaxConfig();
+                struct.config.read(iprot);
+                struct.setConfigIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -787,9 +792,11 @@ public class Minimax {
           struct.state.write(oprot);
           oprot.writeFieldEnd();
         }
-        oprot.writeFieldBegin(DEPTH_FIELD_DESC);
-        oprot.writeI32(struct.depth);
-        oprot.writeFieldEnd();
+        if (struct.config != null) {
+          oprot.writeFieldBegin(CONFIG_FIELD_DESC);
+          struct.config.write(oprot);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -817,7 +824,7 @@ public class Minimax {
         if (struct.isSetState()) {
           optionals.set(2);
         }
-        if (struct.isSetDepth()) {
+        if (struct.isSetConfig()) {
           optionals.set(3);
         }
         oprot.writeBitSet(optionals, 4);
@@ -830,8 +837,8 @@ public class Minimax {
         if (struct.isSetState()) {
           struct.state.write(oprot);
         }
-        if (struct.isSetDepth()) {
-          oprot.writeI32(struct.depth);
+        if (struct.isSetConfig()) {
+          struct.config.write(oprot);
         }
       }
 
@@ -853,8 +860,9 @@ public class Minimax {
           struct.setStateIsSet(true);
         }
         if (incoming.get(3)) {
-          struct.depth = iprot.readI32();
-          struct.setDepthIsSet(true);
+          struct.config = new MinimaxConfig();
+          struct.config.read(iprot);
+          struct.setConfigIsSet(true);
         }
       }
     }

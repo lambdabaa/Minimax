@@ -21,6 +21,8 @@ import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.thrift.TException;
+import org.garethaye.minimax.framework.BotServer;
+import org.garethaye.minimax.framework.BotUtils;
 import org.garethaye.minimax.generated.Bot;
 import org.garethaye.minimax.generated.ConnectFourGameState;
 import org.garethaye.minimax.generated.ConnectFourMove;
@@ -28,8 +30,6 @@ import org.garethaye.minimax.generated.GameState;
 import org.garethaye.minimax.generated.GameStateAndMove;
 import org.garethaye.minimax.generated.GameStateUnion;
 import org.garethaye.minimax.generated.Move;
-import org.garethaye.minimax.framework.BotServer;
-import org.garethaye.minimax.framework.BotUtils;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -59,14 +59,15 @@ public class ConnectFourServer implements Bot.Iface {
       if (board.get(HEIGHT - 1).get(col) == 0) {
         List<List<Integer>> clone = BotUtils.clone(board);
         drop(clone, col, activePlayer);
-        list.add(new GameStateAndMove(
-            new GameState(
-                new GameStateUnion(
-                    GameStateUnion._Fields.CONNECT_FOUR_GAME_STATE,
-                    new ConnectFourGameState(inactivePlayer, activePlayer, clone)), 
-                state.getPlayerId(),
-                state.getOpponentId()),
-            new Move(Move._Fields.CONNECT_FOUR_MOVE, new ConnectFourMove(col))));
+        list.add(
+            new GameStateAndMove(
+                new GameState(
+                    new GameStateUnion(
+                        GameStateUnion._Fields.CONNECT_FOUR_GAME_STATE,
+                        new ConnectFourGameState(inactivePlayer, activePlayer, clone)), 
+                    state.getPlayerId(),
+                    state.getOpponentId()),
+                new Move(Move._Fields.CONNECT_FOUR_MOVE, new ConnectFourMove(col))));
       }
     }
     
@@ -100,9 +101,11 @@ public class ConnectFourServer implements Bot.Iface {
     for (int row = 0; row < HEIGHT; row++) {
       if (board.get(row).get(col) == 0) {
         board.get(row).set(col, playerId);
-        break;
+        return;
       }
     }
+    
+    throw new RuntimeException("Drop unsuccessful... column was full!");
   }
   
   private static int getNumWins(List<List<Integer>> board, final int activePlayer,
@@ -131,7 +134,7 @@ public class ConnectFourServer implements Bot.Iface {
     
     // Rows
     for (int i = 0; i < HEIGHT; i++) {
-      for (int left = 0; left < WIDTH - 4 - 1; left++) {
+      for (int left = 0; left < WIDTH - 4; left++) {
         List<Integer> quadruple = new LinkedList<Integer>();
         for (int disp = 0; disp < 4; disp++) {
           quadruple.add(board.get(i).get(left + disp));
@@ -143,7 +146,7 @@ public class ConnectFourServer implements Bot.Iface {
     
     // Cols
     for (int j = 0; j < WIDTH; j++) {
-      for (int bottom = 0; bottom < HEIGHT - 4 - 1; bottom++) {
+      for (int bottom = 0; bottom < HEIGHT - 4; bottom++) {
         List<Integer> quadruple = new LinkedList<Integer>();
         for (int disp = 0; disp < 4; disp++) {
           quadruple.add(board.get(bottom + disp).get(j));
@@ -154,8 +157,8 @@ public class ConnectFourServer implements Bot.Iface {
     }
     
     // Up diagonal
-    for (int left = 0; left < WIDTH - 4 - 1; left++) {
-      for (int bottom = 0; bottom < HEIGHT - 4 - 1; bottom++) {
+    for (int left = 0; left < WIDTH - 4; left++) {
+      for (int bottom = 0; bottom < HEIGHT - 4; bottom++) {
         List<Integer> quadruple = new LinkedList<Integer>();
         for (int disp = 0; disp < 4; disp++) {
           quadruple.add(board.get(bottom + disp).get(left + disp));
@@ -166,8 +169,8 @@ public class ConnectFourServer implements Bot.Iface {
     }
     
     // Down diagonal
-    for (int right = WIDTH - 1; right >= 4; right--) {
-      for (int bottom = 0; bottom < HEIGHT - 4 - 1; bottom++) {
+    for (int right = WIDTH - 1; right >= 3; right--) {
+      for (int bottom = 0; bottom < HEIGHT - 4; bottom++) {
         List<Integer> quadruple = new LinkedList<Integer>();
         for (int disp = 0; disp < 4; disp++) {
           quadruple.add(board.get(bottom + disp).get(right - disp));

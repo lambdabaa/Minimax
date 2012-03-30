@@ -61,4 +61,3 @@ service Bot {
    */
   bool explore(1: GameState state);
 }
-
