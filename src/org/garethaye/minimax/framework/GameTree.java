@@ -153,7 +153,10 @@ public class GameTree {
     return value;
   }
   
-  public Move getBestMove() {
+  public Move getBestMove() throws TException {
+    // Compute minimax values on tree
+    alphabeta(Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+    
     Move best = null;
     int bestValue = Integer.MIN_VALUE;
     for (GameTree child : root.getChildren()) {
