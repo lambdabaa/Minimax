@@ -25,6 +25,7 @@ import org.garethaye.minimax.framework.BotUtils;
 import org.garethaye.minimax.generated.Bot;
 import org.garethaye.minimax.generated.GameState;
 import org.garethaye.minimax.generated.GameStateAndMove;
+import org.garethaye.minimax.generated.GameStateAndProbability;
 import org.garethaye.minimax.generated.GameStateUnion;
 import org.garethaye.minimax.generated.Move;
 import org.garethaye.minimax.generated.TicTacToeGameState;
@@ -50,7 +51,7 @@ public class TicTacToeServer implements Bot.Iface {
   }
 
   @Override
-  public List<GameStateAndMove> getChildren(GameState state) throws TException {
+  public List<GameStateAndMove> getChildrenAndMoves(GameState state) throws TException {
     init(state);
     
     List<GameStateAndMove> list = new LinkedList<GameStateAndMove>();
@@ -73,6 +74,11 @@ public class TicTacToeServer implements Bot.Iface {
     }
     
     return list;
+  }
+  
+  @Override
+  public List<GameStateAndProbability> getChildrenAndProbabilities(GameState state) throws TException {
+    return ImmutableList.of(new GameStateAndProbability().setState(state).setProbability(1.0));
   }
 
   @Override

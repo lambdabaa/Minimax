@@ -52,7 +52,7 @@ public class GameTree {
     setRoot(new GameNode(state, level));
     if (level != maxLevel && bot.explore(state)) {
       Collection<GameTree> children = new LinkedList<GameTree>();
-      for (GameStateAndMove child : bot.getChildren(state)) {
+      for (GameStateAndMove child : bot.getChildrenAndMoves(state)) {
         children.add(
             new GameTree(
                 bot,

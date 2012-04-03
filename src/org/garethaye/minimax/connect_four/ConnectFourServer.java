@@ -28,10 +28,12 @@ import org.garethaye.minimax.generated.ConnectFourGameState;
 import org.garethaye.minimax.generated.ConnectFourMove;
 import org.garethaye.minimax.generated.GameState;
 import org.garethaye.minimax.generated.GameStateAndMove;
+import org.garethaye.minimax.generated.GameStateAndProbability;
 import org.garethaye.minimax.generated.GameStateUnion;
 import org.garethaye.minimax.generated.Move;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 public class ConnectFourServer implements Bot.Iface {
@@ -53,7 +55,7 @@ public class ConnectFourServer implements Bot.Iface {
   }
 
   @Override
-  public List<GameStateAndMove> getChildren(GameState state) throws TException {
+  public List<GameStateAndMove> getChildrenAndMoves(GameState state) throws TException {
     List<GameStateAndMove> list = new LinkedList<GameStateAndMove>();
     for (int col = 0; col < WIDTH; col++) {
       if (board.get(HEIGHT - 1).get(col) == 0) {
@@ -72,6 +74,11 @@ public class ConnectFourServer implements Bot.Iface {
     }
     
     return list;
+  }
+  
+  @Override
+  public List<GameStateAndProbability> getChildrenAndProbabilities(GameState state) throws TException {
+    return ImmutableList.of(new GameStateAndProbability().setState(state).setProbability(1.0));
   }
 
   @Override

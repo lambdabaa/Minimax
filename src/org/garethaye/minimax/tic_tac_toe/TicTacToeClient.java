@@ -40,9 +40,9 @@ public class TicTacToeClient {
   
   public static List<List<Integer>> getBoard() {
     List<List<Integer>> board = new LinkedList<List<Integer>>();
-    board.add(ImmutableList.of(0, 0, 0));
-    board.add(ImmutableList.of(0, 0, 0));
-    board.add(ImmutableList.of(0, 0, 0));
+    board.add(ImmutableList.of(1, 1, 2));
+    board.add(ImmutableList.of(2, 1, 1));
+    board.add(ImmutableList.of(1, 2, 2));
     return board;
   }
   

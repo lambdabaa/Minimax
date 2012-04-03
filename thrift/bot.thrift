@@ -42,12 +42,26 @@ struct GameStateAndMove {
   2: Move move;
 }
 
+/**
+ * A struct containing a game state and the probability with which it follows from its parent
+ */
+struct GameStateAndProbability {
+  1: GameState state;
+  2: double probability;
+}
+
 service Bot {
   /**
    * @return        All pairs of moves and states that can follow directly (in one move) from state
    * @param state   The game state whose children we want
    */
-  list<GameStateAndMove> getChildren(1: GameState state);
+  list<GameStateAndMove> getChildrenAndMoves(1: GameState state);
+
+  /**
+   * @return        All moves that can follow directly (with one random event) from state with probabilities
+   * @param state   The game state whose children we want
+   */
+  list<GameStateAndProbability> getChildrenAndProbabilities(1: GameState state);
 
   /**
    * @return            An integer score for how good the state is for player
@@ -61,3 +75,4 @@ service Bot {
    */
   bool explore(1: GameState state);
 }
+
