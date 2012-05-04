@@ -30,14 +30,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A struct containing a 2d array used to represent a TicTacToe board
- * along with integers representing the ids of the active and inactive players
  */
 public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGameState, TicTacToeGameState._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TicTacToeGameState");
 
-  private static final org.apache.thrift.protocol.TField ACTIVE_PLAYER_FIELD_DESC = new org.apache.thrift.protocol.TField("activePlayer", org.apache.thrift.protocol.TType.I32, (short)1);
-  private static final org.apache.thrift.protocol.TField INACTIVE_PLAYER_FIELD_DESC = new org.apache.thrift.protocol.TField("inactivePlayer", org.apache.thrift.protocol.TType.I32, (short)2);
-  private static final org.apache.thrift.protocol.TField BOARD_FIELD_DESC = new org.apache.thrift.protocol.TField("board", org.apache.thrift.protocol.TType.LIST, (short)3);
+  private static final org.apache.thrift.protocol.TField BOARD_FIELD_DESC = new org.apache.thrift.protocol.TField("board", org.apache.thrift.protocol.TType.LIST, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -45,15 +42,11 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
     schemes.put(TupleScheme.class, new TicTacToeGameStateTupleSchemeFactory());
   }
 
-  private int activePlayer; // required
-  private int inactivePlayer; // required
   private List<List<Integer>> board; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    ACTIVE_PLAYER((short)1, "activePlayer"),
-    INACTIVE_PLAYER((short)2, "inactivePlayer"),
-    BOARD((short)3, "board");
+    BOARD((short)1, "board");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -68,11 +61,7 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // ACTIVE_PLAYER
-          return ACTIVE_PLAYER;
-        case 2: // INACTIVE_PLAYER
-          return INACTIVE_PLAYER;
-        case 3: // BOARD
+        case 1: // BOARD
           return BOARD;
         default:
           return null;
@@ -114,16 +103,9 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
   }
 
   // isset id assignments
-  private static final int __ACTIVEPLAYER_ISSET_ID = 0;
-  private static final int __INACTIVEPLAYER_ISSET_ID = 1;
-  private BitSet __isset_bit_vector = new BitSet(2);
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.ACTIVE_PLAYER, new org.apache.thrift.meta_data.FieldMetaData("activePlayer", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.INACTIVE_PLAYER, new org.apache.thrift.meta_data.FieldMetaData("inactivePlayer", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.BOARD, new org.apache.thrift.meta_data.FieldMetaData("board", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
             new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
@@ -136,15 +118,9 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
   }
 
   public TicTacToeGameState(
-    int activePlayer,
-    int inactivePlayer,
     List<List<Integer>> board)
   {
     this();
-    this.activePlayer = activePlayer;
-    setActivePlayerIsSet(true);
-    this.inactivePlayer = inactivePlayer;
-    setInactivePlayerIsSet(true);
     this.board = board;
   }
 
@@ -152,10 +128,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
    * Performs a deep copy on <i>other</i>.
    */
   public TicTacToeGameState(TicTacToeGameState other) {
-    __isset_bit_vector.clear();
-    __isset_bit_vector.or(other.__isset_bit_vector);
-    this.activePlayer = other.activePlayer;
-    this.inactivePlayer = other.inactivePlayer;
     if (other.isSetBoard()) {
       List<List<Integer>> __this__board = new ArrayList<List<Integer>>();
       for (List<Integer> other_element : other.board) {
@@ -174,57 +146,7 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
   }
 
   public void clear() {
-    setActivePlayerIsSet(false);
-    this.activePlayer = 0;
-    setInactivePlayerIsSet(false);
-    this.inactivePlayer = 0;
     this.board = null;
-  }
-
-  public int getActivePlayer() {
-    return this.activePlayer;
-  }
-
-  public TicTacToeGameState setActivePlayer(int activePlayer) {
-    this.activePlayer = activePlayer;
-    setActivePlayerIsSet(true);
-    return this;
-  }
-
-  public void unsetActivePlayer() {
-    __isset_bit_vector.clear(__ACTIVEPLAYER_ISSET_ID);
-  }
-
-  /** Returns true if field activePlayer is set (has been assigned a value) and false otherwise */
-  public boolean isSetActivePlayer() {
-    return __isset_bit_vector.get(__ACTIVEPLAYER_ISSET_ID);
-  }
-
-  public void setActivePlayerIsSet(boolean value) {
-    __isset_bit_vector.set(__ACTIVEPLAYER_ISSET_ID, value);
-  }
-
-  public int getInactivePlayer() {
-    return this.inactivePlayer;
-  }
-
-  public TicTacToeGameState setInactivePlayer(int inactivePlayer) {
-    this.inactivePlayer = inactivePlayer;
-    setInactivePlayerIsSet(true);
-    return this;
-  }
-
-  public void unsetInactivePlayer() {
-    __isset_bit_vector.clear(__INACTIVEPLAYER_ISSET_ID);
-  }
-
-  /** Returns true if field inactivePlayer is set (has been assigned a value) and false otherwise */
-  public boolean isSetInactivePlayer() {
-    return __isset_bit_vector.get(__INACTIVEPLAYER_ISSET_ID);
-  }
-
-  public void setInactivePlayerIsSet(boolean value) {
-    __isset_bit_vector.set(__INACTIVEPLAYER_ISSET_ID, value);
   }
 
   public int getBoardSize() {
@@ -268,22 +190,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case ACTIVE_PLAYER:
-      if (value == null) {
-        unsetActivePlayer();
-      } else {
-        setActivePlayer((Integer)value);
-      }
-      break;
-
-    case INACTIVE_PLAYER:
-      if (value == null) {
-        unsetInactivePlayer();
-      } else {
-        setInactivePlayer((Integer)value);
-      }
-      break;
-
     case BOARD:
       if (value == null) {
         unsetBoard();
@@ -297,12 +203,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case ACTIVE_PLAYER:
-      return Integer.valueOf(getActivePlayer());
-
-    case INACTIVE_PLAYER:
-      return Integer.valueOf(getInactivePlayer());
-
     case BOARD:
       return getBoard();
 
@@ -317,10 +217,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
     }
 
     switch (field) {
-    case ACTIVE_PLAYER:
-      return isSetActivePlayer();
-    case INACTIVE_PLAYER:
-      return isSetInactivePlayer();
     case BOARD:
       return isSetBoard();
     }
@@ -340,24 +236,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
     if (that == null)
       return false;
 
-    boolean this_present_activePlayer = true;
-    boolean that_present_activePlayer = true;
-    if (this_present_activePlayer || that_present_activePlayer) {
-      if (!(this_present_activePlayer && that_present_activePlayer))
-        return false;
-      if (this.activePlayer != that.activePlayer)
-        return false;
-    }
-
-    boolean this_present_inactivePlayer = true;
-    boolean that_present_inactivePlayer = true;
-    if (this_present_inactivePlayer || that_present_inactivePlayer) {
-      if (!(this_present_inactivePlayer && that_present_inactivePlayer))
-        return false;
-      if (this.inactivePlayer != that.inactivePlayer)
-        return false;
-    }
-
     boolean this_present_board = true && this.isSetBoard();
     boolean that_present_board = true && that.isSetBoard();
     if (this_present_board || that_present_board) {
@@ -373,16 +251,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
   @Override
   public int hashCode() {
     HashCodeBuilder builder = new HashCodeBuilder();
-
-    boolean present_activePlayer = true;
-    builder.append(present_activePlayer);
-    if (present_activePlayer)
-      builder.append(activePlayer);
-
-    boolean present_inactivePlayer = true;
-    builder.append(present_inactivePlayer);
-    if (present_inactivePlayer)
-      builder.append(inactivePlayer);
 
     boolean present_board = true && (isSetBoard());
     builder.append(present_board);
@@ -400,26 +268,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
     int lastComparison = 0;
     TicTacToeGameState typedOther = (TicTacToeGameState)other;
 
-    lastComparison = Boolean.valueOf(isSetActivePlayer()).compareTo(typedOther.isSetActivePlayer());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetActivePlayer()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.activePlayer, typedOther.activePlayer);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetInactivePlayer()).compareTo(typedOther.isSetInactivePlayer());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetInactivePlayer()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.inactivePlayer, typedOther.inactivePlayer);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
     lastComparison = Boolean.valueOf(isSetBoard()).compareTo(typedOther.isSetBoard());
     if (lastComparison != 0) {
       return lastComparison;
@@ -450,14 +298,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
     StringBuilder sb = new StringBuilder("TicTacToeGameState(");
     boolean first = true;
 
-    sb.append("activePlayer:");
-    sb.append(this.activePlayer);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("inactivePlayer:");
-    sb.append(this.inactivePlayer);
-    first = false;
-    if (!first) sb.append(", ");
     sb.append("board:");
     if (this.board == null) {
       sb.append("null");
@@ -471,8 +311,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
 
   public void validate() throws org.apache.thrift.TException {
     // check for required fields
-    // alas, we cannot check 'activePlayer' because it's a primitive and you chose the non-beans generator.
-    // alas, we cannot check 'inactivePlayer' because it's a primitive and you chose the non-beans generator.
     if (board == null) {
       throw new org.apache.thrift.protocol.TProtocolException("Required field 'board' was not present! Struct: " + toString());
     }
@@ -488,8 +326,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
 
   private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     try {
-      // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-      __isset_bit_vector = new BitSet(1);
       read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
     } catch (org.apache.thrift.TException te) {
       throw new java.io.IOException(te.getMessage());
@@ -514,23 +350,7 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
           break;
         }
         switch (schemeField.id) {
-          case 1: // ACTIVE_PLAYER
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.activePlayer = iprot.readI32();
-              struct.setActivePlayerIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 2: // INACTIVE_PLAYER
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.inactivePlayer = iprot.readI32();
-              struct.setInactivePlayerIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 3: // BOARD
+          case 1: // BOARD
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
                 org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
@@ -566,12 +386,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
       iprot.readStructEnd();
 
       // check for required fields of primitive type, which can't be checked in the validate method
-      if (!struct.isSetActivePlayer()) {
-        throw new org.apache.thrift.protocol.TProtocolException("Required field 'activePlayer' was not found in serialized data! Struct: " + toString());
-      }
-      if (!struct.isSetInactivePlayer()) {
-        throw new org.apache.thrift.protocol.TProtocolException("Required field 'inactivePlayer' was not found in serialized data! Struct: " + toString());
-      }
       struct.validate();
     }
 
@@ -579,12 +393,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      oprot.writeFieldBegin(ACTIVE_PLAYER_FIELD_DESC);
-      oprot.writeI32(struct.activePlayer);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(INACTIVE_PLAYER_FIELD_DESC);
-      oprot.writeI32(struct.inactivePlayer);
-      oprot.writeFieldEnd();
       if (struct.board != null) {
         oprot.writeFieldBegin(BOARD_FIELD_DESC);
         {
@@ -621,8 +429,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
     @Override
     public void write(org.apache.thrift.protocol.TProtocol prot, TicTacToeGameState struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
-      oprot.writeI32(struct.activePlayer);
-      oprot.writeI32(struct.inactivePlayer);
       {
         oprot.writeI32(struct.board.size());
         for (List<Integer> _iter8 : struct.board)
@@ -641,10 +447,6 @@ public class TicTacToeGameState implements org.apache.thrift.TBase<TicTacToeGame
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, TicTacToeGameState struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      struct.activePlayer = iprot.readI32();
-      struct.setActivePlayerIsSet(true);
-      struct.inactivePlayer = iprot.readI32();
-      struct.setInactivePlayerIsSet(true);
       {
         org.apache.thrift.protocol.TList _list10 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.LIST, iprot.readI32());
         struct.board = new ArrayList<List<Integer>>(_list10.size);

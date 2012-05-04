@@ -17,18 +17,20 @@ namespace java org.garethaye.minimax.generated
 
 include "bot.thrift"
 
-struct MinimaxConfig {
-  1: required i32 depth;
-}
-
 service Minimax {
   /**
-   * @param host    String hostname where a bot.Bot service is running
-   * @param port    Integer port where a bot.Bot service is running
-   * @param state   Current game state
-   * @param depth   The maximum number of turns ahead the minimax algorithm should consider
-   * @return        A move computed using minimax with alphabeta pruning
+   * @param host        String hostname where a bot.Bot service is running
+   * @param port        Integer port where a bot.Bot service is running
+   * @param state       Current game state
+   * @param playerList
+   * @param player
+   * @return            A move computed using minimax with alphabeta pruning
    */
-  bot.Move getMove(1: string host, 2: i32 port, 3: bot.GameState state, 4: MinimaxConfig config);
+  bot.Move getMove(
+      1: string host, 
+      2: i32 port, 
+      3: bot.GameState state, 
+      4: list<i32> playerList,
+      5: i32 player);
 }
 

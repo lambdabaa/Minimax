@@ -33,24 +33,26 @@ public class Minimax {
   public interface Iface {
 
     /**
-     * @param host    String hostname where a bot.Bot service is running
-     * @param port    Integer port where a bot.Bot service is running
-     * @param state   Current game state
-     * @param depth   The maximum number of turns ahead the minimax algorithm should consider
-     * @return        A move computed using minimax with alphabeta pruning
+     * @param host        String hostname where a bot.Bot service is running
+     * @param port        Integer port where a bot.Bot service is running
+     * @param state       Current game state
+     * @param playerList
+     * @param player
+     * @return            A move computed using minimax with alphabeta pruning
      * 
      * @param host
      * @param port
      * @param state
-     * @param config
+     * @param playerList
+     * @param player
      */
-    public org.garethaye.minimax.generated.Move getMove(String host, int port, org.garethaye.minimax.generated.GameState state, MinimaxConfig config) throws org.apache.thrift.TException;
+    public org.garethaye.minimax.generated.Move getMove(String host, int port, org.garethaye.minimax.generated.GameState state, List<Integer> playerList, int player) throws org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-    public void getMove(String host, int port, org.garethaye.minimax.generated.GameState state, MinimaxConfig config, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.getMove_call> resultHandler) throws org.apache.thrift.TException;
+    public void getMove(String host, int port, org.garethaye.minimax.generated.GameState state, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.getMove_call> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -74,19 +76,20 @@ public class Minimax {
       super(iprot, oprot);
     }
 
-    public org.garethaye.minimax.generated.Move getMove(String host, int port, org.garethaye.minimax.generated.GameState state, MinimaxConfig config) throws org.apache.thrift.TException
+    public org.garethaye.minimax.generated.Move getMove(String host, int port, org.garethaye.minimax.generated.GameState state, List<Integer> playerList, int player) throws org.apache.thrift.TException
     {
-      send_getMove(host, port, state, config);
+      send_getMove(host, port, state, playerList, player);
       return recv_getMove();
     }
 
-    public void send_getMove(String host, int port, org.garethaye.minimax.generated.GameState state, MinimaxConfig config) throws org.apache.thrift.TException
+    public void send_getMove(String host, int port, org.garethaye.minimax.generated.GameState state, List<Integer> playerList, int player) throws org.apache.thrift.TException
     {
       getMove_args args = new getMove_args();
       args.setHost(host);
       args.setPort(port);
       args.setState(state);
-      args.setConfig(config);
+      args.setPlayerList(playerList);
+      args.setPlayer(player);
       sendBase("getMove", args);
     }
 
@@ -118,9 +121,9 @@ public class Minimax {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void getMove(String host, int port, org.garethaye.minimax.generated.GameState state, MinimaxConfig config, org.apache.thrift.async.AsyncMethodCallback<getMove_call> resultHandler) throws org.apache.thrift.TException {
+    public void getMove(String host, int port, org.garethaye.minimax.generated.GameState state, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<getMove_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getMove_call method_call = new getMove_call(host, port, state, config, resultHandler, this, ___protocolFactory, ___transport);
+      getMove_call method_call = new getMove_call(host, port, state, playerList, player, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
@@ -129,13 +132,15 @@ public class Minimax {
       private String host;
       private int port;
       private org.garethaye.minimax.generated.GameState state;
-      private MinimaxConfig config;
-      public getMove_call(String host, int port, org.garethaye.minimax.generated.GameState state, MinimaxConfig config, org.apache.thrift.async.AsyncMethodCallback<getMove_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private List<Integer> playerList;
+      private int player;
+      public getMove_call(String host, int port, org.garethaye.minimax.generated.GameState state, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<getMove_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.host = host;
         this.port = port;
         this.state = state;
-        this.config = config;
+        this.playerList = playerList;
+        this.player = player;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
@@ -144,7 +149,8 @@ public class Minimax {
         args.setHost(host);
         args.setPort(port);
         args.setState(state);
-        args.setConfig(config);
+        args.setPlayerList(playerList);
+        args.setPlayer(player);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -187,7 +193,7 @@ public class Minimax {
 
       protected getMove_result getResult(I iface, getMove_args args) throws org.apache.thrift.TException {
         getMove_result result = new getMove_result();
-        result.success = iface.getMove(args.host, args.port, args.state, args.config);
+        result.success = iface.getMove(args.host, args.port, args.state, args.playerList, args.player);
         return result;
       }
     }
@@ -200,7 +206,8 @@ public class Minimax {
     private static final org.apache.thrift.protocol.TField HOST_FIELD_DESC = new org.apache.thrift.protocol.TField("host", org.apache.thrift.protocol.TType.STRING, (short)1);
     private static final org.apache.thrift.protocol.TField PORT_FIELD_DESC = new org.apache.thrift.protocol.TField("port", org.apache.thrift.protocol.TType.I32, (short)2);
     private static final org.apache.thrift.protocol.TField STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("state", org.apache.thrift.protocol.TType.STRUCT, (short)3);
-    private static final org.apache.thrift.protocol.TField CONFIG_FIELD_DESC = new org.apache.thrift.protocol.TField("config", org.apache.thrift.protocol.TType.STRUCT, (short)4);
+    private static final org.apache.thrift.protocol.TField PLAYER_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("playerList", org.apache.thrift.protocol.TType.LIST, (short)4);
+    private static final org.apache.thrift.protocol.TField PLAYER_FIELD_DESC = new org.apache.thrift.protocol.TField("player", org.apache.thrift.protocol.TType.I32, (short)5);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -211,14 +218,16 @@ public class Minimax {
     private String host; // required
     private int port; // required
     private org.garethaye.minimax.generated.GameState state; // required
-    private MinimaxConfig config; // required
+    private List<Integer> playerList; // required
+    private int player; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       HOST((short)1, "host"),
       PORT((short)2, "port"),
       STATE((short)3, "state"),
-      CONFIG((short)4, "config");
+      PLAYER_LIST((short)4, "playerList"),
+      PLAYER((short)5, "player");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -239,8 +248,10 @@ public class Minimax {
             return PORT;
           case 3: // STATE
             return STATE;
-          case 4: // CONFIG
-            return CONFIG;
+          case 4: // PLAYER_LIST
+            return PLAYER_LIST;
+          case 5: // PLAYER
+            return PLAYER;
           default:
             return null;
         }
@@ -282,7 +293,8 @@ public class Minimax {
 
     // isset id assignments
     private static final int __PORT_ISSET_ID = 0;
-    private BitSet __isset_bit_vector = new BitSet(1);
+    private static final int __PLAYER_ISSET_ID = 1;
+    private BitSet __isset_bit_vector = new BitSet(2);
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -292,8 +304,11 @@ public class Minimax {
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.STATE, new org.apache.thrift.meta_data.FieldMetaData("state", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, org.garethaye.minimax.generated.GameState.class)));
-      tmpMap.put(_Fields.CONFIG, new org.apache.thrift.meta_data.FieldMetaData("config", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, MinimaxConfig.class)));
+      tmpMap.put(_Fields.PLAYER_LIST, new org.apache.thrift.meta_data.FieldMetaData("playerList", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.PLAYER, new org.apache.thrift.meta_data.FieldMetaData("player", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getMove_args.class, metaDataMap);
     }
@@ -305,14 +320,17 @@ public class Minimax {
       String host,
       int port,
       org.garethaye.minimax.generated.GameState state,
-      MinimaxConfig config)
+      List<Integer> playerList,
+      int player)
     {
       this();
       this.host = host;
       this.port = port;
       setPortIsSet(true);
       this.state = state;
-      this.config = config;
+      this.playerList = playerList;
+      this.player = player;
+      setPlayerIsSet(true);
     }
 
     /**
@@ -328,9 +346,14 @@ public class Minimax {
       if (other.isSetState()) {
         this.state = new org.garethaye.minimax.generated.GameState(other.state);
       }
-      if (other.isSetConfig()) {
-        this.config = new MinimaxConfig(other.config);
+      if (other.isSetPlayerList()) {
+        List<Integer> __this__playerList = new ArrayList<Integer>();
+        for (Integer other_element : other.playerList) {
+          __this__playerList.add(other_element);
+        }
+        this.playerList = __this__playerList;
       }
+      this.player = other.player;
     }
 
     public getMove_args deepCopy() {
@@ -342,7 +365,9 @@ public class Minimax {
       setPortIsSet(false);
       this.port = 0;
       this.state = null;
-      this.config = null;
+      this.playerList = null;
+      setPlayerIsSet(false);
+      this.player = 0;
     }
 
     public String getHost() {
@@ -416,28 +441,66 @@ public class Minimax {
       }
     }
 
-    public MinimaxConfig getConfig() {
-      return this.config;
+    public int getPlayerListSize() {
+      return (this.playerList == null) ? 0 : this.playerList.size();
     }
 
-    public getMove_args setConfig(MinimaxConfig config) {
-      this.config = config;
+    public java.util.Iterator<Integer> getPlayerListIterator() {
+      return (this.playerList == null) ? null : this.playerList.iterator();
+    }
+
+    public void addToPlayerList(int elem) {
+      if (this.playerList == null) {
+        this.playerList = new ArrayList<Integer>();
+      }
+      this.playerList.add(elem);
+    }
+
+    public List<Integer> getPlayerList() {
+      return this.playerList;
+    }
+
+    public getMove_args setPlayerList(List<Integer> playerList) {
+      this.playerList = playerList;
       return this;
     }
 
-    public void unsetConfig() {
-      this.config = null;
+    public void unsetPlayerList() {
+      this.playerList = null;
     }
 
-    /** Returns true if field config is set (has been assigned a value) and false otherwise */
-    public boolean isSetConfig() {
-      return this.config != null;
+    /** Returns true if field playerList is set (has been assigned a value) and false otherwise */
+    public boolean isSetPlayerList() {
+      return this.playerList != null;
     }
 
-    public void setConfigIsSet(boolean value) {
+    public void setPlayerListIsSet(boolean value) {
       if (!value) {
-        this.config = null;
+        this.playerList = null;
       }
+    }
+
+    public int getPlayer() {
+      return this.player;
+    }
+
+    public getMove_args setPlayer(int player) {
+      this.player = player;
+      setPlayerIsSet(true);
+      return this;
+    }
+
+    public void unsetPlayer() {
+      __isset_bit_vector.clear(__PLAYER_ISSET_ID);
+    }
+
+    /** Returns true if field player is set (has been assigned a value) and false otherwise */
+    public boolean isSetPlayer() {
+      return __isset_bit_vector.get(__PLAYER_ISSET_ID);
+    }
+
+    public void setPlayerIsSet(boolean value) {
+      __isset_bit_vector.set(__PLAYER_ISSET_ID, value);
     }
 
     public void setFieldValue(_Fields field, Object value) {
@@ -466,11 +529,19 @@ public class Minimax {
         }
         break;
 
-      case CONFIG:
+      case PLAYER_LIST:
         if (value == null) {
-          unsetConfig();
+          unsetPlayerList();
         } else {
-          setConfig((MinimaxConfig)value);
+          setPlayerList((List<Integer>)value);
+        }
+        break;
+
+      case PLAYER:
+        if (value == null) {
+          unsetPlayer();
+        } else {
+          setPlayer((Integer)value);
         }
         break;
 
@@ -488,8 +559,11 @@ public class Minimax {
       case STATE:
         return getState();
 
-      case CONFIG:
-        return getConfig();
+      case PLAYER_LIST:
+        return getPlayerList();
+
+      case PLAYER:
+        return Integer.valueOf(getPlayer());
 
       }
       throw new IllegalStateException();
@@ -508,8 +582,10 @@ public class Minimax {
         return isSetPort();
       case STATE:
         return isSetState();
-      case CONFIG:
-        return isSetConfig();
+      case PLAYER_LIST:
+        return isSetPlayerList();
+      case PLAYER:
+        return isSetPlayer();
       }
       throw new IllegalStateException();
     }
@@ -554,12 +630,21 @@ public class Minimax {
           return false;
       }
 
-      boolean this_present_config = true && this.isSetConfig();
-      boolean that_present_config = true && that.isSetConfig();
-      if (this_present_config || that_present_config) {
-        if (!(this_present_config && that_present_config))
+      boolean this_present_playerList = true && this.isSetPlayerList();
+      boolean that_present_playerList = true && that.isSetPlayerList();
+      if (this_present_playerList || that_present_playerList) {
+        if (!(this_present_playerList && that_present_playerList))
           return false;
-        if (!this.config.equals(that.config))
+        if (!this.playerList.equals(that.playerList))
+          return false;
+      }
+
+      boolean this_present_player = true;
+      boolean that_present_player = true;
+      if (this_present_player || that_present_player) {
+        if (!(this_present_player && that_present_player))
+          return false;
+        if (this.player != that.player)
           return false;
       }
 
@@ -585,10 +670,15 @@ public class Minimax {
       if (present_state)
         builder.append(state);
 
-      boolean present_config = true && (isSetConfig());
-      builder.append(present_config);
-      if (present_config)
-        builder.append(config);
+      boolean present_playerList = true && (isSetPlayerList());
+      builder.append(present_playerList);
+      if (present_playerList)
+        builder.append(playerList);
+
+      boolean present_player = true;
+      builder.append(present_player);
+      if (present_player)
+        builder.append(player);
 
       return builder.toHashCode();
     }
@@ -631,12 +721,22 @@ public class Minimax {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetConfig()).compareTo(typedOther.isSetConfig());
+      lastComparison = Boolean.valueOf(isSetPlayerList()).compareTo(typedOther.isSetPlayerList());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetConfig()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.config, typedOther.config);
+      if (isSetPlayerList()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.playerList, typedOther.playerList);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetPlayer()).compareTo(typedOther.isSetPlayer());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPlayer()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.player, typedOther.player);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -681,12 +781,16 @@ public class Minimax {
       }
       first = false;
       if (!first) sb.append(", ");
-      sb.append("config:");
-      if (this.config == null) {
+      sb.append("playerList:");
+      if (this.playerList == null) {
         sb.append("null");
       } else {
-        sb.append(this.config);
+        sb.append(this.playerList);
       }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("player:");
+      sb.append(this.player);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -755,11 +859,28 @@ public class Minimax {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 4: // CONFIG
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.config = new MinimaxConfig();
-                struct.config.read(iprot);
-                struct.setConfigIsSet(true);
+            case 4: // PLAYER_LIST
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
+                  struct.playerList = new ArrayList<Integer>(_list0.size);
+                  for (int _i1 = 0; _i1 < _list0.size; ++_i1)
+                  {
+                    int _elem2; // required
+                    _elem2 = iprot.readI32();
+                    struct.playerList.add(_elem2);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setPlayerListIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 5: // PLAYER
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.player = iprot.readI32();
+                struct.setPlayerIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -792,11 +913,21 @@ public class Minimax {
           struct.state.write(oprot);
           oprot.writeFieldEnd();
         }
-        if (struct.config != null) {
-          oprot.writeFieldBegin(CONFIG_FIELD_DESC);
-          struct.config.write(oprot);
+        if (struct.playerList != null) {
+          oprot.writeFieldBegin(PLAYER_LIST_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.playerList.size()));
+            for (int _iter3 : struct.playerList)
+            {
+              oprot.writeI32(_iter3);
+            }
+            oprot.writeListEnd();
+          }
           oprot.writeFieldEnd();
         }
+        oprot.writeFieldBegin(PLAYER_FIELD_DESC);
+        oprot.writeI32(struct.player);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -824,10 +955,13 @@ public class Minimax {
         if (struct.isSetState()) {
           optionals.set(2);
         }
-        if (struct.isSetConfig()) {
+        if (struct.isSetPlayerList()) {
           optionals.set(3);
         }
-        oprot.writeBitSet(optionals, 4);
+        if (struct.isSetPlayer()) {
+          optionals.set(4);
+        }
+        oprot.writeBitSet(optionals, 5);
         if (struct.isSetHost()) {
           oprot.writeString(struct.host);
         }
@@ -837,15 +971,24 @@ public class Minimax {
         if (struct.isSetState()) {
           struct.state.write(oprot);
         }
-        if (struct.isSetConfig()) {
-          struct.config.write(oprot);
+        if (struct.isSetPlayerList()) {
+          {
+            oprot.writeI32(struct.playerList.size());
+            for (int _iter4 : struct.playerList)
+            {
+              oprot.writeI32(_iter4);
+            }
+          }
+        }
+        if (struct.isSetPlayer()) {
+          oprot.writeI32(struct.player);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getMove_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(4);
+        BitSet incoming = iprot.readBitSet(5);
         if (incoming.get(0)) {
           struct.host = iprot.readString();
           struct.setHostIsSet(true);
@@ -860,9 +1003,21 @@ public class Minimax {
           struct.setStateIsSet(true);
         }
         if (incoming.get(3)) {
-          struct.config = new MinimaxConfig();
-          struct.config.read(iprot);
-          struct.setConfigIsSet(true);
+          {
+            org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.playerList = new ArrayList<Integer>(_list5.size);
+            for (int _i6 = 0; _i6 < _list5.size; ++_i6)
+            {
+              int _elem7; // required
+              _elem7 = iprot.readI32();
+              struct.playerList.add(_elem7);
+            }
+          }
+          struct.setPlayerListIsSet(true);
+        }
+        if (incoming.get(4)) {
+          struct.player = iprot.readI32();
+          struct.setPlayerIsSet(true);
         }
       }
     }

@@ -37,44 +37,56 @@ public class Bot {
      * @param state   The game state whose children we want
      * 
      * @param state
+     * @param playerList
+     * @param player
      */
-    public List<GameStateAndMove> getChildrenAndMoves(GameState state) throws org.apache.thrift.TException;
-
-    /**
-     * @return        All moves that can follow directly (with one random event) from state with probabilities
-     * @param state   The game state whose children we want
-     * 
-     * @param state
-     */
-    public List<GameStateAndProbability> getChildrenAndProbabilities(GameState state) throws org.apache.thrift.TException;
+    public List<GameStateAndMove> actions(GameState state, List<Integer> playerList, int player) throws org.apache.thrift.TException;
 
     /**
      * @return            An integer score for how good the state is for player
      * @param state       The game state to evaluate
+     * @param player      Integer id of active player
      * 
      * @param state
+     * @param playerList
+     * @param player
      */
-    public int eval(GameState state) throws org.apache.thrift.TException;
+    public Map<Integer,Integer> eval(GameState state, List<Integer> playerList, int player) throws org.apache.thrift.TException;
 
     /**
      * @return        Whether or not to search the tree whose root has state
      * @param state   The game state at the root of the tree
      * 
      * @param state
+     * @param depth
+     * @param playerList
+     * @param player
      */
-    public boolean explore(GameState state) throws org.apache.thrift.TException;
+    public boolean cutoffTest(GameState state, int depth, List<Integer> playerList, int player) throws org.apache.thrift.TException;
+
+    /**
+     * @return                  The integer id of the next player to act
+     * @param state             The game state for the current turn
+     * @param playerList        List of integer player ids
+     * @param player            Integer id of active player
+     * 
+     * @param state
+     * @param playerList
+     * @param player
+     */
+    public int nextPlayer(GameState state, List<Integer> playerList, int player) throws org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-    public void getChildrenAndMoves(GameState state, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.getChildrenAndMoves_call> resultHandler) throws org.apache.thrift.TException;
+    public void actions(GameState state, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.actions_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void getChildrenAndProbabilities(GameState state, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.getChildrenAndProbabilities_call> resultHandler) throws org.apache.thrift.TException;
+    public void eval(GameState state, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.eval_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void eval(GameState state, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.eval_call> resultHandler) throws org.apache.thrift.TException;
+    public void cutoffTest(GameState state, int depth, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.cutoffTest_call> resultHandler) throws org.apache.thrift.TException;
 
-    public void explore(GameState state, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.explore_call> resultHandler) throws org.apache.thrift.TException;
+    public void nextPlayer(GameState state, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<AsyncClient.nextPlayer_call> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -98,66 +110,47 @@ public class Bot {
       super(iprot, oprot);
     }
 
-    public List<GameStateAndMove> getChildrenAndMoves(GameState state) throws org.apache.thrift.TException
+    public List<GameStateAndMove> actions(GameState state, List<Integer> playerList, int player) throws org.apache.thrift.TException
     {
-      send_getChildrenAndMoves(state);
-      return recv_getChildrenAndMoves();
+      send_actions(state, playerList, player);
+      return recv_actions();
     }
 
-    public void send_getChildrenAndMoves(GameState state) throws org.apache.thrift.TException
+    public void send_actions(GameState state, List<Integer> playerList, int player) throws org.apache.thrift.TException
     {
-      getChildrenAndMoves_args args = new getChildrenAndMoves_args();
+      actions_args args = new actions_args();
       args.setState(state);
-      sendBase("getChildrenAndMoves", args);
+      args.setPlayerList(playerList);
+      args.setPlayer(player);
+      sendBase("actions", args);
     }
 
-    public List<GameStateAndMove> recv_getChildrenAndMoves() throws org.apache.thrift.TException
+    public List<GameStateAndMove> recv_actions() throws org.apache.thrift.TException
     {
-      getChildrenAndMoves_result result = new getChildrenAndMoves_result();
-      receiveBase(result, "getChildrenAndMoves");
+      actions_result result = new actions_result();
+      receiveBase(result, "actions");
       if (result.isSetSuccess()) {
         return result.success;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getChildrenAndMoves failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "actions failed: unknown result");
     }
 
-    public List<GameStateAndProbability> getChildrenAndProbabilities(GameState state) throws org.apache.thrift.TException
+    public Map<Integer,Integer> eval(GameState state, List<Integer> playerList, int player) throws org.apache.thrift.TException
     {
-      send_getChildrenAndProbabilities(state);
-      return recv_getChildrenAndProbabilities();
-    }
-
-    public void send_getChildrenAndProbabilities(GameState state) throws org.apache.thrift.TException
-    {
-      getChildrenAndProbabilities_args args = new getChildrenAndProbabilities_args();
-      args.setState(state);
-      sendBase("getChildrenAndProbabilities", args);
-    }
-
-    public List<GameStateAndProbability> recv_getChildrenAndProbabilities() throws org.apache.thrift.TException
-    {
-      getChildrenAndProbabilities_result result = new getChildrenAndProbabilities_result();
-      receiveBase(result, "getChildrenAndProbabilities");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getChildrenAndProbabilities failed: unknown result");
-    }
-
-    public int eval(GameState state) throws org.apache.thrift.TException
-    {
-      send_eval(state);
+      send_eval(state, playerList, player);
       return recv_eval();
     }
 
-    public void send_eval(GameState state) throws org.apache.thrift.TException
+    public void send_eval(GameState state, List<Integer> playerList, int player) throws org.apache.thrift.TException
     {
       eval_args args = new eval_args();
       args.setState(state);
+      args.setPlayerList(playerList);
+      args.setPlayer(player);
       sendBase("eval", args);
     }
 
-    public int recv_eval() throws org.apache.thrift.TException
+    public Map<Integer,Integer> recv_eval() throws org.apache.thrift.TException
     {
       eval_result result = new eval_result();
       receiveBase(result, "eval");
@@ -167,27 +160,55 @@ public class Bot {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "eval failed: unknown result");
     }
 
-    public boolean explore(GameState state) throws org.apache.thrift.TException
+    public boolean cutoffTest(GameState state, int depth, List<Integer> playerList, int player) throws org.apache.thrift.TException
     {
-      send_explore(state);
-      return recv_explore();
+      send_cutoffTest(state, depth, playerList, player);
+      return recv_cutoffTest();
     }
 
-    public void send_explore(GameState state) throws org.apache.thrift.TException
+    public void send_cutoffTest(GameState state, int depth, List<Integer> playerList, int player) throws org.apache.thrift.TException
     {
-      explore_args args = new explore_args();
+      cutoffTest_args args = new cutoffTest_args();
       args.setState(state);
-      sendBase("explore", args);
+      args.setDepth(depth);
+      args.setPlayerList(playerList);
+      args.setPlayer(player);
+      sendBase("cutoffTest", args);
     }
 
-    public boolean recv_explore() throws org.apache.thrift.TException
+    public boolean recv_cutoffTest() throws org.apache.thrift.TException
     {
-      explore_result result = new explore_result();
-      receiveBase(result, "explore");
+      cutoffTest_result result = new cutoffTest_result();
+      receiveBase(result, "cutoffTest");
       if (result.isSetSuccess()) {
         return result.success;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "explore failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "cutoffTest failed: unknown result");
+    }
+
+    public int nextPlayer(GameState state, List<Integer> playerList, int player) throws org.apache.thrift.TException
+    {
+      send_nextPlayer(state, playerList, player);
+      return recv_nextPlayer();
+    }
+
+    public void send_nextPlayer(GameState state, List<Integer> playerList, int player) throws org.apache.thrift.TException
+    {
+      nextPlayer_args args = new nextPlayer_args();
+      args.setState(state);
+      args.setPlayerList(playerList);
+      args.setPlayer(player);
+      sendBase("nextPlayer", args);
+    }
+
+    public int recv_nextPlayer() throws org.apache.thrift.TException
+    {
+      nextPlayer_result result = new nextPlayer_result();
+      receiveBase(result, "nextPlayer");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "nextPlayer failed: unknown result");
     }
 
   }
@@ -208,24 +229,30 @@ public class Bot {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void getChildrenAndMoves(GameState state, org.apache.thrift.async.AsyncMethodCallback<getChildrenAndMoves_call> resultHandler) throws org.apache.thrift.TException {
+    public void actions(GameState state, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<actions_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getChildrenAndMoves_call method_call = new getChildrenAndMoves_call(state, resultHandler, this, ___protocolFactory, ___transport);
+      actions_call method_call = new actions_call(state, playerList, player, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class getChildrenAndMoves_call extends org.apache.thrift.async.TAsyncMethodCall {
+    public static class actions_call extends org.apache.thrift.async.TAsyncMethodCall {
       private GameState state;
-      public getChildrenAndMoves_call(GameState state, org.apache.thrift.async.AsyncMethodCallback<getChildrenAndMoves_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private List<Integer> playerList;
+      private int player;
+      public actions_call(GameState state, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<actions_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.state = state;
+        this.playerList = playerList;
+        this.player = player;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getChildrenAndMoves", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        getChildrenAndMoves_args args = new getChildrenAndMoves_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("actions", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        actions_args args = new actions_args();
         args.setState(state);
+        args.setPlayerList(playerList);
+        args.setPlayer(player);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -236,65 +263,39 @@ public class Bot {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_getChildrenAndMoves();
+        return (new Client(prot)).recv_actions();
       }
     }
 
-    public void getChildrenAndProbabilities(GameState state, org.apache.thrift.async.AsyncMethodCallback<getChildrenAndProbabilities_call> resultHandler) throws org.apache.thrift.TException {
+    public void eval(GameState state, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<eval_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getChildrenAndProbabilities_call method_call = new getChildrenAndProbabilities_call(state, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class getChildrenAndProbabilities_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private GameState state;
-      public getChildrenAndProbabilities_call(GameState state, org.apache.thrift.async.AsyncMethodCallback<getChildrenAndProbabilities_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.state = state;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getChildrenAndProbabilities", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        getChildrenAndProbabilities_args args = new getChildrenAndProbabilities_args();
-        args.setState(state);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public List<GameStateAndProbability> getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_getChildrenAndProbabilities();
-      }
-    }
-
-    public void eval(GameState state, org.apache.thrift.async.AsyncMethodCallback<eval_call> resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      eval_call method_call = new eval_call(state, resultHandler, this, ___protocolFactory, ___transport);
+      eval_call method_call = new eval_call(state, playerList, player, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class eval_call extends org.apache.thrift.async.TAsyncMethodCall {
       private GameState state;
-      public eval_call(GameState state, org.apache.thrift.async.AsyncMethodCallback<eval_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private List<Integer> playerList;
+      private int player;
+      public eval_call(GameState state, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<eval_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.state = state;
+        this.playerList = playerList;
+        this.player = player;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("eval", org.apache.thrift.protocol.TMessageType.CALL, 0));
         eval_args args = new eval_args();
         args.setState(state);
+        args.setPlayerList(playerList);
+        args.setPlayer(player);
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public int getResult() throws org.apache.thrift.TException {
+      public Map<Integer,Integer> getResult() throws org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -304,24 +305,33 @@ public class Bot {
       }
     }
 
-    public void explore(GameState state, org.apache.thrift.async.AsyncMethodCallback<explore_call> resultHandler) throws org.apache.thrift.TException {
+    public void cutoffTest(GameState state, int depth, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<cutoffTest_call> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      explore_call method_call = new explore_call(state, resultHandler, this, ___protocolFactory, ___transport);
+      cutoffTest_call method_call = new cutoffTest_call(state, depth, playerList, player, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class explore_call extends org.apache.thrift.async.TAsyncMethodCall {
+    public static class cutoffTest_call extends org.apache.thrift.async.TAsyncMethodCall {
       private GameState state;
-      public explore_call(GameState state, org.apache.thrift.async.AsyncMethodCallback<explore_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int depth;
+      private List<Integer> playerList;
+      private int player;
+      public cutoffTest_call(GameState state, int depth, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<cutoffTest_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.state = state;
+        this.depth = depth;
+        this.playerList = playerList;
+        this.player = player;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("explore", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        explore_args args = new explore_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("cutoffTest", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        cutoffTest_args args = new cutoffTest_args();
         args.setState(state);
+        args.setDepth(depth);
+        args.setPlayerList(playerList);
+        args.setPlayer(player);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -332,7 +342,45 @@ public class Bot {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_explore();
+        return (new Client(prot)).recv_cutoffTest();
+      }
+    }
+
+    public void nextPlayer(GameState state, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<nextPlayer_call> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      nextPlayer_call method_call = new nextPlayer_call(state, playerList, player, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class nextPlayer_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private GameState state;
+      private List<Integer> playerList;
+      private int player;
+      public nextPlayer_call(GameState state, List<Integer> playerList, int player, org.apache.thrift.async.AsyncMethodCallback<nextPlayer_call> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.state = state;
+        this.playerList = playerList;
+        this.player = player;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("nextPlayer", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        nextPlayer_args args = new nextPlayer_args();
+        args.setState(state);
+        args.setPlayerList(playerList);
+        args.setPlayer(player);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public int getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_nextPlayer();
       }
     }
 
@@ -349,41 +397,25 @@ public class Bot {
     }
 
     private static <I extends Iface> Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> getProcessMap(Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
-      processMap.put("getChildrenAndMoves", new getChildrenAndMoves());
-      processMap.put("getChildrenAndProbabilities", new getChildrenAndProbabilities());
+      processMap.put("actions", new actions());
       processMap.put("eval", new eval());
-      processMap.put("explore", new explore());
+      processMap.put("cutoffTest", new cutoffTest());
+      processMap.put("nextPlayer", new nextPlayer());
       return processMap;
     }
 
-    private static class getChildrenAndMoves<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getChildrenAndMoves_args> {
-      public getChildrenAndMoves() {
-        super("getChildrenAndMoves");
+    private static class actions<I extends Iface> extends org.apache.thrift.ProcessFunction<I, actions_args> {
+      public actions() {
+        super("actions");
       }
 
-      protected getChildrenAndMoves_args getEmptyArgsInstance() {
-        return new getChildrenAndMoves_args();
+      protected actions_args getEmptyArgsInstance() {
+        return new actions_args();
       }
 
-      protected getChildrenAndMoves_result getResult(I iface, getChildrenAndMoves_args args) throws org.apache.thrift.TException {
-        getChildrenAndMoves_result result = new getChildrenAndMoves_result();
-        result.success = iface.getChildrenAndMoves(args.state);
-        return result;
-      }
-    }
-
-    private static class getChildrenAndProbabilities<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getChildrenAndProbabilities_args> {
-      public getChildrenAndProbabilities() {
-        super("getChildrenAndProbabilities");
-      }
-
-      protected getChildrenAndProbabilities_args getEmptyArgsInstance() {
-        return new getChildrenAndProbabilities_args();
-      }
-
-      protected getChildrenAndProbabilities_result getResult(I iface, getChildrenAndProbabilities_args args) throws org.apache.thrift.TException {
-        getChildrenAndProbabilities_result result = new getChildrenAndProbabilities_result();
-        result.success = iface.getChildrenAndProbabilities(args.state);
+      protected actions_result getResult(I iface, actions_args args) throws org.apache.thrift.TException {
+        actions_result result = new actions_result();
+        result.success = iface.actions(args.state, args.playerList, args.player);
         return result;
       }
     }
@@ -399,24 +431,40 @@ public class Bot {
 
       protected eval_result getResult(I iface, eval_args args) throws org.apache.thrift.TException {
         eval_result result = new eval_result();
-        result.success = iface.eval(args.state);
+        result.success = iface.eval(args.state, args.playerList, args.player);
+        return result;
+      }
+    }
+
+    private static class cutoffTest<I extends Iface> extends org.apache.thrift.ProcessFunction<I, cutoffTest_args> {
+      public cutoffTest() {
+        super("cutoffTest");
+      }
+
+      protected cutoffTest_args getEmptyArgsInstance() {
+        return new cutoffTest_args();
+      }
+
+      protected cutoffTest_result getResult(I iface, cutoffTest_args args) throws org.apache.thrift.TException {
+        cutoffTest_result result = new cutoffTest_result();
+        result.success = iface.cutoffTest(args.state, args.depth, args.playerList, args.player);
         result.setSuccessIsSet(true);
         return result;
       }
     }
 
-    private static class explore<I extends Iface> extends org.apache.thrift.ProcessFunction<I, explore_args> {
-      public explore() {
-        super("explore");
+    private static class nextPlayer<I extends Iface> extends org.apache.thrift.ProcessFunction<I, nextPlayer_args> {
+      public nextPlayer() {
+        super("nextPlayer");
       }
 
-      protected explore_args getEmptyArgsInstance() {
-        return new explore_args();
+      protected nextPlayer_args getEmptyArgsInstance() {
+        return new nextPlayer_args();
       }
 
-      protected explore_result getResult(I iface, explore_args args) throws org.apache.thrift.TException {
-        explore_result result = new explore_result();
-        result.success = iface.explore(args.state);
+      protected nextPlayer_result getResult(I iface, nextPlayer_args args) throws org.apache.thrift.TException {
+        nextPlayer_result result = new nextPlayer_result();
+        result.success = iface.nextPlayer(args.state, args.playerList, args.player);
         result.setSuccessIsSet(true);
         return result;
       }
@@ -424,22 +472,28 @@ public class Bot {
 
   }
 
-  public static class getChildrenAndMoves_args implements org.apache.thrift.TBase<getChildrenAndMoves_args, getChildrenAndMoves_args._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getChildrenAndMoves_args");
+  public static class actions_args implements org.apache.thrift.TBase<actions_args, actions_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("actions_args");
 
     private static final org.apache.thrift.protocol.TField STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("state", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField PLAYER_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("playerList", org.apache.thrift.protocol.TType.LIST, (short)2);
+    private static final org.apache.thrift.protocol.TField PLAYER_FIELD_DESC = new org.apache.thrift.protocol.TField("player", org.apache.thrift.protocol.TType.I32, (short)3);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getChildrenAndMoves_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getChildrenAndMoves_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new actions_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new actions_argsTupleSchemeFactory());
     }
 
     private GameState state; // required
+    private List<Integer> playerList; // required
+    private int player; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      STATE((short)1, "state");
+      STATE((short)1, "state"),
+      PLAYER_LIST((short)2, "playerList"),
+      PLAYER((short)3, "player");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -456,6 +510,10 @@ public class Bot {
         switch(fieldId) {
           case 1: // STATE
             return STATE;
+          case 2: // PLAYER_LIST
+            return PLAYER_LIST;
+          case 3: // PLAYER
+            return PLAYER;
           default:
             return null;
         }
@@ -496,47 +554,72 @@ public class Bot {
     }
 
     // isset id assignments
+    private static final int __PLAYER_ISSET_ID = 0;
+    private BitSet __isset_bit_vector = new BitSet(1);
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.STATE, new org.apache.thrift.meta_data.FieldMetaData("state", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, GameState.class)));
+      tmpMap.put(_Fields.PLAYER_LIST, new org.apache.thrift.meta_data.FieldMetaData("playerList", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.PLAYER, new org.apache.thrift.meta_data.FieldMetaData("player", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getChildrenAndMoves_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(actions_args.class, metaDataMap);
     }
 
-    public getChildrenAndMoves_args() {
+    public actions_args() {
     }
 
-    public getChildrenAndMoves_args(
-      GameState state)
+    public actions_args(
+      GameState state,
+      List<Integer> playerList,
+      int player)
     {
       this();
       this.state = state;
+      this.playerList = playerList;
+      this.player = player;
+      setPlayerIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getChildrenAndMoves_args(getChildrenAndMoves_args other) {
+    public actions_args(actions_args other) {
+      __isset_bit_vector.clear();
+      __isset_bit_vector.or(other.__isset_bit_vector);
       if (other.isSetState()) {
         this.state = new GameState(other.state);
       }
+      if (other.isSetPlayerList()) {
+        List<Integer> __this__playerList = new ArrayList<Integer>();
+        for (Integer other_element : other.playerList) {
+          __this__playerList.add(other_element);
+        }
+        this.playerList = __this__playerList;
+      }
+      this.player = other.player;
     }
 
-    public getChildrenAndMoves_args deepCopy() {
-      return new getChildrenAndMoves_args(this);
+    public actions_args deepCopy() {
+      return new actions_args(this);
     }
 
     public void clear() {
       this.state = null;
+      this.playerList = null;
+      setPlayerIsSet(false);
+      this.player = 0;
     }
 
     public GameState getState() {
       return this.state;
     }
 
-    public getChildrenAndMoves_args setState(GameState state) {
+    public actions_args setState(GameState state) {
       this.state = state;
       return this;
     }
@@ -556,6 +639,68 @@ public class Bot {
       }
     }
 
+    public int getPlayerListSize() {
+      return (this.playerList == null) ? 0 : this.playerList.size();
+    }
+
+    public java.util.Iterator<Integer> getPlayerListIterator() {
+      return (this.playerList == null) ? null : this.playerList.iterator();
+    }
+
+    public void addToPlayerList(int elem) {
+      if (this.playerList == null) {
+        this.playerList = new ArrayList<Integer>();
+      }
+      this.playerList.add(elem);
+    }
+
+    public List<Integer> getPlayerList() {
+      return this.playerList;
+    }
+
+    public actions_args setPlayerList(List<Integer> playerList) {
+      this.playerList = playerList;
+      return this;
+    }
+
+    public void unsetPlayerList() {
+      this.playerList = null;
+    }
+
+    /** Returns true if field playerList is set (has been assigned a value) and false otherwise */
+    public boolean isSetPlayerList() {
+      return this.playerList != null;
+    }
+
+    public void setPlayerListIsSet(boolean value) {
+      if (!value) {
+        this.playerList = null;
+      }
+    }
+
+    public int getPlayer() {
+      return this.player;
+    }
+
+    public actions_args setPlayer(int player) {
+      this.player = player;
+      setPlayerIsSet(true);
+      return this;
+    }
+
+    public void unsetPlayer() {
+      __isset_bit_vector.clear(__PLAYER_ISSET_ID);
+    }
+
+    /** Returns true if field player is set (has been assigned a value) and false otherwise */
+    public boolean isSetPlayer() {
+      return __isset_bit_vector.get(__PLAYER_ISSET_ID);
+    }
+
+    public void setPlayerIsSet(boolean value) {
+      __isset_bit_vector.set(__PLAYER_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case STATE:
@@ -566,6 +711,22 @@ public class Bot {
         }
         break;
 
+      case PLAYER_LIST:
+        if (value == null) {
+          unsetPlayerList();
+        } else {
+          setPlayerList((List<Integer>)value);
+        }
+        break;
+
+      case PLAYER:
+        if (value == null) {
+          unsetPlayer();
+        } else {
+          setPlayer((Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -573,6 +734,12 @@ public class Bot {
       switch (field) {
       case STATE:
         return getState();
+
+      case PLAYER_LIST:
+        return getPlayerList();
+
+      case PLAYER:
+        return Integer.valueOf(getPlayer());
 
       }
       throw new IllegalStateException();
@@ -587,6 +754,10 @@ public class Bot {
       switch (field) {
       case STATE:
         return isSetState();
+      case PLAYER_LIST:
+        return isSetPlayerList();
+      case PLAYER:
+        return isSetPlayer();
       }
       throw new IllegalStateException();
     }
@@ -595,12 +766,12 @@ public class Bot {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getChildrenAndMoves_args)
-        return this.equals((getChildrenAndMoves_args)that);
+      if (that instanceof actions_args)
+        return this.equals((actions_args)that);
       return false;
     }
 
-    public boolean equals(getChildrenAndMoves_args that) {
+    public boolean equals(actions_args that) {
       if (that == null)
         return false;
 
@@ -610,6 +781,24 @@ public class Bot {
         if (!(this_present_state && that_present_state))
           return false;
         if (!this.state.equals(that.state))
+          return false;
+      }
+
+      boolean this_present_playerList = true && this.isSetPlayerList();
+      boolean that_present_playerList = true && that.isSetPlayerList();
+      if (this_present_playerList || that_present_playerList) {
+        if (!(this_present_playerList && that_present_playerList))
+          return false;
+        if (!this.playerList.equals(that.playerList))
+          return false;
+      }
+
+      boolean this_present_player = true;
+      boolean that_present_player = true;
+      if (this_present_player || that_present_player) {
+        if (!(this_present_player && that_present_player))
+          return false;
+        if (this.player != that.player)
           return false;
       }
 
@@ -625,16 +814,26 @@ public class Bot {
       if (present_state)
         builder.append(state);
 
+      boolean present_playerList = true && (isSetPlayerList());
+      builder.append(present_playerList);
+      if (present_playerList)
+        builder.append(playerList);
+
+      boolean present_player = true;
+      builder.append(present_player);
+      if (present_player)
+        builder.append(player);
+
       return builder.toHashCode();
     }
 
-    public int compareTo(getChildrenAndMoves_args other) {
+    public int compareTo(actions_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      getChildrenAndMoves_args typedOther = (getChildrenAndMoves_args)other;
+      actions_args typedOther = (actions_args)other;
 
       lastComparison = Boolean.valueOf(isSetState()).compareTo(typedOther.isSetState());
       if (lastComparison != 0) {
@@ -642,6 +841,26 @@ public class Bot {
       }
       if (isSetState()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.state, typedOther.state);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetPlayerList()).compareTo(typedOther.isSetPlayerList());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPlayerList()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.playerList, typedOther.playerList);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetPlayer()).compareTo(typedOther.isSetPlayer());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPlayer()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.player, typedOther.player);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -663,7 +882,7 @@ public class Bot {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getChildrenAndMoves_args(");
+      StringBuilder sb = new StringBuilder("actions_args(");
       boolean first = true;
 
       sb.append("state:");
@@ -672,6 +891,18 @@ public class Bot {
       } else {
         sb.append(this.state);
       }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("playerList:");
+      if (this.playerList == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.playerList);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("player:");
+      sb.append(this.player);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -697,15 +928,15 @@ public class Bot {
       }
     }
 
-    private static class getChildrenAndMoves_argsStandardSchemeFactory implements SchemeFactory {
-      public getChildrenAndMoves_argsStandardScheme getScheme() {
-        return new getChildrenAndMoves_argsStandardScheme();
+    private static class actions_argsStandardSchemeFactory implements SchemeFactory {
+      public actions_argsStandardScheme getScheme() {
+        return new actions_argsStandardScheme();
       }
     }
 
-    private static class getChildrenAndMoves_argsStandardScheme extends StandardScheme<getChildrenAndMoves_args> {
+    private static class actions_argsStandardScheme extends StandardScheme<actions_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getChildrenAndMoves_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, actions_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -724,6 +955,32 @@ public class Bot {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // PLAYER_LIST
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
+                  struct.playerList = new ArrayList<Integer>(_list0.size);
+                  for (int _i1 = 0; _i1 < _list0.size; ++_i1)
+                  {
+                    int _elem2; // required
+                    _elem2 = iprot.readI32();
+                    struct.playerList.add(_elem2);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setPlayerListIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // PLAYER
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.player = iprot.readI32();
+                struct.setPlayerIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -735,7 +992,7 @@ public class Bot {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getChildrenAndMoves_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, actions_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -744,56 +1001,106 @@ public class Bot {
           struct.state.write(oprot);
           oprot.writeFieldEnd();
         }
+        if (struct.playerList != null) {
+          oprot.writeFieldBegin(PLAYER_LIST_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.playerList.size()));
+            for (int _iter3 : struct.playerList)
+            {
+              oprot.writeI32(_iter3);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldBegin(PLAYER_FIELD_DESC);
+        oprot.writeI32(struct.player);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
 
     }
 
-    private static class getChildrenAndMoves_argsTupleSchemeFactory implements SchemeFactory {
-      public getChildrenAndMoves_argsTupleScheme getScheme() {
-        return new getChildrenAndMoves_argsTupleScheme();
+    private static class actions_argsTupleSchemeFactory implements SchemeFactory {
+      public actions_argsTupleScheme getScheme() {
+        return new actions_argsTupleScheme();
       }
     }
 
-    private static class getChildrenAndMoves_argsTupleScheme extends TupleScheme<getChildrenAndMoves_args> {
+    private static class actions_argsTupleScheme extends TupleScheme<actions_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getChildrenAndMoves_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, actions_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetState()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetPlayerList()) {
+          optionals.set(1);
+        }
+        if (struct.isSetPlayer()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
         if (struct.isSetState()) {
           struct.state.write(oprot);
+        }
+        if (struct.isSetPlayerList()) {
+          {
+            oprot.writeI32(struct.playerList.size());
+            for (int _iter4 : struct.playerList)
+            {
+              oprot.writeI32(_iter4);
+            }
+          }
+        }
+        if (struct.isSetPlayer()) {
+          oprot.writeI32(struct.player);
         }
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getChildrenAndMoves_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, actions_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
           struct.state = new GameState();
           struct.state.read(iprot);
           struct.setStateIsSet(true);
+        }
+        if (incoming.get(1)) {
+          {
+            org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.playerList = new ArrayList<Integer>(_list5.size);
+            for (int _i6 = 0; _i6 < _list5.size; ++_i6)
+            {
+              int _elem7; // required
+              _elem7 = iprot.readI32();
+              struct.playerList.add(_elem7);
+            }
+          }
+          struct.setPlayerListIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.player = iprot.readI32();
+          struct.setPlayerIsSet(true);
         }
       }
     }
 
   }
 
-  public static class getChildrenAndMoves_result implements org.apache.thrift.TBase<getChildrenAndMoves_result, getChildrenAndMoves_result._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getChildrenAndMoves_result");
+  public static class actions_result implements org.apache.thrift.TBase<actions_result, actions_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("actions_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getChildrenAndMoves_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getChildrenAndMoves_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new actions_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new actions_resultTupleSchemeFactory());
     }
 
     private List<GameStateAndMove> success; // required
@@ -864,13 +1171,13 @@ public class Bot {
           new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, GameStateAndMove.class))));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getChildrenAndMoves_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(actions_result.class, metaDataMap);
     }
 
-    public getChildrenAndMoves_result() {
+    public actions_result() {
     }
 
-    public getChildrenAndMoves_result(
+    public actions_result(
       List<GameStateAndMove> success)
     {
       this();
@@ -880,7 +1187,7 @@ public class Bot {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getChildrenAndMoves_result(getChildrenAndMoves_result other) {
+    public actions_result(actions_result other) {
       if (other.isSetSuccess()) {
         List<GameStateAndMove> __this__success = new ArrayList<GameStateAndMove>();
         for (GameStateAndMove other_element : other.success) {
@@ -890,8 +1197,8 @@ public class Bot {
       }
     }
 
-    public getChildrenAndMoves_result deepCopy() {
-      return new getChildrenAndMoves_result(this);
+    public actions_result deepCopy() {
+      return new actions_result(this);
     }
 
     public void clear() {
@@ -917,7 +1224,7 @@ public class Bot {
       return this.success;
     }
 
-    public getChildrenAndMoves_result setSuccess(List<GameStateAndMove> success) {
+    public actions_result setSuccess(List<GameStateAndMove> success) {
       this.success = success;
       return this;
     }
@@ -976,12 +1283,12 @@ public class Bot {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getChildrenAndMoves_result)
-        return this.equals((getChildrenAndMoves_result)that);
+      if (that instanceof actions_result)
+        return this.equals((actions_result)that);
       return false;
     }
 
-    public boolean equals(getChildrenAndMoves_result that) {
+    public boolean equals(actions_result that) {
       if (that == null)
         return false;
 
@@ -1009,13 +1316,13 @@ public class Bot {
       return builder.toHashCode();
     }
 
-    public int compareTo(getChildrenAndMoves_result other) {
+    public int compareTo(actions_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      getChildrenAndMoves_result typedOther = (getChildrenAndMoves_result)other;
+      actions_result typedOther = (actions_result)other;
 
       lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
       if (lastComparison != 0) {
@@ -1044,7 +1351,7 @@ public class Bot {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getChildrenAndMoves_result(");
+      StringBuilder sb = new StringBuilder("actions_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -1078,789 +1385,15 @@ public class Bot {
       }
     }
 
-    private static class getChildrenAndMoves_resultStandardSchemeFactory implements SchemeFactory {
-      public getChildrenAndMoves_resultStandardScheme getScheme() {
-        return new getChildrenAndMoves_resultStandardScheme();
+    private static class actions_resultStandardSchemeFactory implements SchemeFactory {
+      public actions_resultStandardScheme getScheme() {
+        return new actions_resultStandardScheme();
       }
     }
 
-    private static class getChildrenAndMoves_resultStandardScheme extends StandardScheme<getChildrenAndMoves_result> {
+    private static class actions_resultStandardScheme extends StandardScheme<actions_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getChildrenAndMoves_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-                {
-                  org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
-                  struct.success = new ArrayList<GameStateAndMove>(_list0.size);
-                  for (int _i1 = 0; _i1 < _list0.size; ++_i1)
-                  {
-                    GameStateAndMove _elem2; // required
-                    _elem2 = new GameStateAndMove();
-                    _elem2.read(iprot);
-                    struct.success.add(_elem2);
-                  }
-                  iprot.readListEnd();
-                }
-                struct.setSuccessIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getChildrenAndMoves_result struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.success != null) {
-          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
-            for (GameStateAndMove _iter3 : struct.success)
-            {
-              _iter3.write(oprot);
-            }
-            oprot.writeListEnd();
-          }
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class getChildrenAndMoves_resultTupleSchemeFactory implements SchemeFactory {
-      public getChildrenAndMoves_resultTupleScheme getScheme() {
-        return new getChildrenAndMoves_resultTupleScheme();
-      }
-    }
-
-    private static class getChildrenAndMoves_resultTupleScheme extends TupleScheme<getChildrenAndMoves_result> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getChildrenAndMoves_result struct) throws org.apache.thrift.TException {
-        TTupleProtocol oprot = (TTupleProtocol) prot;
-        BitSet optionals = new BitSet();
-        if (struct.isSetSuccess()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetSuccess()) {
-          {
-            oprot.writeI32(struct.success.size());
-            for (GameStateAndMove _iter4 : struct.success)
-            {
-              _iter4.write(oprot);
-            }
-          }
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getChildrenAndMoves_result struct) throws org.apache.thrift.TException {
-        TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          {
-            org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.success = new ArrayList<GameStateAndMove>(_list5.size);
-            for (int _i6 = 0; _i6 < _list5.size; ++_i6)
-            {
-              GameStateAndMove _elem7; // required
-              _elem7 = new GameStateAndMove();
-              _elem7.read(iprot);
-              struct.success.add(_elem7);
-            }
-          }
-          struct.setSuccessIsSet(true);
-        }
-      }
-    }
-
-  }
-
-  public static class getChildrenAndProbabilities_args implements org.apache.thrift.TBase<getChildrenAndProbabilities_args, getChildrenAndProbabilities_args._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getChildrenAndProbabilities_args");
-
-    private static final org.apache.thrift.protocol.TField STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("state", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-
-    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-    static {
-      schemes.put(StandardScheme.class, new getChildrenAndProbabilities_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getChildrenAndProbabilities_argsTupleSchemeFactory());
-    }
-
-    private GameState state; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      STATE((short)1, "state");
-
-      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 1: // STATE
-            return STATE;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.STATE, new org.apache.thrift.meta_data.FieldMetaData("state", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, GameState.class)));
-      metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getChildrenAndProbabilities_args.class, metaDataMap);
-    }
-
-    public getChildrenAndProbabilities_args() {
-    }
-
-    public getChildrenAndProbabilities_args(
-      GameState state)
-    {
-      this();
-      this.state = state;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public getChildrenAndProbabilities_args(getChildrenAndProbabilities_args other) {
-      if (other.isSetState()) {
-        this.state = new GameState(other.state);
-      }
-    }
-
-    public getChildrenAndProbabilities_args deepCopy() {
-      return new getChildrenAndProbabilities_args(this);
-    }
-
-    public void clear() {
-      this.state = null;
-    }
-
-    public GameState getState() {
-      return this.state;
-    }
-
-    public getChildrenAndProbabilities_args setState(GameState state) {
-      this.state = state;
-      return this;
-    }
-
-    public void unsetState() {
-      this.state = null;
-    }
-
-    /** Returns true if field state is set (has been assigned a value) and false otherwise */
-    public boolean isSetState() {
-      return this.state != null;
-    }
-
-    public void setStateIsSet(boolean value) {
-      if (!value) {
-        this.state = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case STATE:
-        if (value == null) {
-          unsetState();
-        } else {
-          setState((GameState)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case STATE:
-        return getState();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case STATE:
-        return isSetState();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof getChildrenAndProbabilities_args)
-        return this.equals((getChildrenAndProbabilities_args)that);
-      return false;
-    }
-
-    public boolean equals(getChildrenAndProbabilities_args that) {
-      if (that == null)
-        return false;
-
-      boolean this_present_state = true && this.isSetState();
-      boolean that_present_state = true && that.isSetState();
-      if (this_present_state || that_present_state) {
-        if (!(this_present_state && that_present_state))
-          return false;
-        if (!this.state.equals(that.state))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      HashCodeBuilder builder = new HashCodeBuilder();
-
-      boolean present_state = true && (isSetState());
-      builder.append(present_state);
-      if (present_state)
-        builder.append(state);
-
-      return builder.toHashCode();
-    }
-
-    public int compareTo(getChildrenAndProbabilities_args other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-      getChildrenAndProbabilities_args typedOther = (getChildrenAndProbabilities_args)other;
-
-      lastComparison = Boolean.valueOf(isSetState()).compareTo(typedOther.isSetState());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetState()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.state, typedOther.state);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-    }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getChildrenAndProbabilities_args(");
-      boolean first = true;
-
-      sb.append("state:");
-      if (this.state == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.state);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te.getMessage());
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te.getMessage());
-      }
-    }
-
-    private static class getChildrenAndProbabilities_argsStandardSchemeFactory implements SchemeFactory {
-      public getChildrenAndProbabilities_argsStandardScheme getScheme() {
-        return new getChildrenAndProbabilities_argsStandardScheme();
-      }
-    }
-
-    private static class getChildrenAndProbabilities_argsStandardScheme extends StandardScheme<getChildrenAndProbabilities_args> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getChildrenAndProbabilities_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 1: // STATE
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.state = new GameState();
-                struct.state.read(iprot);
-                struct.setStateIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getChildrenAndProbabilities_args struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.state != null) {
-          oprot.writeFieldBegin(STATE_FIELD_DESC);
-          struct.state.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class getChildrenAndProbabilities_argsTupleSchemeFactory implements SchemeFactory {
-      public getChildrenAndProbabilities_argsTupleScheme getScheme() {
-        return new getChildrenAndProbabilities_argsTupleScheme();
-      }
-    }
-
-    private static class getChildrenAndProbabilities_argsTupleScheme extends TupleScheme<getChildrenAndProbabilities_args> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getChildrenAndProbabilities_args struct) throws org.apache.thrift.TException {
-        TTupleProtocol oprot = (TTupleProtocol) prot;
-        BitSet optionals = new BitSet();
-        if (struct.isSetState()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetState()) {
-          struct.state.write(oprot);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getChildrenAndProbabilities_args struct) throws org.apache.thrift.TException {
-        TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          struct.state = new GameState();
-          struct.state.read(iprot);
-          struct.setStateIsSet(true);
-        }
-      }
-    }
-
-  }
-
-  public static class getChildrenAndProbabilities_result implements org.apache.thrift.TBase<getChildrenAndProbabilities_result, getChildrenAndProbabilities_result._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getChildrenAndProbabilities_result");
-
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
-
-    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-    static {
-      schemes.put(StandardScheme.class, new getChildrenAndProbabilities_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getChildrenAndProbabilities_resultTupleSchemeFactory());
-    }
-
-    private List<GameStateAndProbability> success; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
-
-      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 0: // SUCCESS
-            return SUCCESS;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, GameStateAndProbability.class))));
-      metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getChildrenAndProbabilities_result.class, metaDataMap);
-    }
-
-    public getChildrenAndProbabilities_result() {
-    }
-
-    public getChildrenAndProbabilities_result(
-      List<GameStateAndProbability> success)
-    {
-      this();
-      this.success = success;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public getChildrenAndProbabilities_result(getChildrenAndProbabilities_result other) {
-      if (other.isSetSuccess()) {
-        List<GameStateAndProbability> __this__success = new ArrayList<GameStateAndProbability>();
-        for (GameStateAndProbability other_element : other.success) {
-          __this__success.add(new GameStateAndProbability(other_element));
-        }
-        this.success = __this__success;
-      }
-    }
-
-    public getChildrenAndProbabilities_result deepCopy() {
-      return new getChildrenAndProbabilities_result(this);
-    }
-
-    public void clear() {
-      this.success = null;
-    }
-
-    public int getSuccessSize() {
-      return (this.success == null) ? 0 : this.success.size();
-    }
-
-    public java.util.Iterator<GameStateAndProbability> getSuccessIterator() {
-      return (this.success == null) ? null : this.success.iterator();
-    }
-
-    public void addToSuccess(GameStateAndProbability elem) {
-      if (this.success == null) {
-        this.success = new ArrayList<GameStateAndProbability>();
-      }
-      this.success.add(elem);
-    }
-
-    public List<GameStateAndProbability> getSuccess() {
-      return this.success;
-    }
-
-    public getChildrenAndProbabilities_result setSuccess(List<GameStateAndProbability> success) {
-      this.success = success;
-      return this;
-    }
-
-    public void unsetSuccess() {
-      this.success = null;
-    }
-
-    /** Returns true if field success is set (has been assigned a value) and false otherwise */
-    public boolean isSetSuccess() {
-      return this.success != null;
-    }
-
-    public void setSuccessIsSet(boolean value) {
-      if (!value) {
-        this.success = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((List<GameStateAndProbability>)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case SUCCESS:
-        return getSuccess();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof getChildrenAndProbabilities_result)
-        return this.equals((getChildrenAndProbabilities_result)that);
-      return false;
-    }
-
-    public boolean equals(getChildrenAndProbabilities_result that) {
-      if (that == null)
-        return false;
-
-      boolean this_present_success = true && this.isSetSuccess();
-      boolean that_present_success = true && that.isSetSuccess();
-      if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      HashCodeBuilder builder = new HashCodeBuilder();
-
-      boolean present_success = true && (isSetSuccess());
-      builder.append(present_success);
-      if (present_success)
-        builder.append(success);
-
-      return builder.toHashCode();
-    }
-
-    public int compareTo(getChildrenAndProbabilities_result other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-      getChildrenAndProbabilities_result typedOther = (getChildrenAndProbabilities_result)other;
-
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetSuccess()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, typedOther.success);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-      }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getChildrenAndProbabilities_result(");
-      boolean first = true;
-
-      sb.append("success:");
-      if (this.success == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.success);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te.getMessage());
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te.getMessage());
-      }
-    }
-
-    private static class getChildrenAndProbabilities_resultStandardSchemeFactory implements SchemeFactory {
-      public getChildrenAndProbabilities_resultStandardScheme getScheme() {
-        return new getChildrenAndProbabilities_resultStandardScheme();
-      }
-    }
-
-    private static class getChildrenAndProbabilities_resultStandardScheme extends StandardScheme<getChildrenAndProbabilities_result> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getChildrenAndProbabilities_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, actions_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1874,11 +1407,11 @@ public class Bot {
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
                   org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
-                  struct.success = new ArrayList<GameStateAndProbability>(_list8.size);
+                  struct.success = new ArrayList<GameStateAndMove>(_list8.size);
                   for (int _i9 = 0; _i9 < _list8.size; ++_i9)
                   {
-                    GameStateAndProbability _elem10; // required
-                    _elem10 = new GameStateAndProbability();
+                    GameStateAndMove _elem10; // required
+                    _elem10 = new GameStateAndMove();
                     _elem10.read(iprot);
                     struct.success.add(_elem10);
                   }
@@ -1900,7 +1433,7 @@ public class Bot {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getChildrenAndProbabilities_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, actions_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -1908,7 +1441,7 @@ public class Bot {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
-            for (GameStateAndProbability _iter11 : struct.success)
+            for (GameStateAndMove _iter11 : struct.success)
             {
               _iter11.write(oprot);
             }
@@ -1922,16 +1455,16 @@ public class Bot {
 
     }
 
-    private static class getChildrenAndProbabilities_resultTupleSchemeFactory implements SchemeFactory {
-      public getChildrenAndProbabilities_resultTupleScheme getScheme() {
-        return new getChildrenAndProbabilities_resultTupleScheme();
+    private static class actions_resultTupleSchemeFactory implements SchemeFactory {
+      public actions_resultTupleScheme getScheme() {
+        return new actions_resultTupleScheme();
       }
     }
 
-    private static class getChildrenAndProbabilities_resultTupleScheme extends TupleScheme<getChildrenAndProbabilities_result> {
+    private static class actions_resultTupleScheme extends TupleScheme<actions_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getChildrenAndProbabilities_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, actions_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -1941,7 +1474,7 @@ public class Bot {
         if (struct.isSetSuccess()) {
           {
             oprot.writeI32(struct.success.size());
-            for (GameStateAndProbability _iter12 : struct.success)
+            for (GameStateAndMove _iter12 : struct.success)
             {
               _iter12.write(oprot);
             }
@@ -1950,17 +1483,17 @@ public class Bot {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getChildrenAndProbabilities_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, actions_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
             org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.success = new ArrayList<GameStateAndProbability>(_list13.size);
+            struct.success = new ArrayList<GameStateAndMove>(_list13.size);
             for (int _i14 = 0; _i14 < _list13.size; ++_i14)
             {
-              GameStateAndProbability _elem15; // required
-              _elem15 = new GameStateAndProbability();
+              GameStateAndMove _elem15; // required
+              _elem15 = new GameStateAndMove();
               _elem15.read(iprot);
               struct.success.add(_elem15);
             }
@@ -1976,6 +1509,8 @@ public class Bot {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("eval_args");
 
     private static final org.apache.thrift.protocol.TField STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("state", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField PLAYER_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("playerList", org.apache.thrift.protocol.TType.LIST, (short)2);
+    private static final org.apache.thrift.protocol.TField PLAYER_FIELD_DESC = new org.apache.thrift.protocol.TField("player", org.apache.thrift.protocol.TType.I32, (short)3);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -1984,10 +1519,14 @@ public class Bot {
     }
 
     private GameState state; // required
+    private List<Integer> playerList; // required
+    private int player; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      STATE((short)1, "state");
+      STATE((short)1, "state"),
+      PLAYER_LIST((short)2, "playerList"),
+      PLAYER((short)3, "player");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -2004,6 +1543,10 @@ public class Bot {
         switch(fieldId) {
           case 1: // STATE
             return STATE;
+          case 2: // PLAYER_LIST
+            return PLAYER_LIST;
+          case 3: // PLAYER
+            return PLAYER;
           default:
             return null;
         }
@@ -2044,11 +1587,18 @@ public class Bot {
     }
 
     // isset id assignments
+    private static final int __PLAYER_ISSET_ID = 0;
+    private BitSet __isset_bit_vector = new BitSet(1);
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.STATE, new org.apache.thrift.meta_data.FieldMetaData("state", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, GameState.class)));
+      tmpMap.put(_Fields.PLAYER_LIST, new org.apache.thrift.meta_data.FieldMetaData("playerList", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.PLAYER, new org.apache.thrift.meta_data.FieldMetaData("player", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(eval_args.class, metaDataMap);
     }
@@ -2057,19 +1607,34 @@ public class Bot {
     }
 
     public eval_args(
-      GameState state)
+      GameState state,
+      List<Integer> playerList,
+      int player)
     {
       this();
       this.state = state;
+      this.playerList = playerList;
+      this.player = player;
+      setPlayerIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public eval_args(eval_args other) {
+      __isset_bit_vector.clear();
+      __isset_bit_vector.or(other.__isset_bit_vector);
       if (other.isSetState()) {
         this.state = new GameState(other.state);
       }
+      if (other.isSetPlayerList()) {
+        List<Integer> __this__playerList = new ArrayList<Integer>();
+        for (Integer other_element : other.playerList) {
+          __this__playerList.add(other_element);
+        }
+        this.playerList = __this__playerList;
+      }
+      this.player = other.player;
     }
 
     public eval_args deepCopy() {
@@ -2078,6 +1643,9 @@ public class Bot {
 
     public void clear() {
       this.state = null;
+      this.playerList = null;
+      setPlayerIsSet(false);
+      this.player = 0;
     }
 
     public GameState getState() {
@@ -2104,6 +1672,68 @@ public class Bot {
       }
     }
 
+    public int getPlayerListSize() {
+      return (this.playerList == null) ? 0 : this.playerList.size();
+    }
+
+    public java.util.Iterator<Integer> getPlayerListIterator() {
+      return (this.playerList == null) ? null : this.playerList.iterator();
+    }
+
+    public void addToPlayerList(int elem) {
+      if (this.playerList == null) {
+        this.playerList = new ArrayList<Integer>();
+      }
+      this.playerList.add(elem);
+    }
+
+    public List<Integer> getPlayerList() {
+      return this.playerList;
+    }
+
+    public eval_args setPlayerList(List<Integer> playerList) {
+      this.playerList = playerList;
+      return this;
+    }
+
+    public void unsetPlayerList() {
+      this.playerList = null;
+    }
+
+    /** Returns true if field playerList is set (has been assigned a value) and false otherwise */
+    public boolean isSetPlayerList() {
+      return this.playerList != null;
+    }
+
+    public void setPlayerListIsSet(boolean value) {
+      if (!value) {
+        this.playerList = null;
+      }
+    }
+
+    public int getPlayer() {
+      return this.player;
+    }
+
+    public eval_args setPlayer(int player) {
+      this.player = player;
+      setPlayerIsSet(true);
+      return this;
+    }
+
+    public void unsetPlayer() {
+      __isset_bit_vector.clear(__PLAYER_ISSET_ID);
+    }
+
+    /** Returns true if field player is set (has been assigned a value) and false otherwise */
+    public boolean isSetPlayer() {
+      return __isset_bit_vector.get(__PLAYER_ISSET_ID);
+    }
+
+    public void setPlayerIsSet(boolean value) {
+      __isset_bit_vector.set(__PLAYER_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case STATE:
@@ -2114,6 +1744,22 @@ public class Bot {
         }
         break;
 
+      case PLAYER_LIST:
+        if (value == null) {
+          unsetPlayerList();
+        } else {
+          setPlayerList((List<Integer>)value);
+        }
+        break;
+
+      case PLAYER:
+        if (value == null) {
+          unsetPlayer();
+        } else {
+          setPlayer((Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -2121,6 +1767,12 @@ public class Bot {
       switch (field) {
       case STATE:
         return getState();
+
+      case PLAYER_LIST:
+        return getPlayerList();
+
+      case PLAYER:
+        return Integer.valueOf(getPlayer());
 
       }
       throw new IllegalStateException();
@@ -2135,6 +1787,10 @@ public class Bot {
       switch (field) {
       case STATE:
         return isSetState();
+      case PLAYER_LIST:
+        return isSetPlayerList();
+      case PLAYER:
+        return isSetPlayer();
       }
       throw new IllegalStateException();
     }
@@ -2161,6 +1817,24 @@ public class Bot {
           return false;
       }
 
+      boolean this_present_playerList = true && this.isSetPlayerList();
+      boolean that_present_playerList = true && that.isSetPlayerList();
+      if (this_present_playerList || that_present_playerList) {
+        if (!(this_present_playerList && that_present_playerList))
+          return false;
+        if (!this.playerList.equals(that.playerList))
+          return false;
+      }
+
+      boolean this_present_player = true;
+      boolean that_present_player = true;
+      if (this_present_player || that_present_player) {
+        if (!(this_present_player && that_present_player))
+          return false;
+        if (this.player != that.player)
+          return false;
+      }
+
       return true;
     }
 
@@ -2172,6 +1846,16 @@ public class Bot {
       builder.append(present_state);
       if (present_state)
         builder.append(state);
+
+      boolean present_playerList = true && (isSetPlayerList());
+      builder.append(present_playerList);
+      if (present_playerList)
+        builder.append(playerList);
+
+      boolean present_player = true;
+      builder.append(present_player);
+      if (present_player)
+        builder.append(player);
 
       return builder.toHashCode();
     }
@@ -2190,6 +1874,26 @@ public class Bot {
       }
       if (isSetState()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.state, typedOther.state);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetPlayerList()).compareTo(typedOther.isSetPlayerList());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPlayerList()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.playerList, typedOther.playerList);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetPlayer()).compareTo(typedOther.isSetPlayer());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPlayer()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.player, typedOther.player);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -2220,6 +1924,18 @@ public class Bot {
       } else {
         sb.append(this.state);
       }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("playerList:");
+      if (this.playerList == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.playerList);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("player:");
+      sb.append(this.player);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -2272,6 +1988,32 @@ public class Bot {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // PLAYER_LIST
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list16 = iprot.readListBegin();
+                  struct.playerList = new ArrayList<Integer>(_list16.size);
+                  for (int _i17 = 0; _i17 < _list16.size; ++_i17)
+                  {
+                    int _elem18; // required
+                    _elem18 = iprot.readI32();
+                    struct.playerList.add(_elem18);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setPlayerListIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // PLAYER
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.player = iprot.readI32();
+                struct.setPlayerIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -2292,6 +2034,21 @@ public class Bot {
           struct.state.write(oprot);
           oprot.writeFieldEnd();
         }
+        if (struct.playerList != null) {
+          oprot.writeFieldBegin(PLAYER_LIST_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.playerList.size()));
+            for (int _iter19 : struct.playerList)
+            {
+              oprot.writeI32(_iter19);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldBegin(PLAYER_FIELD_DESC);
+        oprot.writeI32(struct.player);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -2313,20 +2070,55 @@ public class Bot {
         if (struct.isSetState()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetPlayerList()) {
+          optionals.set(1);
+        }
+        if (struct.isSetPlayer()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
         if (struct.isSetState()) {
           struct.state.write(oprot);
+        }
+        if (struct.isSetPlayerList()) {
+          {
+            oprot.writeI32(struct.playerList.size());
+            for (int _iter20 : struct.playerList)
+            {
+              oprot.writeI32(_iter20);
+            }
+          }
+        }
+        if (struct.isSetPlayer()) {
+          oprot.writeI32(struct.player);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, eval_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
           struct.state = new GameState();
           struct.state.read(iprot);
           struct.setStateIsSet(true);
+        }
+        if (incoming.get(1)) {
+          {
+            org.apache.thrift.protocol.TList _list21 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.playerList = new ArrayList<Integer>(_list21.size);
+            for (int _i22 = 0; _i22 < _list21.size; ++_i22)
+            {
+              int _elem23; // required
+              _elem23 = iprot.readI32();
+              struct.playerList.add(_elem23);
+            }
+          }
+          struct.setPlayerListIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.player = iprot.readI32();
+          struct.setPlayerIsSet(true);
         }
       }
     }
@@ -2336,7 +2128,7 @@ public class Bot {
   public static class eval_result implements org.apache.thrift.TBase<eval_result, eval_result._Fields>, java.io.Serializable, Cloneable   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("eval_result");
 
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.I32, (short)0);
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.MAP, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -2344,7 +2136,7 @@ public class Bot {
       schemes.put(TupleScheme.class, new eval_resultTupleSchemeFactory());
     }
 
-    private int success; // required
+    private Map<Integer,Integer> success; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -2405,13 +2197,13 @@ public class Bot {
     }
 
     // isset id assignments
-    private static final int __SUCCESS_ISSET_ID = 0;
-    private BitSet __isset_bit_vector = new BitSet(1);
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32), 
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(eval_result.class, metaDataMap);
     }
@@ -2420,20 +2212,31 @@ public class Bot {
     }
 
     public eval_result(
-      int success)
+      Map<Integer,Integer> success)
     {
       this();
       this.success = success;
-      setSuccessIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public eval_result(eval_result other) {
-      __isset_bit_vector.clear();
-      __isset_bit_vector.or(other.__isset_bit_vector);
-      this.success = other.success;
+      if (other.isSetSuccess()) {
+        Map<Integer,Integer> __this__success = new HashMap<Integer,Integer>();
+        for (Map.Entry<Integer, Integer> other_element : other.success.entrySet()) {
+
+          Integer other_element_key = other_element.getKey();
+          Integer other_element_value = other_element.getValue();
+
+          Integer __this__success_copy_key = other_element_key;
+
+          Integer __this__success_copy_value = other_element_value;
+
+          __this__success.put(__this__success_copy_key, __this__success_copy_value);
+        }
+        this.success = __this__success;
+      }
     }
 
     public eval_result deepCopy() {
@@ -2441,31 +2244,42 @@ public class Bot {
     }
 
     public void clear() {
-      setSuccessIsSet(false);
-      this.success = 0;
+      this.success = null;
     }
 
-    public int getSuccess() {
+    public int getSuccessSize() {
+      return (this.success == null) ? 0 : this.success.size();
+    }
+
+    public void putToSuccess(int key, int val) {
+      if (this.success == null) {
+        this.success = new HashMap<Integer,Integer>();
+      }
+      this.success.put(key, val);
+    }
+
+    public Map<Integer,Integer> getSuccess() {
       return this.success;
     }
 
-    public eval_result setSuccess(int success) {
+    public eval_result setSuccess(Map<Integer,Integer> success) {
       this.success = success;
-      setSuccessIsSet(true);
       return this;
     }
 
     public void unsetSuccess() {
-      __isset_bit_vector.clear(__SUCCESS_ISSET_ID);
+      this.success = null;
     }
 
     /** Returns true if field success is set (has been assigned a value) and false otherwise */
     public boolean isSetSuccess() {
-      return __isset_bit_vector.get(__SUCCESS_ISSET_ID);
+      return this.success != null;
     }
 
     public void setSuccessIsSet(boolean value) {
-      __isset_bit_vector.set(__SUCCESS_ISSET_ID, value);
+      if (!value) {
+        this.success = null;
+      }
     }
 
     public void setFieldValue(_Fields field, Object value) {
@@ -2474,7 +2288,7 @@ public class Bot {
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((Integer)value);
+          setSuccess((Map<Integer,Integer>)value);
         }
         break;
 
@@ -2484,7 +2298,7 @@ public class Bot {
     public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
-        return Integer.valueOf(getSuccess());
+        return getSuccess();
 
       }
       throw new IllegalStateException();
@@ -2516,12 +2330,12 @@ public class Bot {
       if (that == null)
         return false;
 
-      boolean this_present_success = true;
-      boolean that_present_success = true;
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
       if (this_present_success || that_present_success) {
         if (!(this_present_success && that_present_success))
           return false;
-        if (this.success != that.success)
+        if (!this.success.equals(that.success))
           return false;
       }
 
@@ -2532,7 +2346,7 @@ public class Bot {
     public int hashCode() {
       HashCodeBuilder builder = new HashCodeBuilder();
 
-      boolean present_success = true;
+      boolean present_success = true && (isSetSuccess());
       builder.append(present_success);
       if (present_success)
         builder.append(success);
@@ -2579,7 +2393,11 @@ public class Bot {
       boolean first = true;
 
       sb.append("success:");
-      sb.append(this.success);
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
       first = false;
       sb.append(")");
       return sb.toString();
@@ -2599,8 +2417,6 @@ public class Bot {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
-        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-        __isset_bit_vector = new BitSet(1);
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te.getMessage());
@@ -2626,8 +2442,20 @@ public class Bot {
           }
           switch (schemeField.id) {
             case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.success = iprot.readI32();
+              if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
+                {
+                  org.apache.thrift.protocol.TMap _map24 = iprot.readMapBegin();
+                  struct.success = new HashMap<Integer,Integer>(2*_map24.size);
+                  for (int _i25 = 0; _i25 < _map24.size; ++_i25)
+                  {
+                    int _key26; // required
+                    int _val27; // optional
+                    _key26 = iprot.readI32();
+                    _val27 = iprot.readI32();
+                    struct.success.put(_key26, _val27);
+                  }
+                  iprot.readMapEnd();
+                }
                 struct.setSuccessIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -2648,9 +2476,19 @@ public class Bot {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-        oprot.writeI32(struct.success);
-        oprot.writeFieldEnd();
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          {
+            oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I32, org.apache.thrift.protocol.TType.I32, struct.success.size()));
+            for (Map.Entry<Integer, Integer> _iter28 : struct.success.entrySet())
+            {
+              oprot.writeI32(_iter28.getKey());
+              oprot.writeI32(_iter28.getValue());
+            }
+            oprot.writeMapEnd();
+          }
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -2674,7 +2512,14 @@ public class Bot {
         }
         oprot.writeBitSet(optionals, 1);
         if (struct.isSetSuccess()) {
-          oprot.writeI32(struct.success);
+          {
+            oprot.writeI32(struct.success.size());
+            for (Map.Entry<Integer, Integer> _iter29 : struct.success.entrySet())
+            {
+              oprot.writeI32(_iter29.getKey());
+              oprot.writeI32(_iter29.getValue());
+            }
+          }
         }
       }
 
@@ -2683,7 +2528,18 @@ public class Bot {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.success = iprot.readI32();
+          {
+            org.apache.thrift.protocol.TMap _map30 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I32, org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.success = new HashMap<Integer,Integer>(2*_map30.size);
+            for (int _i31 = 0; _i31 < _map30.size; ++_i31)
+            {
+              int _key32; // required
+              int _val33; // optional
+              _key32 = iprot.readI32();
+              _val33 = iprot.readI32();
+              struct.success.put(_key32, _val33);
+            }
+          }
           struct.setSuccessIsSet(true);
         }
       }
@@ -2691,22 +2547,31 @@ public class Bot {
 
   }
 
-  public static class explore_args implements org.apache.thrift.TBase<explore_args, explore_args._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("explore_args");
+  public static class cutoffTest_args implements org.apache.thrift.TBase<cutoffTest_args, cutoffTest_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("cutoffTest_args");
 
     private static final org.apache.thrift.protocol.TField STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("state", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField DEPTH_FIELD_DESC = new org.apache.thrift.protocol.TField("depth", org.apache.thrift.protocol.TType.I32, (short)2);
+    private static final org.apache.thrift.protocol.TField PLAYER_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("playerList", org.apache.thrift.protocol.TType.LIST, (short)3);
+    private static final org.apache.thrift.protocol.TField PLAYER_FIELD_DESC = new org.apache.thrift.protocol.TField("player", org.apache.thrift.protocol.TType.I32, (short)4);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new explore_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new explore_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new cutoffTest_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new cutoffTest_argsTupleSchemeFactory());
     }
 
     private GameState state; // required
+    private int depth; // required
+    private List<Integer> playerList; // required
+    private int player; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      STATE((short)1, "state");
+      STATE((short)1, "state"),
+      DEPTH((short)2, "depth"),
+      PLAYER_LIST((short)3, "playerList"),
+      PLAYER((short)4, "player");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -2723,6 +2588,12 @@ public class Bot {
         switch(fieldId) {
           case 1: // STATE
             return STATE;
+          case 2: // DEPTH
+            return DEPTH;
+          case 3: // PLAYER_LIST
+            return PLAYER_LIST;
+          case 4: // PLAYER
+            return PLAYER;
           default:
             return null;
         }
@@ -2763,47 +2634,81 @@ public class Bot {
     }
 
     // isset id assignments
+    private static final int __DEPTH_ISSET_ID = 0;
+    private static final int __PLAYER_ISSET_ID = 1;
+    private BitSet __isset_bit_vector = new BitSet(2);
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.STATE, new org.apache.thrift.meta_data.FieldMetaData("state", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, GameState.class)));
+      tmpMap.put(_Fields.DEPTH, new org.apache.thrift.meta_data.FieldMetaData("depth", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.PLAYER_LIST, new org.apache.thrift.meta_data.FieldMetaData("playerList", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.PLAYER, new org.apache.thrift.meta_data.FieldMetaData("player", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(explore_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(cutoffTest_args.class, metaDataMap);
     }
 
-    public explore_args() {
+    public cutoffTest_args() {
     }
 
-    public explore_args(
-      GameState state)
+    public cutoffTest_args(
+      GameState state,
+      int depth,
+      List<Integer> playerList,
+      int player)
     {
       this();
       this.state = state;
+      this.depth = depth;
+      setDepthIsSet(true);
+      this.playerList = playerList;
+      this.player = player;
+      setPlayerIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public explore_args(explore_args other) {
+    public cutoffTest_args(cutoffTest_args other) {
+      __isset_bit_vector.clear();
+      __isset_bit_vector.or(other.__isset_bit_vector);
       if (other.isSetState()) {
         this.state = new GameState(other.state);
       }
+      this.depth = other.depth;
+      if (other.isSetPlayerList()) {
+        List<Integer> __this__playerList = new ArrayList<Integer>();
+        for (Integer other_element : other.playerList) {
+          __this__playerList.add(other_element);
+        }
+        this.playerList = __this__playerList;
+      }
+      this.player = other.player;
     }
 
-    public explore_args deepCopy() {
-      return new explore_args(this);
+    public cutoffTest_args deepCopy() {
+      return new cutoffTest_args(this);
     }
 
     public void clear() {
       this.state = null;
+      setDepthIsSet(false);
+      this.depth = 0;
+      this.playerList = null;
+      setPlayerIsSet(false);
+      this.player = 0;
     }
 
     public GameState getState() {
       return this.state;
     }
 
-    public explore_args setState(GameState state) {
+    public cutoffTest_args setState(GameState state) {
       this.state = state;
       return this;
     }
@@ -2823,6 +2728,91 @@ public class Bot {
       }
     }
 
+    public int getDepth() {
+      return this.depth;
+    }
+
+    public cutoffTest_args setDepth(int depth) {
+      this.depth = depth;
+      setDepthIsSet(true);
+      return this;
+    }
+
+    public void unsetDepth() {
+      __isset_bit_vector.clear(__DEPTH_ISSET_ID);
+    }
+
+    /** Returns true if field depth is set (has been assigned a value) and false otherwise */
+    public boolean isSetDepth() {
+      return __isset_bit_vector.get(__DEPTH_ISSET_ID);
+    }
+
+    public void setDepthIsSet(boolean value) {
+      __isset_bit_vector.set(__DEPTH_ISSET_ID, value);
+    }
+
+    public int getPlayerListSize() {
+      return (this.playerList == null) ? 0 : this.playerList.size();
+    }
+
+    public java.util.Iterator<Integer> getPlayerListIterator() {
+      return (this.playerList == null) ? null : this.playerList.iterator();
+    }
+
+    public void addToPlayerList(int elem) {
+      if (this.playerList == null) {
+        this.playerList = new ArrayList<Integer>();
+      }
+      this.playerList.add(elem);
+    }
+
+    public List<Integer> getPlayerList() {
+      return this.playerList;
+    }
+
+    public cutoffTest_args setPlayerList(List<Integer> playerList) {
+      this.playerList = playerList;
+      return this;
+    }
+
+    public void unsetPlayerList() {
+      this.playerList = null;
+    }
+
+    /** Returns true if field playerList is set (has been assigned a value) and false otherwise */
+    public boolean isSetPlayerList() {
+      return this.playerList != null;
+    }
+
+    public void setPlayerListIsSet(boolean value) {
+      if (!value) {
+        this.playerList = null;
+      }
+    }
+
+    public int getPlayer() {
+      return this.player;
+    }
+
+    public cutoffTest_args setPlayer(int player) {
+      this.player = player;
+      setPlayerIsSet(true);
+      return this;
+    }
+
+    public void unsetPlayer() {
+      __isset_bit_vector.clear(__PLAYER_ISSET_ID);
+    }
+
+    /** Returns true if field player is set (has been assigned a value) and false otherwise */
+    public boolean isSetPlayer() {
+      return __isset_bit_vector.get(__PLAYER_ISSET_ID);
+    }
+
+    public void setPlayerIsSet(boolean value) {
+      __isset_bit_vector.set(__PLAYER_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case STATE:
@@ -2833,6 +2823,30 @@ public class Bot {
         }
         break;
 
+      case DEPTH:
+        if (value == null) {
+          unsetDepth();
+        } else {
+          setDepth((Integer)value);
+        }
+        break;
+
+      case PLAYER_LIST:
+        if (value == null) {
+          unsetPlayerList();
+        } else {
+          setPlayerList((List<Integer>)value);
+        }
+        break;
+
+      case PLAYER:
+        if (value == null) {
+          unsetPlayer();
+        } else {
+          setPlayer((Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -2840,6 +2854,15 @@ public class Bot {
       switch (field) {
       case STATE:
         return getState();
+
+      case DEPTH:
+        return Integer.valueOf(getDepth());
+
+      case PLAYER_LIST:
+        return getPlayerList();
+
+      case PLAYER:
+        return Integer.valueOf(getPlayer());
 
       }
       throw new IllegalStateException();
@@ -2854,6 +2877,12 @@ public class Bot {
       switch (field) {
       case STATE:
         return isSetState();
+      case DEPTH:
+        return isSetDepth();
+      case PLAYER_LIST:
+        return isSetPlayerList();
+      case PLAYER:
+        return isSetPlayer();
       }
       throw new IllegalStateException();
     }
@@ -2862,12 +2891,12 @@ public class Bot {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof explore_args)
-        return this.equals((explore_args)that);
+      if (that instanceof cutoffTest_args)
+        return this.equals((cutoffTest_args)that);
       return false;
     }
 
-    public boolean equals(explore_args that) {
+    public boolean equals(cutoffTest_args that) {
       if (that == null)
         return false;
 
@@ -2877,6 +2906,33 @@ public class Bot {
         if (!(this_present_state && that_present_state))
           return false;
         if (!this.state.equals(that.state))
+          return false;
+      }
+
+      boolean this_present_depth = true;
+      boolean that_present_depth = true;
+      if (this_present_depth || that_present_depth) {
+        if (!(this_present_depth && that_present_depth))
+          return false;
+        if (this.depth != that.depth)
+          return false;
+      }
+
+      boolean this_present_playerList = true && this.isSetPlayerList();
+      boolean that_present_playerList = true && that.isSetPlayerList();
+      if (this_present_playerList || that_present_playerList) {
+        if (!(this_present_playerList && that_present_playerList))
+          return false;
+        if (!this.playerList.equals(that.playerList))
+          return false;
+      }
+
+      boolean this_present_player = true;
+      boolean that_present_player = true;
+      if (this_present_player || that_present_player) {
+        if (!(this_present_player && that_present_player))
+          return false;
+        if (this.player != that.player)
           return false;
       }
 
@@ -2892,16 +2948,31 @@ public class Bot {
       if (present_state)
         builder.append(state);
 
+      boolean present_depth = true;
+      builder.append(present_depth);
+      if (present_depth)
+        builder.append(depth);
+
+      boolean present_playerList = true && (isSetPlayerList());
+      builder.append(present_playerList);
+      if (present_playerList)
+        builder.append(playerList);
+
+      boolean present_player = true;
+      builder.append(present_player);
+      if (present_player)
+        builder.append(player);
+
       return builder.toHashCode();
     }
 
-    public int compareTo(explore_args other) {
+    public int compareTo(cutoffTest_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      explore_args typedOther = (explore_args)other;
+      cutoffTest_args typedOther = (cutoffTest_args)other;
 
       lastComparison = Boolean.valueOf(isSetState()).compareTo(typedOther.isSetState());
       if (lastComparison != 0) {
@@ -2909,6 +2980,36 @@ public class Bot {
       }
       if (isSetState()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.state, typedOther.state);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetDepth()).compareTo(typedOther.isSetDepth());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetDepth()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.depth, typedOther.depth);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetPlayerList()).compareTo(typedOther.isSetPlayerList());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPlayerList()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.playerList, typedOther.playerList);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetPlayer()).compareTo(typedOther.isSetPlayer());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPlayer()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.player, typedOther.player);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -2930,7 +3031,7 @@ public class Bot {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("explore_args(");
+      StringBuilder sb = new StringBuilder("cutoffTest_args(");
       boolean first = true;
 
       sb.append("state:");
@@ -2939,6 +3040,22 @@ public class Bot {
       } else {
         sb.append(this.state);
       }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("depth:");
+      sb.append(this.depth);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("playerList:");
+      if (this.playerList == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.playerList);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("player:");
+      sb.append(this.player);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -2964,15 +3081,15 @@ public class Bot {
       }
     }
 
-    private static class explore_argsStandardSchemeFactory implements SchemeFactory {
-      public explore_argsStandardScheme getScheme() {
-        return new explore_argsStandardScheme();
+    private static class cutoffTest_argsStandardSchemeFactory implements SchemeFactory {
+      public cutoffTest_argsStandardScheme getScheme() {
+        return new cutoffTest_argsStandardScheme();
       }
     }
 
-    private static class explore_argsStandardScheme extends StandardScheme<explore_args> {
+    private static class cutoffTest_argsStandardScheme extends StandardScheme<cutoffTest_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, explore_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, cutoffTest_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -2991,6 +3108,40 @@ public class Bot {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // DEPTH
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.depth = iprot.readI32();
+                struct.setDepthIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // PLAYER_LIST
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list34 = iprot.readListBegin();
+                  struct.playerList = new ArrayList<Integer>(_list34.size);
+                  for (int _i35 = 0; _i35 < _list34.size; ++_i35)
+                  {
+                    int _elem36; // required
+                    _elem36 = iprot.readI32();
+                    struct.playerList.add(_elem36);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setPlayerListIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 4: // PLAYER
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.player = iprot.readI32();
+                struct.setPlayerIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -3002,7 +3153,7 @@ public class Bot {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, explore_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, cutoffTest_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -3011,56 +3162,119 @@ public class Bot {
           struct.state.write(oprot);
           oprot.writeFieldEnd();
         }
+        oprot.writeFieldBegin(DEPTH_FIELD_DESC);
+        oprot.writeI32(struct.depth);
+        oprot.writeFieldEnd();
+        if (struct.playerList != null) {
+          oprot.writeFieldBegin(PLAYER_LIST_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.playerList.size()));
+            for (int _iter37 : struct.playerList)
+            {
+              oprot.writeI32(_iter37);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldBegin(PLAYER_FIELD_DESC);
+        oprot.writeI32(struct.player);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
 
     }
 
-    private static class explore_argsTupleSchemeFactory implements SchemeFactory {
-      public explore_argsTupleScheme getScheme() {
-        return new explore_argsTupleScheme();
+    private static class cutoffTest_argsTupleSchemeFactory implements SchemeFactory {
+      public cutoffTest_argsTupleScheme getScheme() {
+        return new cutoffTest_argsTupleScheme();
       }
     }
 
-    private static class explore_argsTupleScheme extends TupleScheme<explore_args> {
+    private static class cutoffTest_argsTupleScheme extends TupleScheme<cutoffTest_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, explore_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, cutoffTest_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetState()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetDepth()) {
+          optionals.set(1);
+        }
+        if (struct.isSetPlayerList()) {
+          optionals.set(2);
+        }
+        if (struct.isSetPlayer()) {
+          optionals.set(3);
+        }
+        oprot.writeBitSet(optionals, 4);
         if (struct.isSetState()) {
           struct.state.write(oprot);
+        }
+        if (struct.isSetDepth()) {
+          oprot.writeI32(struct.depth);
+        }
+        if (struct.isSetPlayerList()) {
+          {
+            oprot.writeI32(struct.playerList.size());
+            for (int _iter38 : struct.playerList)
+            {
+              oprot.writeI32(_iter38);
+            }
+          }
+        }
+        if (struct.isSetPlayer()) {
+          oprot.writeI32(struct.player);
         }
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, explore_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, cutoffTest_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
           struct.state = new GameState();
           struct.state.read(iprot);
           struct.setStateIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.depth = iprot.readI32();
+          struct.setDepthIsSet(true);
+        }
+        if (incoming.get(2)) {
+          {
+            org.apache.thrift.protocol.TList _list39 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.playerList = new ArrayList<Integer>(_list39.size);
+            for (int _i40 = 0; _i40 < _list39.size; ++_i40)
+            {
+              int _elem41; // required
+              _elem41 = iprot.readI32();
+              struct.playerList.add(_elem41);
+            }
+          }
+          struct.setPlayerListIsSet(true);
+        }
+        if (incoming.get(3)) {
+          struct.player = iprot.readI32();
+          struct.setPlayerIsSet(true);
         }
       }
     }
 
   }
 
-  public static class explore_result implements org.apache.thrift.TBase<explore_result, explore_result._Fields>, java.io.Serializable, Cloneable   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("explore_result");
+  public static class cutoffTest_result implements org.apache.thrift.TBase<cutoffTest_result, cutoffTest_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("cutoffTest_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.BOOL, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new explore_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new explore_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new cutoffTest_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new cutoffTest_resultTupleSchemeFactory());
     }
 
     private boolean success; // required
@@ -3132,13 +3346,13 @@ public class Bot {
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(explore_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(cutoffTest_result.class, metaDataMap);
     }
 
-    public explore_result() {
+    public cutoffTest_result() {
     }
 
-    public explore_result(
+    public cutoffTest_result(
       boolean success)
     {
       this();
@@ -3149,14 +3363,14 @@ public class Bot {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public explore_result(explore_result other) {
+    public cutoffTest_result(cutoffTest_result other) {
       __isset_bit_vector.clear();
       __isset_bit_vector.or(other.__isset_bit_vector);
       this.success = other.success;
     }
 
-    public explore_result deepCopy() {
-      return new explore_result(this);
+    public cutoffTest_result deepCopy() {
+      return new cutoffTest_result(this);
     }
 
     public void clear() {
@@ -3168,7 +3382,7 @@ public class Bot {
       return this.success;
     }
 
-    public explore_result setSuccess(boolean success) {
+    public cutoffTest_result setSuccess(boolean success) {
       this.success = success;
       setSuccessIsSet(true);
       return this;
@@ -3226,12 +3440,12 @@ public class Bot {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof explore_result)
-        return this.equals((explore_result)that);
+      if (that instanceof cutoffTest_result)
+        return this.equals((cutoffTest_result)that);
       return false;
     }
 
-    public boolean equals(explore_result that) {
+    public boolean equals(cutoffTest_result that) {
       if (that == null)
         return false;
 
@@ -3259,13 +3473,13 @@ public class Bot {
       return builder.toHashCode();
     }
 
-    public int compareTo(explore_result other) {
+    public int compareTo(cutoffTest_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
-      explore_result typedOther = (explore_result)other;
+      cutoffTest_result typedOther = (cutoffTest_result)other;
 
       lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
       if (lastComparison != 0) {
@@ -3294,7 +3508,7 @@ public class Bot {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("explore_result(");
+      StringBuilder sb = new StringBuilder("cutoffTest_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -3326,15 +3540,15 @@ public class Bot {
       }
     }
 
-    private static class explore_resultStandardSchemeFactory implements SchemeFactory {
-      public explore_resultStandardScheme getScheme() {
-        return new explore_resultStandardScheme();
+    private static class cutoffTest_resultStandardSchemeFactory implements SchemeFactory {
+      public cutoffTest_resultStandardScheme getScheme() {
+        return new cutoffTest_resultStandardScheme();
       }
     }
 
-    private static class explore_resultStandardScheme extends StandardScheme<explore_result> {
+    private static class cutoffTest_resultStandardScheme extends StandardScheme<cutoffTest_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, explore_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, cutoffTest_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -3363,7 +3577,7 @@ public class Bot {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, explore_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, cutoffTest_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -3376,16 +3590,16 @@ public class Bot {
 
     }
 
-    private static class explore_resultTupleSchemeFactory implements SchemeFactory {
-      public explore_resultTupleScheme getScheme() {
-        return new explore_resultTupleScheme();
+    private static class cutoffTest_resultTupleSchemeFactory implements SchemeFactory {
+      public cutoffTest_resultTupleScheme getScheme() {
+        return new cutoffTest_resultTupleScheme();
       }
     }
 
-    private static class explore_resultTupleScheme extends TupleScheme<explore_result> {
+    private static class cutoffTest_resultTupleScheme extends TupleScheme<cutoffTest_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, explore_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, cutoffTest_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -3398,11 +3612,989 @@ public class Bot {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, explore_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, cutoffTest_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           struct.success = iprot.readBool();
+          struct.setSuccessIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class nextPlayer_args implements org.apache.thrift.TBase<nextPlayer_args, nextPlayer_args._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("nextPlayer_args");
+
+    private static final org.apache.thrift.protocol.TField STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("state", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField PLAYER_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("playerList", org.apache.thrift.protocol.TType.LIST, (short)2);
+    private static final org.apache.thrift.protocol.TField PLAYER_FIELD_DESC = new org.apache.thrift.protocol.TField("player", org.apache.thrift.protocol.TType.I32, (short)3);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new nextPlayer_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new nextPlayer_argsTupleSchemeFactory());
+    }
+
+    private GameState state; // required
+    private List<Integer> playerList; // required
+    private int player; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      STATE((short)1, "state"),
+      PLAYER_LIST((short)2, "playerList"),
+      PLAYER((short)3, "player");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // STATE
+            return STATE;
+          case 2: // PLAYER_LIST
+            return PLAYER_LIST;
+          case 3: // PLAYER
+            return PLAYER;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __PLAYER_ISSET_ID = 0;
+    private BitSet __isset_bit_vector = new BitSet(1);
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.STATE, new org.apache.thrift.meta_data.FieldMetaData("state", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, GameState.class)));
+      tmpMap.put(_Fields.PLAYER_LIST, new org.apache.thrift.meta_data.FieldMetaData("playerList", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.PLAYER, new org.apache.thrift.meta_data.FieldMetaData("player", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(nextPlayer_args.class, metaDataMap);
+    }
+
+    public nextPlayer_args() {
+    }
+
+    public nextPlayer_args(
+      GameState state,
+      List<Integer> playerList,
+      int player)
+    {
+      this();
+      this.state = state;
+      this.playerList = playerList;
+      this.player = player;
+      setPlayerIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public nextPlayer_args(nextPlayer_args other) {
+      __isset_bit_vector.clear();
+      __isset_bit_vector.or(other.__isset_bit_vector);
+      if (other.isSetState()) {
+        this.state = new GameState(other.state);
+      }
+      if (other.isSetPlayerList()) {
+        List<Integer> __this__playerList = new ArrayList<Integer>();
+        for (Integer other_element : other.playerList) {
+          __this__playerList.add(other_element);
+        }
+        this.playerList = __this__playerList;
+      }
+      this.player = other.player;
+    }
+
+    public nextPlayer_args deepCopy() {
+      return new nextPlayer_args(this);
+    }
+
+    public void clear() {
+      this.state = null;
+      this.playerList = null;
+      setPlayerIsSet(false);
+      this.player = 0;
+    }
+
+    public GameState getState() {
+      return this.state;
+    }
+
+    public nextPlayer_args setState(GameState state) {
+      this.state = state;
+      return this;
+    }
+
+    public void unsetState() {
+      this.state = null;
+    }
+
+    /** Returns true if field state is set (has been assigned a value) and false otherwise */
+    public boolean isSetState() {
+      return this.state != null;
+    }
+
+    public void setStateIsSet(boolean value) {
+      if (!value) {
+        this.state = null;
+      }
+    }
+
+    public int getPlayerListSize() {
+      return (this.playerList == null) ? 0 : this.playerList.size();
+    }
+
+    public java.util.Iterator<Integer> getPlayerListIterator() {
+      return (this.playerList == null) ? null : this.playerList.iterator();
+    }
+
+    public void addToPlayerList(int elem) {
+      if (this.playerList == null) {
+        this.playerList = new ArrayList<Integer>();
+      }
+      this.playerList.add(elem);
+    }
+
+    public List<Integer> getPlayerList() {
+      return this.playerList;
+    }
+
+    public nextPlayer_args setPlayerList(List<Integer> playerList) {
+      this.playerList = playerList;
+      return this;
+    }
+
+    public void unsetPlayerList() {
+      this.playerList = null;
+    }
+
+    /** Returns true if field playerList is set (has been assigned a value) and false otherwise */
+    public boolean isSetPlayerList() {
+      return this.playerList != null;
+    }
+
+    public void setPlayerListIsSet(boolean value) {
+      if (!value) {
+        this.playerList = null;
+      }
+    }
+
+    public int getPlayer() {
+      return this.player;
+    }
+
+    public nextPlayer_args setPlayer(int player) {
+      this.player = player;
+      setPlayerIsSet(true);
+      return this;
+    }
+
+    public void unsetPlayer() {
+      __isset_bit_vector.clear(__PLAYER_ISSET_ID);
+    }
+
+    /** Returns true if field player is set (has been assigned a value) and false otherwise */
+    public boolean isSetPlayer() {
+      return __isset_bit_vector.get(__PLAYER_ISSET_ID);
+    }
+
+    public void setPlayerIsSet(boolean value) {
+      __isset_bit_vector.set(__PLAYER_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case STATE:
+        if (value == null) {
+          unsetState();
+        } else {
+          setState((GameState)value);
+        }
+        break;
+
+      case PLAYER_LIST:
+        if (value == null) {
+          unsetPlayerList();
+        } else {
+          setPlayerList((List<Integer>)value);
+        }
+        break;
+
+      case PLAYER:
+        if (value == null) {
+          unsetPlayer();
+        } else {
+          setPlayer((Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case STATE:
+        return getState();
+
+      case PLAYER_LIST:
+        return getPlayerList();
+
+      case PLAYER:
+        return Integer.valueOf(getPlayer());
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case STATE:
+        return isSetState();
+      case PLAYER_LIST:
+        return isSetPlayerList();
+      case PLAYER:
+        return isSetPlayer();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof nextPlayer_args)
+        return this.equals((nextPlayer_args)that);
+      return false;
+    }
+
+    public boolean equals(nextPlayer_args that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_state = true && this.isSetState();
+      boolean that_present_state = true && that.isSetState();
+      if (this_present_state || that_present_state) {
+        if (!(this_present_state && that_present_state))
+          return false;
+        if (!this.state.equals(that.state))
+          return false;
+      }
+
+      boolean this_present_playerList = true && this.isSetPlayerList();
+      boolean that_present_playerList = true && that.isSetPlayerList();
+      if (this_present_playerList || that_present_playerList) {
+        if (!(this_present_playerList && that_present_playerList))
+          return false;
+        if (!this.playerList.equals(that.playerList))
+          return false;
+      }
+
+      boolean this_present_player = true;
+      boolean that_present_player = true;
+      if (this_present_player || that_present_player) {
+        if (!(this_present_player && that_present_player))
+          return false;
+        if (this.player != that.player)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      HashCodeBuilder builder = new HashCodeBuilder();
+
+      boolean present_state = true && (isSetState());
+      builder.append(present_state);
+      if (present_state)
+        builder.append(state);
+
+      boolean present_playerList = true && (isSetPlayerList());
+      builder.append(present_playerList);
+      if (present_playerList)
+        builder.append(playerList);
+
+      boolean present_player = true;
+      builder.append(present_player);
+      if (present_player)
+        builder.append(player);
+
+      return builder.toHashCode();
+    }
+
+    public int compareTo(nextPlayer_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+      nextPlayer_args typedOther = (nextPlayer_args)other;
+
+      lastComparison = Boolean.valueOf(isSetState()).compareTo(typedOther.isSetState());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetState()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.state, typedOther.state);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetPlayerList()).compareTo(typedOther.isSetPlayerList());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPlayerList()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.playerList, typedOther.playerList);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetPlayer()).compareTo(typedOther.isSetPlayer());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPlayer()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.player, typedOther.player);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("nextPlayer_args(");
+      boolean first = true;
+
+      sb.append("state:");
+      if (this.state == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.state);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("playerList:");
+      if (this.playerList == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.playerList);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("player:");
+      sb.append(this.player);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te.getMessage());
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te.getMessage());
+      }
+    }
+
+    private static class nextPlayer_argsStandardSchemeFactory implements SchemeFactory {
+      public nextPlayer_argsStandardScheme getScheme() {
+        return new nextPlayer_argsStandardScheme();
+      }
+    }
+
+    private static class nextPlayer_argsStandardScheme extends StandardScheme<nextPlayer_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, nextPlayer_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // STATE
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.state = new GameState();
+                struct.state.read(iprot);
+                struct.setStateIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // PLAYER_LIST
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list42 = iprot.readListBegin();
+                  struct.playerList = new ArrayList<Integer>(_list42.size);
+                  for (int _i43 = 0; _i43 < _list42.size; ++_i43)
+                  {
+                    int _elem44; // required
+                    _elem44 = iprot.readI32();
+                    struct.playerList.add(_elem44);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setPlayerListIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // PLAYER
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.player = iprot.readI32();
+                struct.setPlayerIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, nextPlayer_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.state != null) {
+          oprot.writeFieldBegin(STATE_FIELD_DESC);
+          struct.state.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.playerList != null) {
+          oprot.writeFieldBegin(PLAYER_LIST_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.playerList.size()));
+            for (int _iter45 : struct.playerList)
+            {
+              oprot.writeI32(_iter45);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldBegin(PLAYER_FIELD_DESC);
+        oprot.writeI32(struct.player);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class nextPlayer_argsTupleSchemeFactory implements SchemeFactory {
+      public nextPlayer_argsTupleScheme getScheme() {
+        return new nextPlayer_argsTupleScheme();
+      }
+    }
+
+    private static class nextPlayer_argsTupleScheme extends TupleScheme<nextPlayer_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, nextPlayer_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetState()) {
+          optionals.set(0);
+        }
+        if (struct.isSetPlayerList()) {
+          optionals.set(1);
+        }
+        if (struct.isSetPlayer()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
+        if (struct.isSetState()) {
+          struct.state.write(oprot);
+        }
+        if (struct.isSetPlayerList()) {
+          {
+            oprot.writeI32(struct.playerList.size());
+            for (int _iter46 : struct.playerList)
+            {
+              oprot.writeI32(_iter46);
+            }
+          }
+        }
+        if (struct.isSetPlayer()) {
+          oprot.writeI32(struct.player);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, nextPlayer_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(3);
+        if (incoming.get(0)) {
+          struct.state = new GameState();
+          struct.state.read(iprot);
+          struct.setStateIsSet(true);
+        }
+        if (incoming.get(1)) {
+          {
+            org.apache.thrift.protocol.TList _list47 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.playerList = new ArrayList<Integer>(_list47.size);
+            for (int _i48 = 0; _i48 < _list47.size; ++_i48)
+            {
+              int _elem49; // required
+              _elem49 = iprot.readI32();
+              struct.playerList.add(_elem49);
+            }
+          }
+          struct.setPlayerListIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.player = iprot.readI32();
+          struct.setPlayerIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class nextPlayer_result implements org.apache.thrift.TBase<nextPlayer_result, nextPlayer_result._Fields>, java.io.Serializable, Cloneable   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("nextPlayer_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.I32, (short)0);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new nextPlayer_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new nextPlayer_resultTupleSchemeFactory());
+    }
+
+    private int success; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __SUCCESS_ISSET_ID = 0;
+    private BitSet __isset_bit_vector = new BitSet(1);
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(nextPlayer_result.class, metaDataMap);
+    }
+
+    public nextPlayer_result() {
+    }
+
+    public nextPlayer_result(
+      int success)
+    {
+      this();
+      this.success = success;
+      setSuccessIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public nextPlayer_result(nextPlayer_result other) {
+      __isset_bit_vector.clear();
+      __isset_bit_vector.or(other.__isset_bit_vector);
+      this.success = other.success;
+    }
+
+    public nextPlayer_result deepCopy() {
+      return new nextPlayer_result(this);
+    }
+
+    public void clear() {
+      setSuccessIsSet(false);
+      this.success = 0;
+    }
+
+    public int getSuccess() {
+      return this.success;
+    }
+
+    public nextPlayer_result setSuccess(int success) {
+      this.success = success;
+      setSuccessIsSet(true);
+      return this;
+    }
+
+    public void unsetSuccess() {
+      __isset_bit_vector.clear(__SUCCESS_ISSET_ID);
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return __isset_bit_vector.get(__SUCCESS_ISSET_ID);
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      __isset_bit_vector.set(__SUCCESS_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return Integer.valueOf(getSuccess());
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof nextPlayer_result)
+        return this.equals((nextPlayer_result)that);
+      return false;
+    }
+
+    public boolean equals(nextPlayer_result that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_success = true;
+      boolean that_present_success = true;
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (this.success != that.success)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      HashCodeBuilder builder = new HashCodeBuilder();
+
+      boolean present_success = true;
+      builder.append(present_success);
+      if (present_success)
+        builder.append(success);
+
+      return builder.toHashCode();
+    }
+
+    public int compareTo(nextPlayer_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+      nextPlayer_result typedOther = (nextPlayer_result)other;
+
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(typedOther.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, typedOther.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("nextPlayer_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      sb.append(this.success);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te.getMessage());
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bit_vector = new BitSet(1);
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te.getMessage());
+      }
+    }
+
+    private static class nextPlayer_resultStandardSchemeFactory implements SchemeFactory {
+      public nextPlayer_resultStandardScheme getScheme() {
+        return new nextPlayer_resultStandardScheme();
+      }
+    }
+
+    private static class nextPlayer_resultStandardScheme extends StandardScheme<nextPlayer_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, nextPlayer_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.success = iprot.readI32();
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, nextPlayer_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+        oprot.writeI32(struct.success);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class nextPlayer_resultTupleSchemeFactory implements SchemeFactory {
+      public nextPlayer_resultTupleScheme getScheme() {
+        return new nextPlayer_resultTupleScheme();
+      }
+    }
+
+    private static class nextPlayer_resultTupleScheme extends TupleScheme<nextPlayer_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, nextPlayer_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSuccess()) {
+          oprot.writeI32(struct.success);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, nextPlayer_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.success = iprot.readI32();
           struct.setSuccessIsSet(true);
         }
       }

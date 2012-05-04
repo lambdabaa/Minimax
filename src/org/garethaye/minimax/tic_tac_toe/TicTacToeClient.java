@@ -25,9 +25,7 @@ import org.apache.thrift.transport.TFramedTransport;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.garethaye.minimax.generated.GameState;
-import org.garethaye.minimax.generated.GameStateUnion;
 import org.garethaye.minimax.generated.Minimax;
-import org.garethaye.minimax.generated.MinimaxConfig;
 import org.garethaye.minimax.generated.Move;
 import org.garethaye.minimax.generated.TicTacToeGameState;
 import org.slf4j.Logger;
@@ -40,9 +38,9 @@ public class TicTacToeClient {
   
   public static List<List<Integer>> getBoard() {
     List<List<Integer>> board = new LinkedList<List<Integer>>();
-    board.add(ImmutableList.of(1, 1, 2));
     board.add(ImmutableList.of(2, 1, 1));
-    board.add(ImmutableList.of(1, 2, 2));
+    board.add(ImmutableList.of(1, 1, 2));
+    board.add(ImmutableList.of(2, 2, 1));
     return board;
   }
   
@@ -51,16 +49,16 @@ public class TicTacToeClient {
     TTransport transport = new TFramedTransport(new TSocket("localhost", 4200));
     Minimax.Client client = new Minimax.Client(new TBinaryProtocol(transport));
     transport.open();
+    System.out.println(System.currentTimeMillis());
     Move move = client.getMove(
         "localhost", 
         4201, 
         new GameState(
-            new GameStateUnion(
-                GameStateUnion._Fields.TIC_TAC_TOE_GAME_STATE,
-                new TicTacToeGameState(1, 2, getBoard())),
-            1,
-            2),
-        new MinimaxConfig().setDepth(7));
+            GameState._Fields.TIC_TAC_TOE_GAME_STATE,
+            new TicTacToeGameState(getBoard())),
+        ImmutableList.of(1, 2),
+        1);
+    System.out.println(System.currentTimeMillis());
     LOGGER.info(move.toString());
     transport.close();
   }

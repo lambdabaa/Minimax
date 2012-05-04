@@ -18,15 +18,9 @@ namespace java org.garethaye.minimax.generated
 include "tic_tac_toe.thrift"
 include "connect_four.thrift"
 
-union GameStateUnion {
+union GameState {
   1: tic_tac_toe.TicTacToeGameState ticTacToeGameState;
   2: connect_four.ConnectFourGameState connectFourGameState;
-}
-
-struct GameState {
-  1: required GameStateUnion state;
-  2: required i32 playerId;
-  3: required i32 opponentId;
 }
 
 union Move {
@@ -34,20 +28,9 @@ union Move {
   2: connect_four.ConnectFourMove connectFourMove;
 }
 
-/**
- * A struct containing the game state and the most recent move made
- */
 struct GameStateAndMove {
   1: GameState state;
   2: Move move;
-}
-
-/**
- * A struct containing a game state and the probability with which it follows from its parent
- */
-struct GameStateAndProbability {
-  1: GameState state;
-  2: double probability;
 }
 
 service Bot {
@@ -55,24 +38,27 @@ service Bot {
    * @return        All pairs of moves and states that can follow directly (in one move) from state
    * @param state   The game state whose children we want
    */
-  list<GameStateAndMove> getChildrenAndMoves(1: GameState state);
-
-  /**
-   * @return        All moves that can follow directly (with one random event) from state with probabilities
-   * @param state   The game state whose children we want
-   */
-  list<GameStateAndProbability> getChildrenAndProbabilities(1: GameState state);
+  list<GameStateAndMove> actions(1: GameState state, 2: list<i32> playerList, 3: i32 player);
 
   /**
    * @return            An integer score for how good the state is for player
    * @param state       The game state to evaluate
+   * @param player      Integer id of active player
    */
-  i32 eval(1: GameState state);
+  map<i32, i32> eval(1: GameState state, 2: list<i32> playerList, 3: i32 player);
 
   /**
    * @return        Whether or not to search the tree whose root has state
    * @param state   The game state at the root of the tree
    */
-  bool explore(1: GameState state);
+  bool cutoffTest(1: GameState state, 2: i32 depth, 3: list<i32> playerList, 4: i32 player);
+
+  /**
+   * @return                  The integer id of the next player to act
+   * @param state             The game state for the current turn
+   * @param playerList        List of integer player ids
+   * @param player            Integer id of active player
+   */
+   i32 nextPlayer(1: GameState state, 2: list<i32> playerList, 3: i32 player);
 }
 

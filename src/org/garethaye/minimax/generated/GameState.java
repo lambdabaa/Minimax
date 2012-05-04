@@ -28,28 +28,15 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GameState implements org.apache.thrift.TBase<GameState, GameState._Fields>, java.io.Serializable, Cloneable {
+public class GameState extends org.apache.thrift.TUnion<GameState, GameState._Fields> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GameState");
-
-  private static final org.apache.thrift.protocol.TField STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("state", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-  private static final org.apache.thrift.protocol.TField PLAYER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("playerId", org.apache.thrift.protocol.TType.I32, (short)2);
-  private static final org.apache.thrift.protocol.TField OPPONENT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("opponentId", org.apache.thrift.protocol.TType.I32, (short)3);
-
-  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-  static {
-    schemes.put(StandardScheme.class, new GameStateStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new GameStateTupleSchemeFactory());
-  }
-
-  private GameStateUnion state; // required
-  private int playerId; // required
-  private int opponentId; // required
+  private static final org.apache.thrift.protocol.TField TIC_TAC_TOE_GAME_STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("ticTacToeGameState", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+  private static final org.apache.thrift.protocol.TField CONNECT_FOUR_GAME_STATE_FIELD_DESC = new org.apache.thrift.protocol.TField("connectFourGameState", org.apache.thrift.protocol.TType.STRUCT, (short)2);
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    STATE((short)1, "state"),
-    PLAYER_ID((short)2, "playerId"),
-    OPPONENT_ID((short)3, "opponentId");
+    TIC_TAC_TOE_GAME_STATE((short)1, "ticTacToeGameState"),
+    CONNECT_FOUR_GAME_STATE((short)2, "connectFourGameState");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -64,12 +51,10 @@ public class GameState implements org.apache.thrift.TBase<GameState, GameState._
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // STATE
-          return STATE;
-        case 2: // PLAYER_ID
-          return PLAYER_ID;
-        case 3: // OPPONENT_ID
-          return OPPONENT_ID;
+        case 1: // TIC_TAC_TOE_GAME_STATE
+          return TIC_TAC_TOE_GAME_STATE;
+        case 2: // CONNECT_FOUR_GAME_STATE
+          return CONNECT_FOUR_GAME_STATE;
         default:
           return null;
       }
@@ -109,346 +94,254 @@ public class GameState implements org.apache.thrift.TBase<GameState, GameState._
     }
   }
 
-  // isset id assignments
-  private static final int __PLAYERID_ISSET_ID = 0;
-  private static final int __OPPONENTID_ISSET_ID = 1;
-  private BitSet __isset_bit_vector = new BitSet(2);
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.STATE, new org.apache.thrift.meta_data.FieldMetaData("state", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, GameStateUnion.class)));
-    tmpMap.put(_Fields.PLAYER_ID, new org.apache.thrift.meta_data.FieldMetaData("playerId", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.OPPONENT_ID, new org.apache.thrift.meta_data.FieldMetaData("opponentId", org.apache.thrift.TFieldRequirementType.REQUIRED, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.TIC_TAC_TOE_GAME_STATE, new org.apache.thrift.meta_data.FieldMetaData("ticTacToeGameState", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, org.garethaye.minimax.generated.TicTacToeGameState.class)));
+    tmpMap.put(_Fields.CONNECT_FOUR_GAME_STATE, new org.apache.thrift.meta_data.FieldMetaData("connectFourGameState", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, org.garethaye.minimax.generated.ConnectFourGameState.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(GameState.class, metaDataMap);
   }
 
   public GameState() {
+    super();
   }
 
-  public GameState(
-    GameStateUnion state,
-    int playerId,
-    int opponentId)
-  {
-    this();
-    this.state = state;
-    this.playerId = playerId;
-    setPlayerIdIsSet(true);
-    this.opponentId = opponentId;
-    setOpponentIdIsSet(true);
+  public GameState(_Fields setField, Object value) {
+    super(setField, value);
   }
 
-  /**
-   * Performs a deep copy on <i>other</i>.
-   */
   public GameState(GameState other) {
-    __isset_bit_vector.clear();
-    __isset_bit_vector.or(other.__isset_bit_vector);
-    if (other.isSetState()) {
-      this.state = new GameStateUnion(other.state);
-    }
-    this.playerId = other.playerId;
-    this.opponentId = other.opponentId;
+    super(other);
   }
-
   public GameState deepCopy() {
     return new GameState(this);
   }
 
-  public void clear() {
-    this.state = null;
-    setPlayerIdIsSet(false);
-    this.playerId = 0;
-    setOpponentIdIsSet(false);
-    this.opponentId = 0;
+  public static GameState ticTacToeGameState(org.garethaye.minimax.generated.TicTacToeGameState value) {
+    GameState x = new GameState();
+    x.setTicTacToeGameState(value);
+    return x;
   }
 
-  public GameStateUnion getState() {
-    return this.state;
+  public static GameState connectFourGameState(org.garethaye.minimax.generated.ConnectFourGameState value) {
+    GameState x = new GameState();
+    x.setConnectFourGameState(value);
+    return x;
   }
 
-  public GameState setState(GameStateUnion state) {
-    this.state = state;
-    return this;
-  }
 
-  public void unsetState() {
-    this.state = null;
-  }
-
-  /** Returns true if field state is set (has been assigned a value) and false otherwise */
-  public boolean isSetState() {
-    return this.state != null;
-  }
-
-  public void setStateIsSet(boolean value) {
-    if (!value) {
-      this.state = null;
+  @Override
+  protected void checkType(_Fields setField, Object value) throws ClassCastException {
+    switch (setField) {
+      case TIC_TAC_TOE_GAME_STATE:
+        if (value instanceof org.garethaye.minimax.generated.TicTacToeGameState) {
+          break;
+        }
+        throw new ClassCastException("Was expecting value of type org.garethaye.minimax.generated.TicTacToeGameState for field 'ticTacToeGameState', but got " + value.getClass().getSimpleName());
+      case CONNECT_FOUR_GAME_STATE:
+        if (value instanceof org.garethaye.minimax.generated.ConnectFourGameState) {
+          break;
+        }
+        throw new ClassCastException("Was expecting value of type org.garethaye.minimax.generated.ConnectFourGameState for field 'connectFourGameState', but got " + value.getClass().getSimpleName());
+      default:
+        throw new IllegalArgumentException("Unknown field id " + setField);
     }
-  }
-
-  public int getPlayerId() {
-    return this.playerId;
-  }
-
-  public GameState setPlayerId(int playerId) {
-    this.playerId = playerId;
-    setPlayerIdIsSet(true);
-    return this;
-  }
-
-  public void unsetPlayerId() {
-    __isset_bit_vector.clear(__PLAYERID_ISSET_ID);
-  }
-
-  /** Returns true if field playerId is set (has been assigned a value) and false otherwise */
-  public boolean isSetPlayerId() {
-    return __isset_bit_vector.get(__PLAYERID_ISSET_ID);
-  }
-
-  public void setPlayerIdIsSet(boolean value) {
-    __isset_bit_vector.set(__PLAYERID_ISSET_ID, value);
-  }
-
-  public int getOpponentId() {
-    return this.opponentId;
-  }
-
-  public GameState setOpponentId(int opponentId) {
-    this.opponentId = opponentId;
-    setOpponentIdIsSet(true);
-    return this;
-  }
-
-  public void unsetOpponentId() {
-    __isset_bit_vector.clear(__OPPONENTID_ISSET_ID);
-  }
-
-  /** Returns true if field opponentId is set (has been assigned a value) and false otherwise */
-  public boolean isSetOpponentId() {
-    return __isset_bit_vector.get(__OPPONENTID_ISSET_ID);
-  }
-
-  public void setOpponentIdIsSet(boolean value) {
-    __isset_bit_vector.set(__OPPONENTID_ISSET_ID, value);
-  }
-
-  public void setFieldValue(_Fields field, Object value) {
-    switch (field) {
-    case STATE:
-      if (value == null) {
-        unsetState();
-      } else {
-        setState((GameStateUnion)value);
-      }
-      break;
-
-    case PLAYER_ID:
-      if (value == null) {
-        unsetPlayerId();
-      } else {
-        setPlayerId((Integer)value);
-      }
-      break;
-
-    case OPPONENT_ID:
-      if (value == null) {
-        unsetOpponentId();
-      } else {
-        setOpponentId((Integer)value);
-      }
-      break;
-
-    }
-  }
-
-  public Object getFieldValue(_Fields field) {
-    switch (field) {
-    case STATE:
-      return getState();
-
-    case PLAYER_ID:
-      return Integer.valueOf(getPlayerId());
-
-    case OPPONENT_ID:
-      return Integer.valueOf(getOpponentId());
-
-    }
-    throw new IllegalStateException();
-  }
-
-  /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-  public boolean isSet(_Fields field) {
-    if (field == null) {
-      throw new IllegalArgumentException();
-    }
-
-    switch (field) {
-    case STATE:
-      return isSetState();
-    case PLAYER_ID:
-      return isSetPlayerId();
-    case OPPONENT_ID:
-      return isSetOpponentId();
-    }
-    throw new IllegalStateException();
   }
 
   @Override
-  public boolean equals(Object that) {
-    if (that == null)
-      return false;
-    if (that instanceof GameState)
-      return this.equals((GameState)that);
-    return false;
-  }
-
-  public boolean equals(GameState that) {
-    if (that == null)
-      return false;
-
-    boolean this_present_state = true && this.isSetState();
-    boolean that_present_state = true && that.isSetState();
-    if (this_present_state || that_present_state) {
-      if (!(this_present_state && that_present_state))
-        return false;
-      if (!this.state.equals(that.state))
-        return false;
+  protected Object standardSchemeReadValue(org.apache.thrift.protocol.TProtocol iprot, org.apache.thrift.protocol.TField field) throws org.apache.thrift.TException {
+    _Fields setField = _Fields.findByThriftId(field.id);
+    if (setField != null) {
+      switch (setField) {
+        case TIC_TAC_TOE_GAME_STATE:
+          if (field.type == TIC_TAC_TOE_GAME_STATE_FIELD_DESC.type) {
+            org.garethaye.minimax.generated.TicTacToeGameState ticTacToeGameState;
+            ticTacToeGameState = new org.garethaye.minimax.generated.TicTacToeGameState();
+            ticTacToeGameState.read(iprot);
+            return ticTacToeGameState;
+          } else {
+            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, field.type);
+            return null;
+          }
+        case CONNECT_FOUR_GAME_STATE:
+          if (field.type == CONNECT_FOUR_GAME_STATE_FIELD_DESC.type) {
+            org.garethaye.minimax.generated.ConnectFourGameState connectFourGameState;
+            connectFourGameState = new org.garethaye.minimax.generated.ConnectFourGameState();
+            connectFourGameState.read(iprot);
+            return connectFourGameState;
+          } else {
+            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, field.type);
+            return null;
+          }
+        default:
+          throw new IllegalStateException("setField wasn't null, but didn't match any of the case statements!");
+      }
+    } else {
+      return null;
     }
-
-    boolean this_present_playerId = true;
-    boolean that_present_playerId = true;
-    if (this_present_playerId || that_present_playerId) {
-      if (!(this_present_playerId && that_present_playerId))
-        return false;
-      if (this.playerId != that.playerId)
-        return false;
-    }
-
-    boolean this_present_opponentId = true;
-    boolean that_present_opponentId = true;
-    if (this_present_opponentId || that_present_opponentId) {
-      if (!(this_present_opponentId && that_present_opponentId))
-        return false;
-      if (this.opponentId != that.opponentId)
-        return false;
-    }
-
-    return true;
   }
 
   @Override
-  public int hashCode() {
-    HashCodeBuilder builder = new HashCodeBuilder();
-
-    boolean present_state = true && (isSetState());
-    builder.append(present_state);
-    if (present_state)
-      builder.append(state);
-
-    boolean present_playerId = true;
-    builder.append(present_playerId);
-    if (present_playerId)
-      builder.append(playerId);
-
-    boolean present_opponentId = true;
-    builder.append(present_opponentId);
-    if (present_opponentId)
-      builder.append(opponentId);
-
-    return builder.toHashCode();
+  protected void standardSchemeWriteValue(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    switch (setField_) {
+      case TIC_TAC_TOE_GAME_STATE:
+        org.garethaye.minimax.generated.TicTacToeGameState ticTacToeGameState = (org.garethaye.minimax.generated.TicTacToeGameState)value_;
+        ticTacToeGameState.write(oprot);
+        return;
+      case CONNECT_FOUR_GAME_STATE:
+        org.garethaye.minimax.generated.ConnectFourGameState connectFourGameState = (org.garethaye.minimax.generated.ConnectFourGameState)value_;
+        connectFourGameState.write(oprot);
+        return;
+      default:
+        throw new IllegalStateException("Cannot write union with unknown field " + setField_);
+    }
   }
 
-  public int compareTo(GameState other) {
-    if (!getClass().equals(other.getClass())) {
-      return getClass().getName().compareTo(other.getClass().getName());
+  @Override
+  protected Object tupleSchemeReadValue(org.apache.thrift.protocol.TProtocol iprot, short fieldID) throws org.apache.thrift.TException {
+    _Fields setField = _Fields.findByThriftId(fieldID);
+    if (setField != null) {
+      switch (setField) {
+        case TIC_TAC_TOE_GAME_STATE:
+          org.garethaye.minimax.generated.TicTacToeGameState ticTacToeGameState;
+          ticTacToeGameState = new org.garethaye.minimax.generated.TicTacToeGameState();
+          ticTacToeGameState.read(iprot);
+          return ticTacToeGameState;
+        case CONNECT_FOUR_GAME_STATE:
+          org.garethaye.minimax.generated.ConnectFourGameState connectFourGameState;
+          connectFourGameState = new org.garethaye.minimax.generated.ConnectFourGameState();
+          connectFourGameState.read(iprot);
+          return connectFourGameState;
+        default:
+          throw new IllegalStateException("setField wasn't null, but didn't match any of the case statements!");
+      }
+    } else {
+      return null;
     }
+  }
 
-    int lastComparison = 0;
-    GameState typedOther = (GameState)other;
+  @Override
+  protected void tupleSchemeWriteValue(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+    switch (setField_) {
+      case TIC_TAC_TOE_GAME_STATE:
+        org.garethaye.minimax.generated.TicTacToeGameState ticTacToeGameState = (org.garethaye.minimax.generated.TicTacToeGameState)value_;
+        ticTacToeGameState.write(oprot);
+        return;
+      case CONNECT_FOUR_GAME_STATE:
+        org.garethaye.minimax.generated.ConnectFourGameState connectFourGameState = (org.garethaye.minimax.generated.ConnectFourGameState)value_;
+        connectFourGameState.write(oprot);
+        return;
+      default:
+        throw new IllegalStateException("Cannot write union with unknown field " + setField_);
+    }
+  }
 
-    lastComparison = Boolean.valueOf(isSetState()).compareTo(typedOther.isSetState());
-    if (lastComparison != 0) {
-      return lastComparison;
+  @Override
+  protected org.apache.thrift.protocol.TField getFieldDesc(_Fields setField) {
+    switch (setField) {
+      case TIC_TAC_TOE_GAME_STATE:
+        return TIC_TAC_TOE_GAME_STATE_FIELD_DESC;
+      case CONNECT_FOUR_GAME_STATE:
+        return CONNECT_FOUR_GAME_STATE_FIELD_DESC;
+      default:
+        throw new IllegalArgumentException("Unknown field id " + setField);
     }
-    if (isSetState()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.state, typedOther.state);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetPlayerId()).compareTo(typedOther.isSetPlayerId());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetPlayerId()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.playerId, typedOther.playerId);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetOpponentId()).compareTo(typedOther.isSetOpponentId());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetOpponentId()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.opponentId, typedOther.opponentId);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    return 0;
+  }
+
+  @Override
+  protected org.apache.thrift.protocol.TStruct getStructDesc() {
+    return STRUCT_DESC;
+  }
+
+  @Override
+  protected _Fields enumForId(short id) {
+    return _Fields.findByThriftIdOrThrow(id);
   }
 
   public _Fields fieldForId(int fieldId) {
     return _Fields.findByThriftId(fieldId);
   }
 
-  public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-    schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+
+  public org.garethaye.minimax.generated.TicTacToeGameState getTicTacToeGameState() {
+    if (getSetField() == _Fields.TIC_TAC_TOE_GAME_STATE) {
+      return (org.garethaye.minimax.generated.TicTacToeGameState)getFieldValue();
+    } else {
+      throw new RuntimeException("Cannot get field 'ticTacToeGameState' because union is currently set to " + getFieldDesc(getSetField()).name);
+    }
   }
 
-  public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-    schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+  public void setTicTacToeGameState(org.garethaye.minimax.generated.TicTacToeGameState value) {
+    if (value == null) throw new NullPointerException();
+    setField_ = _Fields.TIC_TAC_TOE_GAME_STATE;
+    value_ = value;
+  }
+
+  public org.garethaye.minimax.generated.ConnectFourGameState getConnectFourGameState() {
+    if (getSetField() == _Fields.CONNECT_FOUR_GAME_STATE) {
+      return (org.garethaye.minimax.generated.ConnectFourGameState)getFieldValue();
+    } else {
+      throw new RuntimeException("Cannot get field 'connectFourGameState' because union is currently set to " + getFieldDesc(getSetField()).name);
+    }
+  }
+
+  public void setConnectFourGameState(org.garethaye.minimax.generated.ConnectFourGameState value) {
+    if (value == null) throw new NullPointerException();
+    setField_ = _Fields.CONNECT_FOUR_GAME_STATE;
+    value_ = value;
+  }
+
+  public boolean isSetTicTacToeGameState() {
+    return setField_ == _Fields.TIC_TAC_TOE_GAME_STATE;
+  }
+
+
+  public boolean isSetConnectFourGameState() {
+    return setField_ == _Fields.CONNECT_FOUR_GAME_STATE;
+  }
+
+
+  public boolean equals(Object other) {
+    if (other instanceof GameState) {
+      return equals((GameState)other);
+    } else {
+      return false;
+    }
+  }
+
+  public boolean equals(GameState other) {
+    return other != null && getSetField() == other.getSetField() && getFieldValue().equals(other.getFieldValue());
   }
 
   @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder("GameState(");
-    boolean first = true;
-
-    sb.append("state:");
-    if (this.state == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.state);
+  public int compareTo(GameState other) {
+    int lastComparison = org.apache.thrift.TBaseHelper.compareTo(getSetField(), other.getSetField());
+    if (lastComparison == 0) {
+      return org.apache.thrift.TBaseHelper.compareTo(getFieldValue(), other.getFieldValue());
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("playerId:");
-    sb.append(this.playerId);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("opponentId:");
-    sb.append(this.opponentId);
-    first = false;
-    sb.append(")");
-    return sb.toString();
+    return lastComparison;
   }
 
-  public void validate() throws org.apache.thrift.TException {
-    // check for required fields
-    if (state == null) {
-      throw new org.apache.thrift.protocol.TProtocolException("Required field 'state' was not present! Struct: " + toString());
-    }
-    // alas, we cannot check 'playerId' because it's a primitive and you chose the non-beans generator.
-    // alas, we cannot check 'opponentId' because it's a primitive and you chose the non-beans generator.
-  }
 
+  @Override
+  public int hashCode() {
+    HashCodeBuilder hcb = new HashCodeBuilder();
+    hcb.append(this.getClass().getName());
+    org.apache.thrift.TFieldIdEnum setField = getSetField();
+    if (setField != null) {
+      hcb.append(setField.getThriftFieldId());
+      Object value = getFieldValue();
+      if (value instanceof org.apache.thrift.TEnum) {
+        hcb.append(((org.apache.thrift.TEnum)getFieldValue()).getValue());
+      } else {
+        hcb.append(value);
+      }
+    }
+    return hcb.toHashCode();
+  }
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
     try {
       write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
@@ -457,125 +350,14 @@ public class GameState implements org.apache.thrift.TBase<GameState, GameState._
     }
   }
 
+
   private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     try {
-      // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-      __isset_bit_vector = new BitSet(1);
       read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
     } catch (org.apache.thrift.TException te) {
       throw new java.io.IOException(te.getMessage());
     }
   }
 
-  private static class GameStateStandardSchemeFactory implements SchemeFactory {
-    public GameStateStandardScheme getScheme() {
-      return new GameStateStandardScheme();
-    }
-  }
-
-  private static class GameStateStandardScheme extends StandardScheme<GameState> {
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot, GameState struct) throws org.apache.thrift.TException {
-      org.apache.thrift.protocol.TField schemeField;
-      iprot.readStructBegin();
-      while (true)
-      {
-        schemeField = iprot.readFieldBegin();
-        if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-          break;
-        }
-        switch (schemeField.id) {
-          case 1: // STATE
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-              struct.state = new GameStateUnion();
-              struct.state.read(iprot);
-              struct.setStateIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 2: // PLAYER_ID
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.playerId = iprot.readI32();
-              struct.setPlayerIdIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 3: // OPPONENT_ID
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.opponentId = iprot.readI32();
-              struct.setOpponentIdIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          default:
-            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-        }
-        iprot.readFieldEnd();
-      }
-      iprot.readStructEnd();
-
-      // check for required fields of primitive type, which can't be checked in the validate method
-      if (!struct.isSetPlayerId()) {
-        throw new org.apache.thrift.protocol.TProtocolException("Required field 'playerId' was not found in serialized data! Struct: " + toString());
-      }
-      if (!struct.isSetOpponentId()) {
-        throw new org.apache.thrift.protocol.TProtocolException("Required field 'opponentId' was not found in serialized data! Struct: " + toString());
-      }
-      struct.validate();
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot, GameState struct) throws org.apache.thrift.TException {
-      struct.validate();
-
-      oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.state != null) {
-        oprot.writeFieldBegin(STATE_FIELD_DESC);
-        struct.state.write(oprot);
-        oprot.writeFieldEnd();
-      }
-      oprot.writeFieldBegin(PLAYER_ID_FIELD_DESC);
-      oprot.writeI32(struct.playerId);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(OPPONENT_ID_FIELD_DESC);
-      oprot.writeI32(struct.opponentId);
-      oprot.writeFieldEnd();
-      oprot.writeFieldStop();
-      oprot.writeStructEnd();
-    }
-
-  }
-
-  private static class GameStateTupleSchemeFactory implements SchemeFactory {
-    public GameStateTupleScheme getScheme() {
-      return new GameStateTupleScheme();
-    }
-  }
-
-  private static class GameStateTupleScheme extends TupleScheme<GameState> {
-
-    @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, GameState struct) throws org.apache.thrift.TException {
-      TTupleProtocol oprot = (TTupleProtocol) prot;
-      struct.state.write(oprot);
-      oprot.writeI32(struct.playerId);
-      oprot.writeI32(struct.opponentId);
-    }
-
-    @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, GameState struct) throws org.apache.thrift.TException {
-      TTupleProtocol iprot = (TTupleProtocol) prot;
-      struct.state = new GameStateUnion();
-      struct.state.read(iprot);
-      struct.setStateIsSet(true);
-      struct.playerId = iprot.readI32();
-      struct.setPlayerIdIsSet(true);
-      struct.opponentId = iprot.readI32();
-      struct.setOpponentIdIsSet(true);
-    }
-  }
 
 }
-

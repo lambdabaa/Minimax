@@ -28,9 +28,6 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * A struct containing the game state and the most recent move made
- */
 public class GameStateAndMove implements org.apache.thrift.TBase<GameStateAndMove, GameStateAndMove._Fields>, java.io.Serializable, Cloneable {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GameStateAndMove");
 

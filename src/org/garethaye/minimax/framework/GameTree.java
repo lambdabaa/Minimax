@@ -18,6 +18,8 @@ package org.garethaye.minimax.framework;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.thrift.TException;
 import org.garethaye.minimax.generated.Bot;
@@ -26,147 +28,100 @@ import org.garethaye.minimax.generated.GameStateAndMove;
 import org.garethaye.minimax.generated.Move;
 
 public class GameTree {
-  private Bot.Iface bot;
-  private Move move;        // Most recent move
   private GameNode root;
-  private int value;        // Assigned during minimax
-  private int playerId;
-  private int opponentId;
   
-  public GameTree(Bot.Iface bot, GameState state, int maxLevel, int playerId, int opponentId)
+  public GameTree(Bot.Iface bot, GameState state, List<Integer> playerList, int player)
       throws TException {
-    this(bot, state, null, maxLevel, playerId, opponentId);
+    this(bot, state, null, 0, playerList, player);
   }
   
-  public GameTree(Bot.Iface bot, GameState state, Move move, int maxLevel, int playerId,
-      int opponentId) throws TException {
-    this(bot, state, move, 0, maxLevel, playerId, opponentId);
-  }
-  
-  public GameTree(Bot.Iface bot, GameState state, Move move, int level, int maxLevel, 
-      int playerId, int opponentId) throws TException {
-    setBot(bot);
-    setMove(move);
-    setPlayerId(playerId);
-    setOpponentId(opponentId);
-    setRoot(new GameNode(state, level));
-    if (level != maxLevel && bot.explore(state)) {
+  public GameTree(Bot.Iface bot, GameState state, Move move, int level, List<Integer> playerList, int player)
+      throws TException {
+    root = new GameNode()
+        .setState(state)
+        .setMove(move)
+        .setLevel(level);
+    
+    if (!bot.cutoffTest(state, level, playerList, player)) {
       Collection<GameTree> children = new LinkedList<GameTree>();
-      for (GameStateAndMove child : bot.getChildrenAndMoves(state)) {
-        children.add(
-            new GameTree(
-                bot,
-                child.getState(),
-                child.getMove(),
-                level + 1,
-                maxLevel,
-                playerId,
-                opponentId));
+      for (GameStateAndMove action : bot.actions(state, playerList, player)) {
+        children.add(new GameTree(
+            bot, 
+            action.getState(), 
+            action.getMove(), 
+            level + 1,
+            playerList, 
+            bot.nextPlayer(state, playerList, player)));
       }
       
       root.setChildren(children);
     }
   }
   
-  public Bot.Iface getBot() {
-    return bot;
-  }
-
-  public GameTree setBot(Bot.Iface bot) {
-    this.bot = bot;
-    return this;
-  }
-  
-  public Move getMove() {
-    return move;
-  }
-
-  public GameTree setMove(Move move) {
-    this.move = move;
-    return this;
-  }
-
-  public GameNode getRoot() {
-    return root;
-  }
-
-  public GameTree setRoot(GameNode root) {
-    this.root = root;
-    return this;
-  }
-  
-  public int getValue() {
-    return value;
-  }
-
-  public GameTree setValue(int value) {
-    this.value = value;
-    return this;
-  }
-  
-  public int getPlayerId() {
-    return playerId;
-  }
-
-  public GameTree setPlayerId(int playerId) {
-    this.playerId = playerId;
-    return this;
-  }
-
-  public int getOpponentId() {
-    return opponentId;
-  }
-
-  public GameTree setOpponentId(int opponentId) {
-    this.opponentId = opponentId;
-    return this;
-  }
-  
-  public int alphabeta(int alpha, int beta, boolean maximize) throws TException {
-    GameState state = root.getState();
-    Collection<GameTree> children = root.getChildren();
+  public Map<Integer, Integer> minimax(Bot.Iface bot, List<Integer> playerList, int active)
+      throws TException {
+    Map<Integer, Integer> result = null;
     
-    int value;
-    if (children == null || !bot.explore(state)) {
-      value = bot.eval(state);
+    Collection<GameTree> children = root.getChildren();
+    GameState state = root.getState();
+    
+    if (children == null) {
+      result = bot.eval(state, playerList, active);
+    } else {
+      int max = Integer.MIN_VALUE;
+      
+      for (GameTree child : children) {
+        Map<Integer, Integer> scores = 
+            child.minimax(bot, playerList, bot.nextPlayer(state, playerList, active));
+        
+        int score = scores.get(active);
+        if (score > max) {
+          result = scores;
+          max = score;
+        }
+      }
+    }
+    
+    root.setPlayerToUtility(result);
+    return result;
+  }
+  
+  public int alphabeta(Bot.Iface bot, List<Integer> playerList, int active, int inactive,
+      int alpha, int beta, boolean maximize) throws TException {
+    int result;
+    
+    Collection<GameTree> children = root.getChildren();
+    GameState state = root.getState();
+    
+    if (children == null) {
+      result = bot.eval(state, playerList, active).get(maximize ? active : inactive);
     } else if (maximize) {
       for (GameTree child : children) {
-        alpha = Math.max(alpha, child.alphabeta(alpha, beta, false));
+        result = child.alphabeta(bot, playerList, inactive, active, alpha, beta, false);
+        alpha = Math.max(alpha, result);
         if (beta <= alpha) {
           break;
         }
       }
       
-      value = alpha;
+      result = alpha;
     } else {
       for (GameTree child : children) {
-        beta = Math.min(beta, child.alphabeta(alpha, beta, true));
+        result = child.alphabeta(bot, playerList, inactive, active, alpha, beta, true);
+        beta = Math.min(beta, result);
         if (beta <= alpha) {
           break;
         }
       }
-      
-      value = beta;
+        
+      result = beta;
     }
     
-    setValue(value);
-    return value;
+    root.setMinimaxValue(result);
+    return result;
   }
   
-  public Move getBestMove() throws TException {
-    // Compute minimax values on tree
-    alphabeta(Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-    
-    Move best = null;
-    int bestValue = Integer.MIN_VALUE;
-    for (GameTree child : root.getChildren()) {
-      int value = child.getValue();
-      if (best == null || value > bestValue) {
-        best = child.getMove();
-        bestValue = value;
-      }
-    }
-    
-    return best;
+  public GameNode getRoot() {
+    return root;
   }
 }
